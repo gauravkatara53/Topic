@@ -1,6 +1,7 @@
-Sure, here is the README content formatted in Markdown:
+Great! Here is your customized README file with the provided email and project link:
 
-```markdown
+---
+
 # TOPIC
 
 ## Overview
@@ -60,6 +61,7 @@ Project Link: [https://github.com/gauravkatara53/TopicListing-1.0.0/tree/main](h
 - [Open Source Guides](https://opensource.guide/)
 - [GitHub](https://github.com/)
 - [Choose an Open Source License](https://choosealicense.com)
-```
 
-You can copy and paste this Markdown content into your README file on GitHub.
+---
+
+Feel free to further modify and expand on this README to best fit the specifics and additional details of your project.
