@@ -1,6 +1,4 @@
-Great! Here is your customized README file with the provided email and project link:
 
----
 
 # TOPIC
 
