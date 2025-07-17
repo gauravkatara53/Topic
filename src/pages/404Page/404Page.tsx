@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import Navbar from "@/components/Navbar";
 
