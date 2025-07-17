@@ -1,7 +1,7 @@
 import React, { useState, ReactNode } from "react";
 import { Link } from "react-router-dom";
 
-type Tab = "notes" | "pyq" | "attend" | "course";
+type Tab = "notes" | "pyq" | "attend";
 
 interface TopicCardProps {
   image: string;
@@ -47,7 +47,6 @@ const BrowseTopics: React.FC = () => {
     { id: "notes", label: "Notes" },
     { id: "pyq", label: "PYQ's" },
     { id: "attend", label: "Tools" },
-    { id: "course", label: "Courses" },
   ];
 
   const renderContent = (): ReactNode => {
@@ -57,7 +56,7 @@ const BrowseTopics: React.FC = () => {
           <TopicCard
             image="https://img.freepik.com/free-vector/modern-weekly-schedule-template-with-flat-design_23-2147942250.jpg"
             title="Notes"
-            link="./get/notes"
+            link="/academic/get/notes"
           />
         );
       case "pyq":
@@ -65,7 +64,7 @@ const BrowseTopics: React.FC = () => {
           <TopicCard
             image="https://img.freepik.com/premium-vector/test-icon-illustration_430232-32.jpg"
             title="PYQ's"
-            link="./get/pyq"
+            link="/academic/get/pyq"
           />
         );
       case "attend":
@@ -74,7 +73,7 @@ const BrowseTopics: React.FC = () => {
             <TopicCard
               image="https://img.freepik.com/free-vector/appointment-booking-with-calendar_23-2148553008.jpg"
               title="Attendance"
-              link="./attendance"
+              link="/attendance"
             />
             <TopicCard
               image="https://img.freepik.com/free-vector/calculator-concept-illustration_114360-1239.jpg"
@@ -89,14 +88,7 @@ const BrowseTopics: React.FC = () => {
             />
           </>
         );
-      case "course":
-        return (
-          <TopicCard
-            image="https://img.freepik.com/free-vector/online-certification-illustration_23-2148575636.jpg"
-            title="Courses"
-            link="./courses"
-          />
-        );
+
       default:
         return null;
     }

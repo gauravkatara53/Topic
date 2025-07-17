@@ -31,7 +31,7 @@ const testimonials: Testimonial[] = [
     testimonial:
       "Having all resources in one place is very helpful for students.",
     image:
-      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAkFBMVEX///8pLTImKi8lKS/8/PwjKC34+PgfJCrNzs8nKzEhJivCw8QqLjM4PEExNTry8vIQFx4cISfa29uytLWtrrCXmZvr7Ozl5eZOUVVaXWCQkpVgY2dHSk6HiYx/gYRydXhAQ0e8vb/e399oa26kpafS09RITFEAAA6Nj5KEhYd2eHsWHCIJEhqnqapTV1qeoKKT9wADAAASYUlEQVR4n...",
+      "https://static.vecteezy.com/system/resources/previews/014/426/967/non_2x/new-woman-avatar-icon-flat-vector.jpg",
   },
 ];
 

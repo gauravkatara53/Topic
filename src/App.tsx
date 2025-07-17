@@ -31,6 +31,7 @@ import CreateListingPage from "./pages/BuyAndSell/Product/createPage";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import SellerProductDetail from "./pages/BuyAndSell/Seller/SellerProductDetail";
 import MyOrderProfile from "./pages/BuyAndSell/MyOrderProfilePage/MyOrderProfilePage";
+import NotFound from "./pages/404Page/404Page";
 
 export default function App() {
   const { user } = useAuth();
@@ -54,19 +55,21 @@ export default function App() {
           )}
 
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/get/notes" element={<NotesSearchPage />} />
-          {isUploaderVerified ? (
-            <Route path="/upload/notes" element={<UploadNotePage />} />
-          ) : (
-            <Route path="/upload/notes" element={<BecomeUploaderPage />} />
-          )}
-          {isUploaderVerified ? (
-            <Route path="/upload/pyq" element={<UploadPYQPage />} />
-          ) : (
-            <Route path="/upload/pyq" element={<BecomeUploaderPage />} />
-          )}
+          <Route path="/academic/get/notes" element={<NotesSearchPage />} />
+          <Route
+            path="/academic/upload/notes"
+            element={
+              isUploaderVerified ? <UploadNotePage /> : <BecomeUploaderPage />
+            }
+          />
+          <Route
+            path="/academic/upload/pyq"
+            element={
+              isUploaderVerified ? <UploadPYQPage /> : <BecomeUploaderPage />
+            }
+          />
 
-          <Route path="/get/pyq" element={<GetPYQPage />} />
+          <Route path="/academic/get/pyq" element={<GetPYQPage />} />
           <Route
             path="/verify/become/uploader"
             element={<VerifyUploaderPage />}
@@ -77,18 +80,20 @@ export default function App() {
               element={<VerifyUploaderPage />}
             />
           )}
-
-          {isUploaderVerified ? (
-            <Route path="/my/notes" element={<MyNotesSearchPage />} />
-          ) : (
-            <Route path="/my/notes" element={<BecomeUploaderPage />} />
-          )}
-
-          {isUploaderVerified ? (
-            <Route path="/my/pyqs" element={<MyPYQ />} />
-          ) : (
-            <Route path="/my/pyqs" element={<BecomeUploaderPage />} />
-          )}
+          <Route
+            path="/academic/my/notes"
+            element={
+              isUploaderVerified ? (
+                <MyNotesSearchPage />
+              ) : (
+                <BecomeUploaderPage />
+              )
+            }
+          />
+          <Route
+            path="/academic/my/pyqs"
+            element={isUploaderVerified ? <MyPYQ /> : <BecomeUploaderPage />}
+          />
 
           <Route path="/academic" element={<AcademicPage />} />
 
@@ -111,6 +116,7 @@ export default function App() {
           <Route path="/upload" element={<BecomeUploaderPage />} />
           <Route path="/1" element={<ProfileHeader />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
         <ToastContainer />
       </Router>

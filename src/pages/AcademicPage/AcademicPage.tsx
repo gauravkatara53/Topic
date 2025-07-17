@@ -18,28 +18,28 @@ const academicActions = [
     description: "Explore and download class notes shared by others.",
     icon: BookOpenCheck,
     gradient: "from-blue-500 to-blue-300",
-    action: "/get/notes",
+    action: "/academic/get/notes",
   },
   {
     title: "Get PYQs",
     description: "Access previous year question papers.",
     icon: ScrollText,
     gradient: "from-yellow-500 to-yellow-300",
-    action: "/get/pyq",
+    action: "/academic/get/pyq",
   },
   {
     title: "Upload Notes",
     description: "Share your notes with the community.",
     icon: UploadCloud,
     gradient: "from-green-500 to-green-300",
-    action: "/upload/notes",
+    action: "/academic/upload/notes",
   },
   {
     title: "Upload PYQ",
     description: "Share your PYQ with the community.",
     icon: UploadIcon,
     gradient: "from-blue-500 to-pink-300",
-    action: "/upload/pyq",
+    action: "/academic/upload/pyq",
   },
 
   {
@@ -47,14 +47,14 @@ const academicActions = [
     description: "View and manage your uploaded notes.",
     icon: Files,
     gradient: "from-purple-500 to-purple-300",
-    action: "/my/notes",
+    action: "/academic/my/notes",
   },
   {
     title: "My Uploaded PYQs",
     description: "Check and manage your uploaded PYQs.",
     icon: FileText,
     gradient: "from-pink-500 to-pink-300",
-    action: "/my/pyqs",
+    action: "/academic/my/pyqs",
   },
 ];
 
