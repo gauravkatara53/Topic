@@ -32,6 +32,11 @@ import { TooltipProvider } from "@radix-ui/react-tooltip";
 import SellerProductDetail from "./pages/BuyAndSell/Seller/SellerProductDetail";
 import MyOrderProfile from "./pages/BuyAndSell/MyOrderProfilePage/MyOrderProfilePage";
 import NotFound from "./pages/404Page/404Page";
+import Dashboard from "./pages/Admin/Dashboard/Dashboard";
+import AdminPYQPage from "./pages/Admin/Pages/AdminPYQPage";
+import AdminNotesPage from "./pages/Admin/Pages/AdminNotesPage";
+import AdminReportsPage from "./pages/Admin/Pages/AdminReportsPage";
+import NewsAdminPage from "./pages/Admin/Pages/NewsAdminPage";
 
 export default function App() {
   const { user } = useAuth();
@@ -117,6 +122,13 @@ export default function App() {
           <Route path="/1" element={<ProfileHeader />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="*" element={<NotFound />} />
+
+          {/* admin panel */}
+          <Route path="/admin/dashboard" element={<Dashboard />} />
+          <Route path="/admin/pyq" element={<AdminPYQPage />} />
+          <Route path="/admin/notes" element={<AdminNotesPage />} />
+          <Route path="/admin/reports" element={<AdminReportsPage />} />
+          <Route path="/admin/news" element={<NewsAdminPage />} />
         </Routes>
         <ToastContainer />
       </Router>
