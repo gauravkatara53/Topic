@@ -1,5 +1,10 @@
 // adminService.ts
-import { getNews, createNews as apiCreateNews } from "@/api/adminApi"; // Adjust paths as needed
+import {
+  getNews,
+  createNews as apiCreateNews,
+  updateNews as apiUpdateNews,
+  deleteNews as apiDeleteNews,
+} from "@/api/adminApi";
 import { errorHandler } from "@/utils/errorHandler";
 
 const { handleError } = errorHandler();
@@ -11,7 +16,6 @@ export const fetchNews = async () => {
     if (Array.isArray(response.data)) {
       return response.data;
     } else if (Array.isArray(response.data?.data)) {
-      // If API returns nested "data" field with array
       return response.data.data;
     } else {
       return [];
@@ -22,13 +26,32 @@ export const fetchNews = async () => {
   }
 };
 
-// New service function to create news with error handling
 export const createNews = async (data: any) => {
   try {
     const response = await apiCreateNews(data);
     return response.data;
   } catch (error) {
     handleError(error);
-    throw error; // rethrow so calling code can catch if needed
+    throw error;
+  }
+};
+
+export const updateNews = async (id: string, data: any) => {
+  try {
+    const response = await apiUpdateNews(id, data);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+    throw error;
+  }
+};
+
+export const deleteNews = async (id: string) => {
+  try {
+    const response = await apiDeleteNews(id);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+    throw error;
   }
 };

@@ -1,13 +1,18 @@
-// NewsAdminPage.tsx
 import React, { useEffect, useState } from "react";
 import { Edit2, Trash2, PlusCircle, Search, ExternalLink } from "lucide-react";
 import AdminSidebar from "../components/AdminSidebar";
-import { fetchNews, createNews } from "@/services/adminService";
+import {
+  fetchNews,
+  createNews,
+  updateNews,
+  deleteNews,
+} from "@/services/adminService";
+import { toast } from "react-toastify";
 
 type News = {
-  id: string; // maps to _id from API
+  id: string; // _id
   title: string;
-  description: string; // maps to content
+  description: string; // content
   link: string;
   date: string; // yyyy-mm-dd
 };
@@ -30,6 +35,8 @@ const NewsAdminPage: React.FC = () => {
     link: "",
   });
   const [isEditing, setIsEditing] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   // Load news on mount
   useEffect(() => {
@@ -53,7 +60,7 @@ const NewsAdminPage: React.FC = () => {
     loadNews();
   }, []);
 
-  // Filter news based on search and date range
+  // Filter news
   const filteredNews = newsList.filter((news) => {
     const newsDate = new Date(news.date);
     const fromDateObj = dateFrom ? new Date(dateFrom) : null;
@@ -68,39 +75,51 @@ const NewsAdminPage: React.FC = () => {
     );
   });
 
-  // Handle input field changes
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // Clear form to create new news
   const handleCreateNew = () => {
     setForm({ id: null, title: "", description: "", link: "" });
     setIsEditing(false);
   };
 
-  // Submit create or update
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.title.trim() || !form.description.trim()) return;
 
+    setSubmitLoading(true);
     try {
       if (isEditing && form.id) {
-        // Local update only; implement update API as needed
-        setNewsList((prev) =>
-          prev.map((item) =>
-            item.id === form.id
-              ? {
-                  ...item,
-                  title: form.title,
-                  description: form.description,
-                  link: form.link,
-                }
-              : item
-          )
-        );
+        // Update via API
+        const payload = {
+          title: form.title,
+          content: form.description,
+          link: form.link,
+        };
+        const response = await updateNews(form.id, payload);
+
+        if (response && response.data) {
+          const updated = response.data;
+          setNewsList((prev) =>
+            prev.map((item) =>
+              item.id === updated._id
+                ? {
+                    id: updated._id,
+                    title: updated.title,
+                    description: updated.content,
+                    link: updated.link || "",
+                    date: updated.date
+                      ? updated.date.slice(0, 10)
+                      : new Date().toISOString().slice(0, 10),
+                  }
+                : item
+            )
+          );
+          toast.success("News updated successfully");
+        }
       } else {
         // Create new news via API
         const payload = {
@@ -124,6 +143,7 @@ const NewsAdminPage: React.FC = () => {
             },
             ...prev,
           ]);
+          toast.success("News created successfully");
         }
       }
 
@@ -131,11 +151,12 @@ const NewsAdminPage: React.FC = () => {
       setIsEditing(false);
     } catch (error) {
       console.error("Error creating/updating news:", error);
-      // Add error UI as needed
+      toast.error("Failed to save news. Please try again.");
+    } finally {
+      setSubmitLoading(false);
     }
   };
 
-  // Start editing selected news
   const handleEdit = (news: News) => {
     setForm({
       id: news.id,
@@ -146,14 +167,24 @@ const NewsAdminPage: React.FC = () => {
     setIsEditing(true);
   };
 
-  // Local delete of news
-  const handleDelete = (id: string) => {
-    setNewsList((prev) => prev.filter((item) => item.id !== id));
-    if (form.id === id) {
-      setForm({ id: null, title: "", description: "", link: "" });
-      setIsEditing(false);
+  const handleDelete = async (id: string) => {
+    setDeletingId(id);
+    try {
+      await deleteNews(id);
+      setNewsList((prev) => prev.filter((item) => item.id !== id));
+      if (form.id === id) {
+        setForm({ id: null, title: "", description: "", link: "" });
+        setIsEditing(false);
+      }
+      toast.success("News deleted successfully");
+    } catch (error) {
+      console.error("Error deleting news:", error);
+      toast.error("Failed to delete news. Please try again.");
+    } finally {
+      setDeletingId(null);
     }
   };
+
   const truncateWords = (text: string, wordLimit: number): string => {
     if (!text) return "";
     const words = text.split(" ");
@@ -226,9 +257,16 @@ const NewsAdminPage: React.FC = () => {
             />
             <button
               type="submit"
-              className="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition"
+              className="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition disabled:opacity-70 disabled:cursor-not-allowed"
+              disabled={submitLoading}
             >
-              {isEditing ? "Update News" : "Create News"}
+              {submitLoading
+                ? isEditing
+                  ? "Updating..."
+                  : "Creating..."
+                : isEditing
+                ? "Update News"
+                : "Create News"}
             </button>
           </form>
 
@@ -260,7 +298,6 @@ const NewsAdminPage: React.FC = () => {
             />
           </div>
 
-          {/* News Table */}
           {/* News Table */}
           <div className="overflow-x-auto bg-white rounded-xl shadow-md border border-gray-300 w-full">
             <table className="min-w-full table-fixed text-sm">
@@ -308,6 +345,10 @@ const NewsAdminPage: React.FC = () => {
                       }
                       title={news.title}
                       onClick={() => handleEdit(news)}
+                      style={{
+                        opacity: deletingId === news.id ? 0.5 : 1,
+                        pointerEvents: deletingId === news.id ? "none" : "auto",
+                      }}
                     >
                       <td className="px-6 py-3 font-medium text-gray-900 truncate">
                         {truncateWords(news.title, 4)}
@@ -384,6 +425,7 @@ const NewsAdminPage: React.FC = () => {
           </div>
         </>
       </main>
+      {/* Ensure to include <Toaster /> somewhere at root or this component to display toasts */}
     </div>
   );
 };

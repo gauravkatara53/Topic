@@ -22,7 +22,7 @@ export const fetchPYQs = async (filters: {
     console.log("🧪 Full pyq API response:", response);
     console.log("🔍 response.data:", response?.data);
 
-    const pyqs = response?.data?.notes; // adjust based on actual API response
+    const pyqs = response?.data?.pyqs; // adjust based on actual API response
 
     if (!Array.isArray(pyqs)) {
       console.warn("⚠️ `pyqs` not found or not an array:", pyqs);
