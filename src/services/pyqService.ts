@@ -1,5 +1,5 @@
 // src/services/pyqService.ts
-import { deletePyq, getPyq, uploadPyq } from "@/api/pyqApi";
+import { deletePyq, editPyq, getPyq, uploadPyq } from "@/api/pyqApi";
 import { errorHandler } from "@/utils/errorHandler";
 import { toast } from "react-toastify";
 const { handleError } = errorHandler();
@@ -74,5 +74,32 @@ export const handleDelete = async (pyqId: string) => {
   } catch (error) {
     handleError(error);
     toast.error("Failed to delete PYQ");
+  }
+};
+
+export const editPyqService = async (
+  pyqId: string,
+  updatedData: {
+    title: string;
+    description: string;
+    semester: number | string;
+    branch: string;
+    sessionFrom: number | string;
+    sessionTo: number | string;
+    subject: string;
+    visibility: string;
+    isApproved: boolean;
+    rejectionReason: string;
+    term: string;
+  }
+) => {
+  try {
+    const response = await editPyq(pyqId, updatedData);
+    toast.success("PYQ updated successfully!");
+    return response.data;
+  } catch (error) {
+    handleError(error);
+    toast.error("Failed to update PYQ");
+    throw error;
   }
 };

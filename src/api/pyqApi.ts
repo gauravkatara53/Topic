@@ -53,3 +53,22 @@ export const uploadPyq = (formData: FormData) => {
 export const deletePyq = (pyqId: string) => {
   return apiService.delete(`/PYQ/delete/${pyqId}`);
 };
+
+export const editPyq = (
+  pyqId: string,
+  data: {
+    title: string;
+    description: string;
+    semester: number | string;
+    branch: string;
+    sessionFrom: number | string;
+    sessionTo: number | string;
+    subject: string;
+    visibility: string;
+    isApproved: boolean;
+    rejectionReason: string;
+    term: string;
+  }
+) => {
+  return apiService.put(`/PYQ/admin/edit-pyq/${pyqId}`, data);
+};

@@ -5,6 +5,7 @@ import {
   FileWarning,
   ShoppingCart,
   Newspaper,
+  ArrowLeft,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -25,7 +26,9 @@ const AdminSidebar = () => {
       {/* Logo/Brand */}
       <div className="flex items-center gap-2 mb-8 pl-1">
         <span className="rounded-full bg-blue-100 p-2 shadow-inner">
-          <LayoutGrid className="w-6 h-6 text-blue-700" />
+          <Link to={"/"}>
+            <ArrowLeft className="w-6 h-6 text-blue-700" />
+          </Link>
         </span>
         <span className="text-2xl font-bold text-blue-900 tracking-wider">
           Admin

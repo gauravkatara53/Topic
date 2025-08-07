@@ -44,3 +44,19 @@ export const uploadNotes = (formData: FormData) => {
 export const deleteNotes = (noteId: string) => {
   return apiService.delete(`/notes/delete/${noteId}`);
 };
+
+export const editNote = (
+  noteId: string,
+  data: {
+    title: string;
+    description: string;
+    semester: number | string;
+    branch: string;
+    subject: string;
+    visibility: string;
+    isApproved: boolean;
+    rejectionReason: string;
+  }
+) => {
+  return apiService.put(`/notes/admin/edit-note/${noteId}`, data);
+};

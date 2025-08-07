@@ -1,4 +1,4 @@
-import { deleteNotes, getNotes, uploadNotes } from "@/api/noteApi";
+import { deleteNotes, editNote, getNotes, uploadNotes } from "@/api/noteApi";
 import { errorHandler } from "@/utils/errorHandler";
 import { toast } from "react-toastify";
 const { handleError } = errorHandler();
@@ -65,5 +65,29 @@ export const handleDeleteNote = async (noteId: string) => {
   } catch (error) {
     handleError(error);
     toast.error("Failed to delete NOTES");
+  }
+};
+
+export const editNoteService = async (
+  noteId: string,
+  updatedData: {
+    title: string;
+    description: string;
+    semester: number | string;
+    branch: string;
+    subject: string;
+    visibility: string;
+    isApproved: boolean;
+    rejectionReason: string;
+  }
+) => {
+  try {
+    const response = await editNote(noteId, updatedData);
+    toast.success("Note updated successfully!");
+    return response.data;
+  } catch (error) {
+    handleError(error);
+    toast.error("Failed to update note");
+    throw error;
   }
 };
