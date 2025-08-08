@@ -18,7 +18,7 @@ const Navbar: React.FC = () => {
     navigate(isLoggedIn ? "/profile" : "/login");
   };
 
-  const adminTab = { path: "/admin/dashboard", label: "Admin" };
+  const adminTab = { path: "/admin/news", label: "Admin" };
 
   // Base navigation links
   const navLinks = [

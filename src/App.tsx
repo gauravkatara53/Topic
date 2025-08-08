@@ -37,6 +37,8 @@ import AdminPYQPage from "./pages/Admin/Pages/AdminPYQPage";
 import AdminNotesPage from "./pages/Admin/Pages/AdminNotesPage";
 import AdminReportsPage from "./pages/Admin/Pages/AdminReportsPage";
 import NewsAdminPage from "./pages/Admin/Pages/NewsAdminPage";
+import AdminUsersPage from "./pages/Admin/Pages/AdminUsersPage";
+import UserProfilePage from "./pages/Admin/Pages/UserProfilePage";
 
 export default function App() {
   const { user } = useAuth();
@@ -127,8 +129,10 @@ export default function App() {
           <Route path="/admin/dashboard" element={<Dashboard />} />
           <Route path="/admin/pyq" element={<AdminPYQPage />} />
           <Route path="/admin/notes" element={<AdminNotesPage />} />
-          <Route path="/admin/reports" element={<AdminReportsPage />} />
+          <Route path="/admin/complaint" element={<AdminReportsPage />} />
           <Route path="/admin/news" element={<NewsAdminPage />} />
+          <Route path="/admin/users" element={<AdminUsersPage />} />
+          <Route path="/admin/users/:userId" element={<UserProfilePage />} />
         </Routes>
         <ToastContainer />
       </Router>

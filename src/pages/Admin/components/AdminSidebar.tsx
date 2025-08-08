@@ -1,21 +1,19 @@
 import {
-  LayoutGrid,
   BookOpen,
   HelpCircle,
   FileWarning,
-  ShoppingCart,
   Newspaper,
   ArrowLeft,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 const sidebarLinks = [
-  { label: "Dashboard", icon: LayoutGrid, href: "/admin/dashboard" },
+  // { label: "Dashboard", icon: LayoutGrid, href: "/admin/dashboard" },
   { label: "News", icon: Newspaper, href: "/admin/news" },
   { label: "Notes", icon: BookOpen, href: "/admin/notes" },
   { label: "PYQs", icon: HelpCircle, href: "/admin/pyq" },
-  { label: "Complaint", icon: FileWarning, href: "/admin/complaint" },
-  { label: "Buy & Sell", icon: ShoppingCart, href: "/admin/marketplace" },
+  { label: "User", icon: FileWarning, href: "/admin/users" },
+  // { label: "Buy & Sell", icon: ShoppingCart, href: "/admin/marketplace" },
 ];
 
 const AdminSidebar = () => {
