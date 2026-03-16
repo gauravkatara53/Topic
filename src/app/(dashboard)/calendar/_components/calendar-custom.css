@@ -1,0 +1,98 @@
+/* Custom overrides for react-big-calendar to fit dark mode / modern UI */
+
+.custom-calendar-wrapper .rbc-calendar {
+  font-family: inherit;
+}
+
+.custom-calendar-wrapper .rbc-toolbar button {
+  border-radius: 6px;
+  color: hsl(var(--foreground));
+  border-color: hsl(var(--border));
+}
+
+.custom-calendar-wrapper .rbc-toolbar button.rbc-active {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-color: hsl(var(--primary));
+}
+
+.custom-calendar-wrapper .rbc-toolbar button:active,
+.custom-calendar-wrapper .rbc-toolbar button:hover {
+  background-color: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
+}
+
+.custom-calendar-wrapper .rbc-month-view,
+.custom-calendar-wrapper .rbc-time-view,
+.custom-calendar-wrapper .rbc-agenda-view {
+  border-color: #f1f5f9;
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.custom-calendar-wrapper .rbc-agenda-view table.rbc-agenda-table {
+  border: 1px solid #f1f5f9;
+}
+
+.custom-calendar-wrapper .rbc-header {
+  border-bottom: 1px solid #f1f5f9;
+  border-left: 1px solid #f1f5f9;
+  padding: 8px 0;
+  font-weight: 600;
+  color: #475569;
+}
+
+.custom-calendar-wrapper .rbc-day-bg {
+  border-left: 1px solid #f1f5f9;
+}
+
+.custom-calendar-wrapper .rbc-month-row {
+  border-top: 1px solid #f1f5f9;
+}
+
+.custom-calendar-wrapper .rbc-off-range-bg {
+  background-color: #f8fafc;
+}
+
+.custom-calendar-wrapper .rbc-today {
+  background-color: #f0fdfa;
+  /* teal-50 */
+}
+
+.custom-calendar-wrapper .rbc-date-cell {
+  color: #1e293b;
+  padding-right: 8px;
+  padding-top: 4px;
+  font-weight: 500;
+}
+
+.custom-calendar-wrapper .rbc-off-range {
+  color: #94a3b8;
+}
+
+.custom-calendar-wrapper .rbc-event {
+  background-color: transparent !important;
+  color: inherit !important;
+  padding: 0 !important;
+}
+
+.custom-calendar-wrapper .rbc-event.rbc-selected {
+  background-color: transparent !important;
+}
+
+/* Hide event container rows in month view to keep perfect symmetry */
+.custom-calendar-wrapper .rbc-month-row .rbc-row-content>.rbc-row:nth-child(n+2) {
+  display: none !important;
+}
+
+/* Cursor pointer for day backgrounds */
+.custom-calendar-wrapper .rbc-day-bg {
+  border-left: 1px solid #f1f5f9;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.custom-calendar-wrapper .rbc-day-bg:hover {
+  filter: brightness(0.95);
+}

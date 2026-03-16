@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String               @id @map("_id")
+  name               String?
+  email              String?              @unique
+  password           String?
+  role               String               @default("STUDENT") // STUDENT, FACULTY, ADMIN
+  branch             String?
+  semester           Int?
+  collegeIdVerified  Boolean              @default(false)
+  bio                String?
+  cgpa               Float?
+  creditsEarned      Int?
+  rollNumber         String?
+  hostel             String?
+  joinedAt           DateTime?            @default(now())
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  files              File[]
+  attendanceRecords  AttendanceRecord[]
+  portalCredentials  PortalCredential?
+}
+
+model Announcement {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  body      String
+  category  String   // exam, event, holiday, general
+  date      DateTime @default(now())
+  pinned    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CalendarEvent {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  date        DateTime
+  type        String   // exam, holiday, event, deadline
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model File {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  uploaderId  String?   
+  uploader    User?    @relation(fields: [uploaderId], references: [id])
+  branch      String
+  semester    Int
+  subject     String
+  type        String   // Notes, PYQ, Assignment
+  url         String
+  downloads   Int      @default(0)
+  rating      Float    @default(0)
+  ratingCount Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AttendanceRecord {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String   
+  user       User     @relation(fields: [userId], references: [id])
+  subject    String
+  attended   Int
+  total      Int
+  percentage Float
+  scrapedAt  DateTime @default(now())
+}
+
+model PortalCredential {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String   @unique 
+  user              User     @relation(fields: [userId], references: [id])
+  encryptedUsername String
+  encryptedPassword String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
