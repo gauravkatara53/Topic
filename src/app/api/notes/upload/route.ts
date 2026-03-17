@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { createClient } from "@supabase/supabase-js";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { prisma } from "@/lib/prisma";
 
-const supabase = createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_ANON_KEY!
-);
+const s3Client = new S3Client({
+    region: "auto",
+    endpoint: process.env.CLOUDFLARE_ENDPOINT!,
+    credentials: {
+        accessKeyId: process.env.CLOUDFLARE_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.CLOUDFLARE_SECRET_ACCESS_KEY!,
+    },
+});
 
 export async function POST(req: NextRequest) {
     try {
@@ -47,25 +51,21 @@ export async function POST(req: NextRequest) {
         const uniqueFileName = `${userId}-${timestamp}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
         const filePath = `campushub/${type.toLowerCase()}s/${uniqueFileName}`;
 
-        // Upload to Supabase Storage
-        const { data: uploadData, error: uploadError } = await supabase
-            .storage
-            .from('topic') // Using the user's existing public bucket
-            .upload(filePath, buffer, {
-                contentType: file.type,
-                upsert: false
-            });
-
-        if (uploadError) {
-            console.error("Supabase upload error:", uploadError);
-            throw new Error(`Supabase upload failed: ${uploadError.message}`);
+        // Upload to Cloudflare R2
+        try {
+            await s3Client.send(new PutObjectCommand({
+                Bucket: process.env.CLOUDFLARE_BUCKET_NAME!,
+                Key: filePath,
+                Body: buffer,
+                ContentType: file.type,
+            }));
+        } catch (uploadError: any) {
+            console.error("Cloudflare R2 upload error:", uploadError);
+            throw new Error(`Cloudflare R2 upload failed: ${uploadError.message}`);
         }
 
         // Get the public URL for the uploaded file
-        const { data: { publicUrl } } = supabase
-            .storage
-            .from('topic')
-            .getPublicUrl(filePath);
+        const publicUrl = `${process.env.CLOUDFLARE_PUBLIC_DOMAIN}/${filePath}`;
 
         // Save metadata to DB
         const newDbFile = await prisma.file.create({
