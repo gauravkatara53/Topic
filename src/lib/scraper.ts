@@ -1,5 +1,5 @@
-import puppeteer from "puppeteer";
 import { prisma } from "./prisma";
+import chromium from "@sparticuz/chromium-min";
 
 // Basic in-memory cache to prevent abusive scraping
 // Key: userId, Value: timestamp of last successful scrape
@@ -16,12 +16,28 @@ export async function scrapeAttendance(userId: string, collegeId: string, colleg
 
     let browser;
     try {
-        const launchOptions = {
-            headless: true,
-            args: ["--no-sandbox", "--disable-setuid-sandbox"],
-        };
+        const isProd = process.env.NODE_ENV === "production";
+        
+        if (isProd) {
+            const puppeteerCore = require("puppeteer-core");
+            const executablePath = await chromium.executablePath(
+                "https://github.com/Sparticuz/chromium/releases/download/v131.0.1/chromium-v131.0.1-pack.tar"
+            );
+            browser = await puppeteerCore.launch({
+                args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
+                defaultViewport: { width: 1920, height: 1080 },
+                executablePath: executablePath,
+                headless: true,
+                ignoreHTTPSErrors: true,
+            });
+        } else {
+            const puppeteerDev = require("puppeteer");
+            browser = await puppeteerDev.launch({
+                headless: true,
+                args: ["--no-sandbox", "--disable-setuid-sandbox"],
+            });
+        }
 
-        browser = await puppeteer.launch(launchOptions);
         const page = await browser.newPage();
 
         console.log("[Scraper] Navigating to Login.aspx");
@@ -59,9 +75,9 @@ export async function scrapeAttendance(userId: string, collegeId: string, colleg
 
         console.log("[Scraper] Extracting table data");
         // We expect the table headers to be something like: [SNo, Subject, Total Classes, Attended Classes, Percentage]
-        const rawTableData = await page.$$eval("#ContentPlaceHolder1_gv tr", (rows) =>
-            rows.slice(1).map((row) => { // Skip header row
-                const cells = Array.from(row.querySelectorAll("td")).map((cell) => cell.innerText.trim());
+        const rawTableData = await page.$$eval("#ContentPlaceHolder1_gv tr", (rows: Element[]) =>
+            rows.slice(1).map((row: Element) => { // Skip header row
+                const cells = Array.from(row.querySelectorAll("td")).map((cell: any) => cell.innerText.trim());
                 return cells;
             })
         );
@@ -69,7 +85,7 @@ export async function scrapeAttendance(userId: string, collegeId: string, colleg
         console.log(`[Scraper] Scraped ${rawTableData.length} rows.`);
 
         // Parse to AttendanceRecord structure
-        const parsedData = rawTableData.map(row => {
+        const parsedData = rawTableData.map((row: any[]) => {
             // Actual NIT JSR portal structure:
             // 0: Sl#, 1: Subject Code, 2: Subject name, 3: Faculty Name, 4: Present/Total Class, 5: Attendance %, 6: Feedback
 
