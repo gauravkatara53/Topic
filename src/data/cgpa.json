@@ -11710,5 +11710,2357 @@
         "Cgpa": 8.16,
         "Sgpa": 8.14,
         "__v": 0
+    },
+    {
+        "_id": "694f9a915e0f5e9d9c383862",
+        "Regn": "2023UGMM001",
+        "Name": "SANIA SRISHTI LINDA",
+        "Cgpa": 8.38,
+        "Sgpa": 9.09,
+        "__v": 0
+    },
+    {
+        "_id": "694f9a945e0f5e9d9c383864",
+        "Regn": "2023UGMM002",
+        "Name": "PRATHAM KUMAR RANA",
+        "Cgpa": 7.77,
+        "Sgpa": 7.78,
+        "__v": 0
+    },
+    {
+        "_id": "694f9af2f4776c530596ce02",
+        "Regn": "2023UGMM003",
+        "Name": "AVINASH ANSHU",
+        "Cgpa": 9.04,
+        "Sgpa": 9.74,
+        "__v": 0
+    },
+    {
+        "_id": "694f9af5f4776c530596ce04",
+        "Regn": "2023UGMM004",
+        "Name": "AMIT KUMAR MAHATO",
+        "Cgpa": 7.91,
+        "Sgpa": 7.83,
+        "__v": 0
+    },
+    {
+        "_id": "694f9af8f4776c530596ce06",
+        "Regn": "2023UGMM005",
+        "Name": "KUSHAL PANDEY",
+        "Cgpa": 7.5,
+        "Sgpa": 7.43,
+        "__v": 0
+    },
+    {
+        "_id": "694f9afbf4776c530596ce08",
+        "Regn": "2023UGMM006",
+        "Name": "ADITYA RAJ TEWARY",
+        "Cgpa": 8.38,
+        "Sgpa": 8.57,
+        "__v": 0
+    },
+    {
+        "_id": "694f9afef4776c530596ce0a",
+        "Regn": "2023UGMM007",
+        "Name": "PRIYANSHU TIWARI",
+        "Cgpa": 7.44,
+        "Sgpa": 7.87,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b01f4776c530596ce0c",
+        "Regn": "2023UGMM008",
+        "Name": "KARANKI SREEVALLI",
+        "Cgpa": 8.25,
+        "Sgpa": 8.91,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b05f4776c530596ce0e",
+        "Regn": "2023UGMM009",
+        "Name": "VIRENDER",
+        "Cgpa": 0,
+        "Sgpa": 0,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b08f4776c530596ce10",
+        "Regn": "2023UGMM010",
+        "Name": "SAI PRASAD DAS",
+        "Cgpa": 6.71,
+        "Sgpa": 7.3,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b0bf4776c530596ce12",
+        "Regn": "2023UGMM011",
+        "Name": "ANKIT KUMAR SHARMA",
+        "Cgpa": 8.4,
+        "Sgpa": 8.87,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b0ef4776c530596ce14",
+        "Regn": "2023UGMM012",
+        "Name": "KARISHMA KUMARI",
+        "Cgpa": 8.55,
+        "Sgpa": 8.83,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b11f4776c530596ce16",
+        "Regn": "2023UGMM013",
+        "Name": "SOUMYODEEP BISWAS",
+        "Cgpa": 7.03,
+        "Sgpa": 7.83,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b14f4776c530596ce18",
+        "Regn": "2023UGMM014",
+        "Name": "J SANMUKH RAO",
+        "Cgpa": 7.15,
+        "Sgpa": 7.7,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b17f4776c530596ce1a",
+        "Regn": "2023UGMM015",
+        "Name": "PRAKHAR ANAND",
+        "Cgpa": 8.17,
+        "Sgpa": 8.57,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b1af4776c530596ce1c",
+        "Regn": "2023UGMM016",
+        "Name": "ARSH MISHRA",
+        "Cgpa": 8.85,
+        "Sgpa": 8.96,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b1df4776c530596ce1e",
+        "Regn": "2023UGMM017",
+        "Name": "AABHAS KUMAR",
+        "Cgpa": 8.41,
+        "Sgpa": 8.83,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b20f4776c530596ce20",
+        "Regn": "2023UGMM018",
+        "Name": "MD FAIYAZ ALAM",
+        "Cgpa": 7.87,
+        "Sgpa": 7.87,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b23f4776c530596ce22",
+        "Regn": "2023UGMM019",
+        "Name": "AADITYA RAJ",
+        "Cgpa": 7.76,
+        "Sgpa": 8.17,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b26f4776c530596ce24",
+        "Regn": "2023UGMM020",
+        "Name": "ASHISH ANAND",
+        "Cgpa": 7.68,
+        "Sgpa": 8.04,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b29f4776c530596ce26",
+        "Regn": "2023UGMM021",
+        "Name": "HARSHIT DWIVEDI",
+        "Cgpa": 8.02,
+        "Sgpa": 8.26,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b2cf4776c530596ce28",
+        "Regn": "2023UGMM022",
+        "Name": "",
+        "Cgpa": null,
+        "Sgpa": null,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b2ff4776c530596ce2a",
+        "Regn": "2023UGMM023",
+        "Name": "KUSHAL SRIVASTAVA",
+        "Cgpa": 0,
+        "Sgpa": 0,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b32f4776c530596ce2c",
+        "Regn": "2023UGMM024",
+        "Name": "SUBHAM PANIGRAHI",
+        "Cgpa": 7.95,
+        "Sgpa": 8.04,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b35f4776c530596ce2e",
+        "Regn": "2023UGMM025",
+        "Name": "SAMIKHYA MOHANTY",
+        "Cgpa": 8.03,
+        "Sgpa": 9.04,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b38f4776c530596ce30",
+        "Regn": "2023UGMM026",
+        "Name": "ANISH DAS",
+        "Cgpa": 6.48,
+        "Sgpa": 7.35,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b3bf4776c530596ce34",
+        "Regn": "2023UGMM027",
+        "Name": "HAREKRISHNA THAKUR",
+        "Cgpa": 7.24,
+        "Sgpa": 7.17,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b3ff4776c530596ce36",
+        "Regn": "2023UGMM028",
+        "Name": "FILZA AHSAN",
+        "Cgpa": 6.63,
+        "Sgpa": 6.57,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b42f4776c530596ce38",
+        "Regn": "2023UGMM029",
+        "Name": "SURYANSH SHRIWASTAVA",
+        "Cgpa": 7.56,
+        "Sgpa": 7.96,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b45f4776c530596ce3a",
+        "Regn": "2023UGMM030",
+        "Name": "ADITYA RAJ",
+        "Cgpa": 6.56,
+        "Sgpa": 6.96,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b48f4776c530596ce3c",
+        "Regn": "2023UGMM031",
+        "Name": "ANUJ KUMAR",
+        "Cgpa": 7.57,
+        "Sgpa": 7.7,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b4bf4776c530596ce3e",
+        "Regn": "2023UGMM032",
+        "Name": "SUBHOJEET MUKHERJEE",
+        "Cgpa": 8.27,
+        "Sgpa": 8.52,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b4ef4776c530596ce40",
+        "Regn": "2023UGMM033",
+        "Name": "SHIKHAR KUMAR",
+        "Cgpa": 6.72,
+        "Sgpa": 7.35,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b51f4776c530596ce42",
+        "Regn": "2023UGMM034",
+        "Name": "MIR HASIN TANBIR",
+        "Cgpa": 7.39,
+        "Sgpa": 8.04,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b54f4776c530596ce44",
+        "Regn": "2023UGMM035",
+        "Name": "ISHIKA GUPTA",
+        "Cgpa": 8.43,
+        "Sgpa": 8.43,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b57f4776c530596ce46",
+        "Regn": "2023UGMM036",
+        "Name": "ATUL SHAKTI",
+        "Cgpa": 7.98,
+        "Sgpa": 8,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b5af4776c530596ce48",
+        "Regn": "2023UGMM037",
+        "Name": "AKASH KUMAR RAKSHIT",
+        "Cgpa": 8.02,
+        "Sgpa": 8.3,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b5ef4776c530596ce4a",
+        "Regn": "2023UGMM038",
+        "Name": "MUKUL RANJAN",
+        "Cgpa": 8.35,
+        "Sgpa": 8.7,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b61f4776c530596ce4c",
+        "Regn": "2023UGMM039",
+        "Name": "PALLAVI KUMARI",
+        "Cgpa": 8.51,
+        "Sgpa": 9.17,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b64f4776c530596ce4e",
+        "Regn": "2023UGMM040",
+        "Name": "ABHISHEK KUMAR",
+        "Cgpa": 7.52,
+        "Sgpa": 8.04,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b67f4776c530596ce50",
+        "Regn": "2023UGMM041",
+        "Name": "PALLAV SUMAN",
+        "Cgpa": 6.91,
+        "Sgpa": 6.91,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b6af4776c530596ce52",
+        "Regn": "2023UGMM042",
+        "Name": "HARSHAL KAUSHIK",
+        "Cgpa": 7.49,
+        "Sgpa": 7.83,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b6df4776c530596ce54",
+        "Regn": "2023UGMM043",
+        "Name": "KRISHAN YADAV",
+        "Cgpa": 0,
+        "Sgpa": 0,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b70f4776c530596ce56",
+        "Regn": "2023UGMM044",
+        "Name": "SHAILY BIRULY",
+        "Cgpa": 7.1,
+        "Sgpa": 8.04,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b71f4776c530596ce58",
+        "Regn": "2023UGMM045",
+        "Name": "",
+        "Cgpa": null,
+        "Sgpa": null,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b74f4776c530596ce5a",
+        "Regn": "2023UGMM046",
+        "Name": "MADHAV KUMAR",
+        "Cgpa": 7.59,
+        "Sgpa": 7.74,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b77f4776c530596ce5c",
+        "Regn": "2023UGMM047",
+        "Name": "ZAID ALAM",
+        "Cgpa": 6.44,
+        "Sgpa": 7.09,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b7af4776c530596ce5e",
+        "Regn": "2023UGMM048",
+        "Name": "RAVINDRA KUMAR YADAV",
+        "Cgpa": 0,
+        "Sgpa": 0,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b7df4776c530596ce60",
+        "Regn": "2023UGMM049",
+        "Name": "GAURAV KUMAR",
+        "Cgpa": 0,
+        "Sgpa": 7.7,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b81f4776c530596ce62",
+        "Regn": "2023UGMM050",
+        "Name": "PIYUSH  SHIVSHANKAR PAWAR",
+        "Cgpa": 7.79,
+        "Sgpa": 8.48,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b84f4776c530596ce64",
+        "Regn": "2023UGMM051",
+        "Name": "Adarsh Roy",
+        "Cgpa": 7.5,
+        "Sgpa": 7.5,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b87f4776c530596ce66",
+        "Regn": "2023UGMM052",
+        "Name": "REHAAN RAZA",
+        "Cgpa": 7.71,
+        "Sgpa": 8.43,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b8af4776c530596ce68",
+        "Regn": "2023UGMM053",
+        "Name": "SHUBHAM TRIPATHI",
+        "Cgpa": 7.36,
+        "Sgpa": 7.65,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b8df4776c530596ce6a",
+        "Regn": "2023UGMM054",
+        "Name": "ADITI SINHA",
+        "Cgpa": 7.44,
+        "Sgpa": 7.48,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b90f4776c530596ce6c",
+        "Regn": "2023UGMM055",
+        "Name": "NISU KUMARI",
+        "Cgpa": 8.08,
+        "Sgpa": 8.83,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b93f4776c530596ce6e",
+        "Regn": "2023UGMM056",
+        "Name": "SHUBHRANSHU KARNA",
+        "Cgpa": 6.72,
+        "Sgpa": 7.43,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b96f4776c530596ce70",
+        "Regn": "2023UGMM057",
+        "Name": "GAURAV KATARA",
+        "Cgpa": 7.3,
+        "Sgpa": 7.52,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b9af4776c530596ce72",
+        "Regn": "2023UGMM058",
+        "Name": "SRINIWAS PRASAD",
+        "Cgpa": 8.3,
+        "Sgpa": 8.87,
+        "__v": 0
+    },
+    {
+        "_id": "694f9b9df4776c530596ce74",
+        "Regn": "2023UGMM059",
+        "Name": "RANDHIR KUMAR",
+        "Cgpa": 7.56,
+        "Sgpa": 7.7,
+        "__v": 0
+    },
+    {
+        "_id": "694f9ba0f4776c530596ce76",
+        "Regn": "2023UGMM060",
+        "Name": "PARTH HANSDA",
+        "Cgpa": 0,
+        "Sgpa": 7.17,
+        "__v": 0
+    },
+    {
+        "_id": "694f9ba3f4776c530596ce78",
+        "Regn": "2023UGMM061",
+        "Name": "VINAY KUMAR KASAUDHAN",
+        "Cgpa": 7.34,
+        "Sgpa": 7.3,
+        "__v": 0
+    },
+    {
+        "_id": "694f9ba6f4776c530596ce7a",
+        "Regn": "2023UGMM062",
+        "Name": "AMIT KISKU",
+        "Cgpa": 0,
+        "Sgpa": 6.39,
+        "__v": 0
+    },
+    {
+        "_id": "694f9ba9f4776c530596ce7c",
+        "Regn": "2023UGMM063",
+        "Name": "ISHAN SINGH",
+        "Cgpa": 8.42,
+        "Sgpa": 8.96,
+        "__v": 0
+    },
+    {
+        "_id": "694f9badf4776c530596ce7e",
+        "Regn": "2023UGMM064",
+        "Name": "GOLU SAHU",
+        "Cgpa": 7.56,
+        "Sgpa": 7.91,
+        "__v": 0
+    },
+    {
+        "_id": "694f9bb0f4776c530596ce80",
+        "Regn": "2023UGMM065",
+        "Name": "PRIYA BHARTI",
+        "Cgpa": 8.2,
+        "Sgpa": 8.83,
+        "__v": 0
+    },
+    {
+        "_id": "694f9bb3f4776c530596ce82",
+        "Regn": "2023UGMM066",
+        "Name": "SUDHIR  PRASAD VERMA",
+        "Cgpa": 8.06,
+        "Sgpa": 8.39,
+        "__v": 0
+    },
+    {
+        "_id": "694f9bb6f4776c530596ce84",
+        "Regn": "2023UGMM067",
+        "Name": "ISHIKA KUMARI",
+        "Cgpa": 7.79,
+        "Sgpa": 8.43,
+        "__v": 0
+    },
+    {
+        "_id": "694f9bb9f4776c530596ce86",
+        "Regn": "2023UGMM068",
+        "Name": "MAYANK KUMAR",
+        "Cgpa": 6.56,
+        "Sgpa": 6.52,
+        "__v": 0
+    },
+    {
+        "_id": "694f9bbcf4776c530596ce88",
+        "Regn": "2023UGMM069",
+        "Name": "ADYANT MISHRA",
+        "Cgpa": 8.35,
+        "Sgpa": 8.78,
+        "__v": 0
+    },
+    {
+        "_id": "694f9bbff4776c530596ce8a",
+        "Regn": "2023UGMM070",
+        "Name": "AMAN VERMA",
+        "Cgpa": 8.11,
+        "Sgpa": 8.13,
+        "__v": 0
+    },
+    {
+        "_id": "694f9bc2f4776c530596ce8c",
+        "Regn": "2023UGMM071",
+        "Name": "SHUBHAM KUMAR",
+        "Cgpa": 7.5,
+        "Sgpa": 8.04,
+        "__v": 0
+    },
+    {
+        "_id": "694f9bc6f4776c530596ce8e",
+        "Regn": "2023UGMM072",
+        "Name": "A SRICHANDANA",
+        "Cgpa": 7.38,
+        "Sgpa": 7.96,
+        "__v": 0
+    },
+    {
+        "_id": "694f9bc9f4776c530596ce90",
+        "Regn": "2023UGMM073",
+        "Name": "PRAVEEN KUMAR DAS",
+        "Cgpa": 7.13,
+        "Sgpa": 8.04,
+        "__v": 0
+    },
+    {
+        "_id": "694f9bccf4776c530596ce92",
+        "Regn": "2023UGMM074",
+        "Name": "KHUSHI MALVIYA",
+        "Cgpa": 8.18,
+        "Sgpa": 8.3,
+        "__v": 0
+    },
+    {
+        "_id": "694f9bcff4776c530596ce94",
+        "Regn": "2023UGMM075",
+        "Name": "RAJU KUMAR",
+        "Cgpa": 7.19,
+        "Sgpa": 7.83,
+        "__v": 0
+    },
+    {
+        "_id": "694f9bd2f4776c530596ce96",
+        "Regn": "2023UGMM076",
+        "Name": "MAHENDRA MAJHI",
+        "Cgpa": 6.86,
+        "Sgpa": 7.74,
+        "__v": 0
+    },
+    {
+        "_id": "694f9bd6f4776c530596ce98",
+        "Regn": "2023UGMM077",
+        "Name": "SHALINI NATH",
+        "Cgpa": 7.62,
+        "Sgpa": 8,
+        "__v": 0
+    },
+    {
+        "_id": "694f9bd9f4776c530596ce9a",
+        "Regn": "2023UGMM078",
+        "Name": "RADHIKA SARRAF",
+        "Cgpa": 7.74,
+        "Sgpa": 8,
+        "__v": 0
+    },
+    {
+        "_id": "694f9bdcf4776c530596ce9c",
+        "Regn": "2023UGMM079",
+        "Name": "SHAYAN MATIN",
+        "Cgpa": 6.15,
+        "Sgpa": 6.7,
+        "__v": 0
+    },
+    {
+        "_id": "694f9bdff4776c530596ce9e",
+        "Regn": "2023UGMM080",
+        "Name": "ANKIT KUMAR",
+        "Cgpa": 8.01,
+        "Sgpa": 8.52,
+        "__v": 0
+    },
+    {
+        "_id": "694f9be2f4776c530596cea0",
+        "Regn": "2023UGMM081",
+        "Name": "ANAND KUMAR SAH",
+        "Cgpa": 7.09,
+        "Sgpa": 7.43,
+        "__v": 0
+    },
+    {
+        "_id": "694f9be5f4776c530596cea2",
+        "Regn": "2023UGMM082",
+        "Name": "ANKIT KUMAR",
+        "Cgpa": 8.09,
+        "Sgpa": 8.39,
+        "__v": 0
+    },
+    {
+        "_id": "694f9be8f4776c530596cea4",
+        "Regn": "2023UGMM083",
+        "Name": "AYUSH SAHU",
+        "Cgpa": 7.72,
+        "Sgpa": 8,
+        "__v": 0
+    },
+    {
+        "_id": "694f9bebf4776c530596cea6",
+        "Regn": "2023UGMM084",
+        "Name": "ASHISH KUMAR",
+        "Cgpa": 8.24,
+        "Sgpa": 8.74,
+        "__v": 0
+    },
+    {
+        "_id": "694f9beef4776c530596cea8",
+        "Regn": "2023UGMM085",
+        "Name": "SOUMYA KUMARI",
+        "Cgpa": 9.11,
+        "Sgpa": 9.39,
+        "__v": 0
+    },
+    {
+        "_id": "694f9bf1f4776c530596ceaa",
+        "Regn": "2023UGMM086",
+        "Name": "ADITYA KUMAR VERMA",
+        "Cgpa": 7.43,
+        "Sgpa": 7.39,
+        "__v": 0
+    },
+    {
+        "_id": "694f9bf4f4776c530596ceac",
+        "Regn": "2023UGMM087",
+        "Name": "ANSHU HANSDA",
+        "Cgpa": 6.52,
+        "Sgpa": 7.39,
+        "__v": 0
+    },
+    {
+        "_id": "694f9bf7f4776c530596ceae",
+        "Regn": "2023UGMM088",
+        "Name": "AMIT KUMAR",
+        "Cgpa": 7.68,
+        "Sgpa": 7.78,
+        "__v": 0
+    },
+    {
+        "_id": "694f9bfbf4776c530596ceb0",
+        "Regn": "2023UGMM089",
+        "Name": "AYUSH SINGH",
+        "Cgpa": 8.46,
+        "Sgpa": 8.43,
+        "__v": 0
+    },
+    {
+        "_id": "694f9bfef4776c530596ceb2",
+        "Regn": "2023UGMM090",
+        "Name": "BANOTH PRADEEP",
+        "Cgpa": 0,
+        "Sgpa": 7,
+        "__v": 0
+    },
+    {
+        "_id": "694f9c01f4776c530596ceb4",
+        "Regn": "2023UGMM091",
+        "Name": "ABHISHEK SHEKHAR",
+        "Cgpa": 7.79,
+        "Sgpa": 7.74,
+        "__v": 0
+    },
+    {
+        "_id": "694f9c04f4776c530596ceb6",
+        "Regn": "2023UGMM092",
+        "Name": "GAURAV KUMAR",
+        "Cgpa": 6.66,
+        "Sgpa": 7.17,
+        "__v": 0
+    },
+    {
+        "_id": "694f9c07f4776c530596ceb8",
+        "Regn": "2023UGMM093",
+        "Name": "AYUSH CHAUHAN",
+        "Cgpa": 0,
+        "Sgpa": 7.17,
+        "__v": 0
+    },
+    {
+        "_id": "694f9c08f4776c530596ceba",
+        "Regn": "2023UGMM094",
+        "Name": "",
+        "Cgpa": null,
+        "Sgpa": null,
+        "__v": 0
+    },
+    {
+        "_id": "694f9c0cf4776c530596cebc",
+        "Regn": "2023UGMM095",
+        "Name": "PARASANA SAI VENKATA PRANAI",
+        "Cgpa": 0,
+        "Sgpa": 5.65,
+        "__v": 0
+    },
+    {
+        "_id": "694f9c0ff4776c530596cebe",
+        "Regn": "2023UGMM096",
+        "Name": "ROHIT KUMAR",
+        "Cgpa": 7.16,
+        "Sgpa": 7.57,
+        "__v": 0
+    },
+    {
+        "_id": "694f9c12f4776c530596cec0",
+        "Regn": "2023UGMM097",
+        "Name": "MALOTH ABHINAY",
+        "Cgpa": 6.37,
+        "Sgpa": 7.13,
+        "__v": 0
+    },
+    {
+        "_id": "694f9c15f4776c530596cec2",
+        "Regn": "2023UGMM098",
+        "Name": "KUSUM",
+        "Cgpa": 7.7,
+        "Sgpa": 8.39,
+        "__v": 0
+    },
+    {
+        "_id": "696026977b5c2e18c825edd8",
+        "Regn": "2022UGMM001",
+        "Name": "VISHAL MAURYA",
+        "Cgpa": 7.73,
+        "Sgpa": 7.47,
+        "__v": 0
+    },
+    {
+        "_id": "6960269b7b5c2e18c825edda",
+        "Regn": "2022UGMM002",
+        "Name": "PEEYUSH RAJ",
+        "Cgpa": 6.44,
+        "Sgpa": 6.47,
+        "__v": 0
+    },
+    {
+        "_id": "6960269f7b5c2e18c825eddc",
+        "Regn": "2022UGMM003",
+        "Name": "SHRESTH KUMAR VERMA",
+        "Cgpa": 7.54,
+        "Sgpa": 7.21,
+        "__v": 0
+    },
+    {
+        "_id": "696026a37b5c2e18c825edde",
+        "Regn": "2022UGMM004",
+        "Name": "NARESH KUMAR JHA",
+        "Cgpa": 7.16,
+        "Sgpa": 6.84,
+        "__v": 0
+    },
+    {
+        "_id": "696026a77b5c2e18c825ede0",
+        "Regn": "2022UGMM005",
+        "Name": "MD MOUSHUF ALAM",
+        "Cgpa": 7.63,
+        "Sgpa": 6.84,
+        "__v": 0
+    },
+    {
+        "_id": "696026ab7b5c2e18c825ede2",
+        "Regn": "2022UGMM006",
+        "Name": "M GAURAV KUMAR",
+        "Cgpa": 7.22,
+        "Sgpa": 7.79,
+        "__v": 0
+    },
+    {
+        "_id": "696026ae7b5c2e18c825ede4",
+        "Regn": "2022UGMM007",
+        "Name": "APURBA KASHYAP",
+        "Cgpa": 8.37,
+        "Sgpa": 8.32,
+        "__v": 0
+    },
+    {
+        "_id": "696026b17b5c2e18c825ede6",
+        "Regn": "2022UGMM008",
+        "Name": "BAIBHAV MALVIYA",
+        "Cgpa": 7.8,
+        "Sgpa": 8.42,
+        "__v": 0
+    },
+    {
+        "_id": "696026b57b5c2e18c825ede8",
+        "Regn": "2022UGMM009",
+        "Name": "DODDI MOURYA",
+        "Cgpa": 7.53,
+        "Sgpa": 7.68,
+        "__v": 0
+    },
+    {
+        "_id": "696026b87b5c2e18c825edea",
+        "Regn": "2022UGMM010",
+        "Name": "APPAN DAS",
+        "Cgpa": 8.16,
+        "Sgpa": 7.84,
+        "__v": 0
+    },
+    {
+        "_id": "696026bd7b5c2e18c825edec",
+        "Regn": "2022UGMM011",
+        "Name": "NANDRAJ KUMAR",
+        "Cgpa": 7.44,
+        "Sgpa": 7.11,
+        "__v": 0
+    },
+    {
+        "_id": "696026c17b5c2e18c825edee",
+        "Regn": "2022UGMM012",
+        "Name": "ANUJ KUMAR SHARMA",
+        "Cgpa": 8.3,
+        "Sgpa": 8.84,
+        "__v": 0
+    },
+    {
+        "_id": "696026c47b5c2e18c825edf0",
+        "Regn": "2022UGMM013",
+        "Name": "PRIYANSU SUMAN",
+        "Cgpa": 8.06,
+        "Sgpa": 8.26,
+        "__v": 0
+    },
+    {
+        "_id": "696026c87b5c2e18c825edf2",
+        "Regn": "2022UGMM014",
+        "Name": "KINAGE CHETAN AVINASH",
+        "Cgpa": 7.64,
+        "Sgpa": 7.37,
+        "__v": 0
+    },
+    {
+        "_id": "696026cb7b5c2e18c825edf4",
+        "Regn": "2022UGMM015",
+        "Name": "OM DIWAN",
+        "Cgpa": 8.47,
+        "Sgpa": 7.79,
+        "__v": 0
+    },
+    {
+        "_id": "696026ce7b5c2e18c825edf6",
+        "Regn": "2022UGMM016",
+        "Name": "ADDWAI KUMAR",
+        "Cgpa": 8.01,
+        "Sgpa": 7.84,
+        "__v": 0
+    },
+    {
+        "_id": "696026d27b5c2e18c825edf8",
+        "Regn": "2022UGMM017",
+        "Name": "PRIYANSHU YADAV",
+        "Cgpa": 7.72,
+        "Sgpa": 7.68,
+        "__v": 0
+    },
+    {
+        "_id": "696026d57b5c2e18c825edfa",
+        "Regn": "2022UGMM018",
+        "Name": "ABHIJIT KUMAR YADAV",
+        "Cgpa": 7.91,
+        "Sgpa": 7.16,
+        "__v": 0
+    },
+    {
+        "_id": "696026d97b5c2e18c825edfc",
+        "Regn": "2022UGMM019",
+        "Name": "SAGNIK PATWARI",
+        "Cgpa": 7.54,
+        "Sgpa": 8,
+        "__v": 0
+    },
+    {
+        "_id": "696026dc7b5c2e18c825edfe",
+        "Regn": "2022UGMM020",
+        "Name": "ABHISHEK KUMAR",
+        "Cgpa": 7.3,
+        "Sgpa": 7.37,
+        "__v": 0
+    },
+    {
+        "_id": "696026e07b5c2e18c825ee00",
+        "Regn": "2022UGMM021",
+        "Name": "ERAM AKHTER",
+        "Cgpa": 6.2,
+        "Sgpa": 6.32,
+        "__v": 0
+    },
+    {
+        "_id": "696026e37b5c2e18c825ee02",
+        "Regn": "2022UGMM022",
+        "Name": "SWARNDEEP SAHAY",
+        "Cgpa": 8.49,
+        "Sgpa": 8,
+        "__v": 0
+    },
+    {
+        "_id": "696026e67b5c2e18c825ee04",
+        "Regn": "2022UGMM023",
+        "Name": "VINITA KUMARI",
+        "Cgpa": 7.69,
+        "Sgpa": 7.79,
+        "__v": 0
+    },
+    {
+        "_id": "696026ea7b5c2e18c825ee06",
+        "Regn": "2022UGMM024",
+        "Name": "BARUN PATRA",
+        "Cgpa": 8.99,
+        "Sgpa": 9.42,
+        "__v": 0
+    },
+    {
+        "_id": "696026ee7b5c2e18c825ee08",
+        "Regn": "2022UGMM025",
+        "Name": "PRITAM BHAGAT",
+        "Cgpa": 6.97,
+        "Sgpa": 7.26,
+        "__v": 0
+    },
+    {
+        "_id": "696026f17b5c2e18c825ee0a",
+        "Regn": "2022UGMM026",
+        "Name": "VADTHYA VARSHITH",
+        "Cgpa": 0,
+        "Sgpa": 0,
+        "__v": 0
+    },
+    {
+        "_id": "696026f57b5c2e18c825ee0c",
+        "Regn": "2022UGMM027",
+        "Name": "KRISH RATHORE",
+        "Cgpa": 7.39,
+        "Sgpa": 7.05,
+        "__v": 0
+    },
+    {
+        "_id": "696026f87b5c2e18c825ee0e",
+        "Regn": "2022UGMM028",
+        "Name": "MUSKAN KUMARI",
+        "Cgpa": 7.56,
+        "Sgpa": 7.63,
+        "__v": 0
+    },
+    {
+        "_id": "696026fc7b5c2e18c825ee10",
+        "Regn": "2022UGMM029",
+        "Name": "SANDEEP KUMAR SHAW",
+        "Cgpa": 7.87,
+        "Sgpa": 7.47,
+        "__v": 0
+    },
+    {
+        "_id": "696026ff7b5c2e18c825ee12",
+        "Regn": "2022UGMM030",
+        "Name": "ABHISHEK AGRAHARI",
+        "Cgpa": 7.98,
+        "Sgpa": 7.95,
+        "__v": 0
+    },
+    {
+        "_id": "696027037b5c2e18c825ee14",
+        "Regn": "2022UGMM031",
+        "Name": "SUMIT GUPTA",
+        "Cgpa": 7.72,
+        "Sgpa": 7.21,
+        "__v": 0
+    },
+    {
+        "_id": "696027077b5c2e18c825ee16",
+        "Regn": "2022UGMM032",
+        "Name": "YASH KUMAR SHARMA",
+        "Cgpa": 7.16,
+        "Sgpa": 7,
+        "__v": 0
+    },
+    {
+        "_id": "6960270a7b5c2e18c825ee18",
+        "Regn": "2022UGMM033",
+        "Name": "ROHIT PARASHAR",
+        "Cgpa": 7.43,
+        "Sgpa": 7.42,
+        "__v": 0
+    },
+    {
+        "_id": "6960270d7b5c2e18c825ee1a",
+        "Regn": "2022UGMM034",
+        "Name": "VIVEK SHARMA",
+        "Cgpa": 6.85,
+        "Sgpa": 7.21,
+        "__v": 0
+    },
+    {
+        "_id": "696027117b5c2e18c825ee1c",
+        "Regn": "2022UGMM035",
+        "Name": "ARINA MAITY",
+        "Cgpa": 6.82,
+        "Sgpa": 6.47,
+        "__v": 0
+    },
+    {
+        "_id": "696027147b5c2e18c825ee1e",
+        "Regn": "2022UGMM036",
+        "Name": "ADITYA SINHA",
+        "Cgpa": 7.02,
+        "Sgpa": 7.11,
+        "__v": 0
+    },
+    {
+        "_id": "696027187b5c2e18c825ee20",
+        "Regn": "2022UGMM037",
+        "Name": "PRERNA KUMARI",
+        "Cgpa": 7.89,
+        "Sgpa": 7.79,
+        "__v": 0
+    },
+    {
+        "_id": "6960271c7b5c2e18c825ee22",
+        "Regn": "2022UGMM038",
+        "Name": "KRISHNA SHUKLA",
+        "Cgpa": 6.52,
+        "Sgpa": 6.58,
+        "__v": 0
+    },
+    {
+        "_id": "6960271f7b5c2e18c825ee24",
+        "Regn": "2022UGMM039",
+        "Name": "AMAN KUMAR",
+        "Cgpa": 6.24,
+        "Sgpa": 6.84,
+        "__v": 0
+    },
+    {
+        "_id": "696027237b5c2e18c825ee26",
+        "Regn": "2022UGMM040",
+        "Name": "NISCHAY KUMAR",
+        "Cgpa": 6.64,
+        "Sgpa": 6.53,
+        "__v": 0
+    },
+    {
+        "_id": "696027277b5c2e18c825ee28",
+        "Regn": "2022UGMM041",
+        "Name": "SHREYANSH BHARDWAJ",
+        "Cgpa": 7.3,
+        "Sgpa": 7.21,
+        "__v": 0
+    },
+    {
+        "_id": "6960272a7b5c2e18c825ee2a",
+        "Regn": "2022UGMM042",
+        "Name": "ASHUTOSH KUMAR",
+        "Cgpa": 7.84,
+        "Sgpa": 7.42,
+        "__v": 0
+    },
+    {
+        "_id": "6960272e7b5c2e18c825ee2c",
+        "Regn": "2022UGMM043",
+        "Name": "NAINISH KUMAR",
+        "Cgpa": 6.74,
+        "Sgpa": 6.95,
+        "__v": 0
+    },
+    {
+        "_id": "696027327b5c2e18c825ee2e",
+        "Regn": "2022UGMM044",
+        "Name": "ADITI PRASAD",
+        "Cgpa": 7.96,
+        "Sgpa": 7.63,
+        "__v": 0
+    },
+    {
+        "_id": "696027377b5c2e18c825ee30",
+        "Regn": "2022UGMM045",
+        "Name": "KUMARI NIVEDITA MANDAL",
+        "Cgpa": 7.47,
+        "Sgpa": 7.95,
+        "__v": 0
+    },
+    {
+        "_id": "6960273b7b5c2e18c825ee32",
+        "Regn": "2022UGMM046",
+        "Name": "SAHIL SINHA",
+        "Cgpa": 7.11,
+        "Sgpa": 7.37,
+        "__v": 0
+    },
+    {
+        "_id": "6960273f7b5c2e18c825ee34",
+        "Regn": "2022UGMM047",
+        "Name": "DEVANSHU AGARWAL",
+        "Cgpa": 8.06,
+        "Sgpa": 7.53,
+        "__v": 0
+    },
+    {
+        "_id": "696027427b5c2e18c825ee36",
+        "Regn": "2022UGMM048",
+        "Name": "DISHA TIWARI",
+        "Cgpa": 8.41,
+        "Sgpa": 8.32,
+        "__v": 0
+    },
+    {
+        "_id": "696027467b5c2e18c825ee38",
+        "Regn": "2022UGMM049",
+        "Name": "SHITAL KUMARI",
+        "Cgpa": 8.11,
+        "Sgpa": 7.63,
+        "__v": 0
+    },
+    {
+        "_id": "696027497b5c2e18c825ee3a",
+        "Regn": "2022UGMM050",
+        "Name": "KRITI PANDEY",
+        "Cgpa": 8.46,
+        "Sgpa": 8.37,
+        "__v": 0
+    },
+    {
+        "_id": "6960274d7b5c2e18c825ee3c",
+        "Regn": "2022UGMM051",
+        "Name": "TANVIR ANSARI",
+        "Cgpa": 7.5,
+        "Sgpa": 7.05,
+        "__v": 0
+    },
+    {
+        "_id": "696027507b5c2e18c825ee3e",
+        "Regn": "2022UGMM052",
+        "Name": "SHASHANK GOYAL",
+        "Cgpa": 8.91,
+        "Sgpa": 9.11,
+        "__v": 0
+    },
+    {
+        "_id": "696027547b5c2e18c825ee40",
+        "Regn": "2022UGMM053",
+        "Name": "GUGULOTHU GANESH",
+        "Cgpa": 0,
+        "Sgpa": 0,
+        "__v": 0
+    },
+    {
+        "_id": "696027587b5c2e18c825ee42",
+        "Regn": "2022UGMM054",
+        "Name": "ANISH KUMAR",
+        "Cgpa": 8.09,
+        "Sgpa": 7.84,
+        "__v": 0
+    },
+    {
+        "_id": "6960275b7b5c2e18c825ee44",
+        "Regn": "2022UGMM055",
+        "Name": "PANKAJ KUMAR MAHTO",
+        "Cgpa": 6.96,
+        "Sgpa": 6.95,
+        "__v": 0
+    },
+    {
+        "_id": "6960275f7b5c2e18c825ee46",
+        "Regn": "2022UGMM056",
+        "Name": "AYUSH KUMAR",
+        "Cgpa": 7.61,
+        "Sgpa": 7.37,
+        "__v": 0
+    },
+    {
+        "_id": "696027637b5c2e18c825ee48",
+        "Regn": "2022UGMM057",
+        "Name": "PRATYUSH KAMAL",
+        "Cgpa": 7.73,
+        "Sgpa": 7.42,
+        "__v": 0
+    },
+    {
+        "_id": "696027677b5c2e18c825ee4a",
+        "Regn": "2022UGMM058",
+        "Name": "KUNAL KUMAR",
+        "Cgpa": 7.13,
+        "Sgpa": 7.05,
+        "__v": 0
+    },
+    {
+        "_id": "6960276b7b5c2e18c825ee4c",
+        "Regn": "2022UGMM059",
+        "Name": "VIKASH KUMAR",
+        "Cgpa": 7.42,
+        "Sgpa": 6.68,
+        "__v": 0
+    },
+    {
+        "_id": "6960276f7b5c2e18c825ee4e",
+        "Regn": "2022UGMM060",
+        "Name": "SHRUTI PRIYA",
+        "Cgpa": 7.41,
+        "Sgpa": 7.05,
+        "__v": 0
+    },
+    {
+        "_id": "696027727b5c2e18c825ee50",
+        "Regn": "2022UGMM061",
+        "Name": "PRAKASH RANJAN PANDEY",
+        "Cgpa": 7.59,
+        "Sgpa": 7.47,
+        "__v": 0
+    },
+    {
+        "_id": "696027767b5c2e18c825ee52",
+        "Regn": "2022UGMM062",
+        "Name": "NIKHIL YADAV",
+        "Cgpa": 0,
+        "Sgpa": 6.37,
+        "__v": 0
+    },
+    {
+        "_id": "696027797b5c2e18c825ee54",
+        "Regn": "2022UGMM063",
+        "Name": "G RISHITA",
+        "Cgpa": 7.53,
+        "Sgpa": 8,
+        "__v": 0
+    },
+    {
+        "_id": "6960277d7b5c2e18c825ee56",
+        "Regn": "2022UGMM064",
+        "Name": "ANKIT RAJ",
+        "Cgpa": 7.7,
+        "Sgpa": 6.95,
+        "__v": 0
+    },
+    {
+        "_id": "696027817b5c2e18c825ee58",
+        "Regn": "2022UGMM065",
+        "Name": "KHWAB KISHOR",
+        "Cgpa": 8.63,
+        "Sgpa": 8,
+        "__v": 0
+    },
+    {
+        "_id": "696027847b5c2e18c825ee5a",
+        "Regn": "2022UGMM066",
+        "Name": "SANATH KUMAR DEY",
+        "Cgpa": 6.1,
+        "Sgpa": 5.74,
+        "__v": 0
+    },
+    {
+        "_id": "696027887b5c2e18c825ee5c",
+        "Regn": "2022UGMM067",
+        "Name": "MONU KUMAR",
+        "Cgpa": 7.11,
+        "Sgpa": 6.74,
+        "__v": 0
+    },
+    {
+        "_id": "6960278b7b5c2e18c825ee5e",
+        "Regn": "2022UGMM068",
+        "Name": "PRINCE RISHI",
+        "Cgpa": 7.13,
+        "Sgpa": 7.84,
+        "__v": 0
+    },
+    {
+        "_id": "6960278f7b5c2e18c825ee60",
+        "Regn": "2022UGMM069",
+        "Name": "ABHISHEK GAURAV",
+        "Cgpa": 7.33,
+        "Sgpa": 7.68,
+        "__v": 0
+    },
+    {
+        "_id": "696027937b5c2e18c825ee62",
+        "Regn": "2022UGMM070",
+        "Name": "SANAYA SINGH",
+        "Cgpa": 8.07,
+        "Sgpa": 7.95,
+        "__v": 0
+    },
+    {
+        "_id": "696027967b5c2e18c825ee64",
+        "Regn": "2022UGMM071",
+        "Name": "SUMAN KUMAR MARDI",
+        "Cgpa": 6.41,
+        "Sgpa": 6.42,
+        "__v": 0
+    },
+    {
+        "_id": "6960279a7b5c2e18c825ee66",
+        "Regn": "2022UGMM072",
+        "Name": "NITISH KUMAR MAURYA",
+        "Cgpa": 7.91,
+        "Sgpa": 8.16,
+        "__v": 0
+    },
+    {
+        "_id": "69602afd3ac4d7760ba78789",
+        "Regn": "2022UGMM073",
+        "Name": "NITESH KUMAR",
+        "Cgpa": 7.47,
+        "Sgpa": 7.68,
+        "__v": 0
+    },
+    {
+        "_id": "69602b013ac4d7760ba7878b",
+        "Regn": "2022UGMM074",
+        "Name": "RAHUL KUMAR",
+        "Cgpa": 7.12,
+        "Sgpa": 7.58,
+        "__v": 0
+    },
+    {
+        "_id": "69602b043ac4d7760ba7878d",
+        "Regn": "2022UGMM075",
+        "Name": "ADITI SHARMA",
+        "Cgpa": 8.63,
+        "Sgpa": 8.89,
+        "__v": 0
+    },
+    {
+        "_id": "69602b073ac4d7760ba7878f",
+        "Regn": "2022UGMM076",
+        "Name": "RAJVIR PASWAN",
+        "Cgpa": 6.76,
+        "Sgpa": 6.89,
+        "__v": 0
+    },
+    {
+        "_id": "69602b0b3ac4d7760ba78791",
+        "Regn": "2022UGMM077",
+        "Name": "P PRANITHA",
+        "Cgpa": 6.63,
+        "Sgpa": 7.53,
+        "__v": 0
+    },
+    {
+        "_id": "69602b0e3ac4d7760ba78793",
+        "Regn": "2022UGMM078",
+        "Name": "SUMANT KUMAR SHARMA",
+        "Cgpa": 6.3,
+        "Sgpa": 6.89,
+        "__v": 0
+    },
+    {
+        "_id": "69602b123ac4d7760ba78795",
+        "Regn": "2022UGMM079",
+        "Name": "TANMAY",
+        "Cgpa": 7.49,
+        "Sgpa": 7.11,
+        "__v": 0
+    },
+    {
+        "_id": "69602b163ac4d7760ba78797",
+        "Regn": "2022UGMM080",
+        "Name": "DIVYAM KUMAR",
+        "Cgpa": 8.09,
+        "Sgpa": 7.63,
+        "__v": 0
+    },
+    {
+        "_id": "69602b193ac4d7760ba78799",
+        "Regn": "2022UGMM081",
+        "Name": "VISHAL MAURYA",
+        "Cgpa": 7.25,
+        "Sgpa": 6.95,
+        "__v": 0
+    },
+    {
+        "_id": "69602b1e3ac4d7760ba7879b",
+        "Regn": "2022UGMM082",
+        "Name": "VINITA",
+        "Cgpa": 7.68,
+        "Sgpa": 8.21,
+        "__v": 0
+    },
+    {
+        "_id": "69602b223ac4d7760ba7879d",
+        "Regn": "2022UGMM083",
+        "Name": "MAYAWATI MURMU",
+        "Cgpa": 6.17,
+        "Sgpa": 7.05,
+        "__v": 0
+    },
+    {
+        "_id": "69602b263ac4d7760ba7879f",
+        "Regn": "2022UGMM084",
+        "Name": "JUGNAK MOUNIKA",
+        "Cgpa": 5.8,
+        "Sgpa": 7.21,
+        "__v": 0
+    },
+    {
+        "_id": "69602b293ac4d7760ba787a1",
+        "Regn": "2022UGMM085",
+        "Name": "PREM KUMAR TUDU",
+        "Cgpa": 6.51,
+        "Sgpa": 6.89,
+        "__v": 0
+    },
+    {
+        "_id": "69602b2d3ac4d7760ba787a3",
+        "Regn": "2022UGMM086",
+        "Name": "SUMAN MAITY",
+        "Cgpa": 8.99,
+        "Sgpa": 9,
+        "__v": 0
+    },
+    {
+        "_id": "69602b313ac4d7760ba787a5",
+        "Regn": "2022UGMM087",
+        "Name": "ABHISHEK KUJUR",
+        "Cgpa": 5.41,
+        "Sgpa": 5.84,
+        "__v": 0
+    },
+    {
+        "_id": "69602b343ac4d7760ba787a7",
+        "Regn": "2022UGMM088",
+        "Name": "HARSH KUMAR",
+        "Cgpa": 7.52,
+        "Sgpa": 8.21,
+        "__v": 0
+    },
+    {
+        "_id": "69602b383ac4d7760ba787a9",
+        "Regn": "2022UGMM089",
+        "Name": "RAVI RAJ",
+        "Cgpa": 6.78,
+        "Sgpa": 6.79,
+        "__v": 0
+    },
+    {
+        "_id": "69602b3b3ac4d7760ba787ab",
+        "Regn": "2022UGMM090",
+        "Name": "AKASH KUMAR",
+        "Cgpa": 6.06,
+        "Sgpa": 6.47,
+        "__v": 0
+    },
+    {
+        "_id": "69602b3f3ac4d7760ba787ad",
+        "Regn": "2022UGMM091",
+        "Name": "RITESH KUMAR",
+        "Cgpa": 6.11,
+        "Sgpa": 6.16,
+        "__v": 0
+    },
+    {
+        "_id": "69602b433ac4d7760ba787af",
+        "Regn": "2022UGMM092",
+        "Name": "KHUSHI UJJWALA",
+        "Cgpa": 6.99,
+        "Sgpa": 7.95,
+        "__v": 0
+    },
+    {
+        "_id": "69602b463ac4d7760ba787b1",
+        "Regn": "2022UGMM093",
+        "Name": "AKS JAISWAL",
+        "Cgpa": 6.78,
+        "Sgpa": 7.53,
+        "__v": 0
+    },
+    {
+        "_id": "69602b4a3ac4d7760ba787b3",
+        "Regn": "2022UGMM094",
+        "Name": "GAURAV KUMAR",
+        "Cgpa": 7.35,
+        "Sgpa": 7.21,
+        "__v": 0
+    },
+    {
+        "_id": "69602b4e3ac4d7760ba787b5",
+        "Regn": "2022UGMM095",
+        "Name": "VAJRAPU LAKSHMI NARASIMHA",
+        "Cgpa": 6.59,
+        "Sgpa": 7.42,
+        "__v": 0
+    },
+    {
+        "_id": "69602b513ac4d7760ba787b7",
+        "Regn": "2022UGMM096",
+        "Name": "DEEPAK KUMAR DAS",
+        "Cgpa": 0,
+        "Sgpa": 5.79,
+        "__v": 0
+    },
+    {
+        "_id": "69602b553ac4d7760ba787b9",
+        "Regn": "2022UGMM097",
+        "Name": "PREM KUMAR",
+        "Cgpa": 7.75,
+        "Sgpa": 7.53,
+        "__v": 0
+    },
+    {
+        "_id": "69602b593ac4d7760ba787bb",
+        "Regn": "2022UGMM098",
+        "Name": "MALOTH SUDHAKAR",
+        "Cgpa": 6.58,
+        "Sgpa": 7.05,
+        "__v": 0
+    },
+    {
+        "_id": "69602b5d3ac4d7760ba787bd",
+        "Regn": "2022UGMM099",
+        "Name": "AKSHAT SONKER",
+        "Cgpa": 6.53,
+        "Sgpa": 6.68,
+        "__v": 0
+    },
+    {
+        "_id": "69602ccd3ac4d7760ba78883",
+        "Regn": "2024UGMM001",
+        "Name": "SANYAM RAJ",
+        "Cgpa": 7.06,
+        "Sgpa": 7,
+        "__v": 0
+    },
+    {
+        "_id": "69602cd13ac4d7760ba78885",
+        "Regn": "2024UGMM002",
+        "Name": "PARTH ROY",
+        "Cgpa": 8.03,
+        "Sgpa": 8.29,
+        "__v": 0
+    },
+    {
+        "_id": "69602cd53ac4d7760ba78887",
+        "Regn": "2024UGMM003",
+        "Name": "AMAN KUMAR DAS",
+        "Cgpa": 6.93,
+        "Sgpa": 6.92,
+        "__v": 0
+    },
+    {
+        "_id": "69602cd93ac4d7760ba78889",
+        "Regn": "2024UGMM004",
+        "Name": "AYUSH JHA",
+        "Cgpa": 0,
+        "Sgpa": 7.04,
+        "__v": 0
+    },
+    {
+        "_id": "69602cdc3ac4d7760ba7888b",
+        "Regn": "2024UGMM005",
+        "Name": "UTKARSH JHA",
+        "Cgpa": 8.91,
+        "Sgpa": 9,
+        "__v": 0
+    },
+    {
+        "_id": "69602ce03ac4d7760ba7888d",
+        "Regn": "2024UGMM006",
+        "Name": "ADARSH KUMAR SINGH",
+        "Cgpa": 8.83,
+        "Sgpa": 9.29,
+        "__v": 0
+    },
+    {
+        "_id": "69602ce43ac4d7760ba7888f",
+        "Regn": "2024UGMM007",
+        "Name": "SATYAM SONI",
+        "Cgpa": 8.26,
+        "Sgpa": 7.96,
+        "__v": 0
+    },
+    {
+        "_id": "69602ce73ac4d7760ba78891",
+        "Regn": "2024UGMM008",
+        "Name": "ATUL MUNDA",
+        "Cgpa": 7.06,
+        "Sgpa": 6.88,
+        "__v": 0
+    },
+    {
+        "_id": "69602ceb3ac4d7760ba78893",
+        "Regn": "2024UGMM009",
+        "Name": "RITU RAJ",
+        "Cgpa": 7.5,
+        "Sgpa": 7.38,
+        "__v": 0
+    },
+    {
+        "_id": "69602cee3ac4d7760ba78895",
+        "Regn": "2024UGMM010",
+        "Name": "AYUSH KUMAR",
+        "Cgpa": 8.54,
+        "Sgpa": 8.92,
+        "__v": 0
+    },
+    {
+        "_id": "69602cf23ac4d7760ba78897",
+        "Regn": "2024UGMM011",
+        "Name": "KRITIKA WAGISH",
+        "Cgpa": 7.39,
+        "Sgpa": 7.54,
+        "__v": 0
+    },
+    {
+        "_id": "69602cf63ac4d7760ba78899",
+        "Regn": "2024UGMM012",
+        "Name": "DHONI AGARAWAL",
+        "Cgpa": 8.91,
+        "Sgpa": 9.13,
+        "__v": 0
+    },
+    {
+        "_id": "69602cf83ac4d7760ba7889b",
+        "Regn": "2024UGMM013",
+        "Name": "",
+        "Cgpa": null,
+        "Sgpa": null,
+        "__v": 0
+    },
+    {
+        "_id": "69602cfb3ac4d7760ba7889d",
+        "Regn": "2024UGMM014",
+        "Name": "SRISHTY APURWA SOREN",
+        "Cgpa": 6.93,
+        "Sgpa": 7.33,
+        "__v": 0
+    },
+    {
+        "_id": "69602cff3ac4d7760ba7889f",
+        "Regn": "2024UGMM015",
+        "Name": "DIPTI PAL",
+        "Cgpa": 8.26,
+        "Sgpa": 8.58,
+        "__v": 0
+    },
+    {
+        "_id": "69602d033ac4d7760ba788a1",
+        "Regn": "2024UGMM016",
+        "Name": "ROHIT KUMAR KAR",
+        "Cgpa": 7.09,
+        "Sgpa": 7.29,
+        "__v": 0
+    },
+    {
+        "_id": "69602d073ac4d7760ba788a3",
+        "Regn": "2024UGMM017",
+        "Name": "AMAN KUMAR",
+        "Cgpa": 8.41,
+        "Sgpa": 8,
+        "__v": 0
+    },
+    {
+        "_id": "69602d0b3ac4d7760ba788a5",
+        "Regn": "2024UGMM018",
+        "Name": "THAMMISETTY CHANDRA KARTHIK",
+        "Cgpa": 6.63,
+        "Sgpa": 6.63,
+        "__v": 0
+    },
+    {
+        "_id": "69602d0e3ac4d7760ba788a7",
+        "Regn": "2024UGMM019",
+        "Name": "LOKESH KUMAR",
+        "Cgpa": 8.33,
+        "Sgpa": 8.33,
+        "__v": 0
+    },
+    {
+        "_id": "69602d123ac4d7760ba788a9",
+        "Regn": "2024UGMM020",
+        "Name": "SUJAL KUMAR SINHA",
+        "Cgpa": 7.73,
+        "Sgpa": 7.96,
+        "__v": 0
+    },
+    {
+        "_id": "69602d163ac4d7760ba788ab",
+        "Regn": "2024UGMM021",
+        "Name": "VANYA RAJEEV SHRIVASTAVA",
+        "Cgpa": 0,
+        "Sgpa": 8.46,
+        "__v": 0
+    },
+    {
+        "_id": "69602d1a3ac4d7760ba788ad",
+        "Regn": "2024UGMM022",
+        "Name": "SOHAN",
+        "Cgpa": 7.04,
+        "Sgpa": 6.63,
+        "__v": 0
+    },
+    {
+        "_id": "69602d1d3ac4d7760ba788af",
+        "Regn": "2024UGMM023",
+        "Name": "ATHARV JAISWAL",
+        "Cgpa": 8.61,
+        "Sgpa": 8.71,
+        "__v": 0
+    },
+    {
+        "_id": "69602d1f3ac4d7760ba788b1",
+        "Regn": "2024UGMM024",
+        "Name": "",
+        "Cgpa": null,
+        "Sgpa": null,
+        "__v": 0
+    },
+    {
+        "_id": "69602d213ac4d7760ba788b3",
+        "Regn": "2024UGMM025",
+        "Name": "",
+        "Cgpa": null,
+        "Sgpa": null,
+        "__v": 0
+    },
+    {
+        "_id": "69602d253ac4d7760ba788b5",
+        "Regn": "2024UGMM026",
+        "Name": "SACHIN KUMAR",
+        "Cgpa": 0,
+        "Sgpa": 8.75,
+        "__v": 0
+    },
+    {
+        "_id": "69602d293ac4d7760ba788b7",
+        "Regn": "2024UGMM027",
+        "Name": "AKSHIT AGARWAL",
+        "Cgpa": 9.44,
+        "Sgpa": 9.46,
+        "__v": 0
+    },
+    {
+        "_id": "69602d2d3ac4d7760ba788b9",
+        "Regn": "2024UGMM028",
+        "Name": "VALLAMKONDA SAI HARITH",
+        "Cgpa": 8.69,
+        "Sgpa": 8.88,
+        "__v": 0
+    },
+    {
+        "_id": "69602d313ac4d7760ba788bb",
+        "Regn": "2024UGMM029",
+        "Name": "SOURAV KUMAR PANDEY",
+        "Cgpa": 8.17,
+        "Sgpa": 8.42,
+        "__v": 0
+    },
+    {
+        "_id": "69602d353ac4d7760ba788bd",
+        "Regn": "2024UGMM030",
+        "Name": "PIYUSH KUMAR",
+        "Cgpa": 8.07,
+        "Sgpa": 8.08,
+        "__v": 0
+    },
+    {
+        "_id": "69602d383ac4d7760ba788bf",
+        "Regn": "2024UGMM031",
+        "Name": "PARAS SHAH",
+        "Cgpa": 7.36,
+        "Sgpa": 7.04,
+        "__v": 0
+    },
+    {
+        "_id": "69602d3c3ac4d7760ba788c1",
+        "Regn": "2024UGMM032",
+        "Name": "HIMANSHU KUMAR",
+        "Cgpa": 7.86,
+        "Sgpa": 7.88,
+        "__v": 0
+    },
+    {
+        "_id": "69602d3f3ac4d7760ba788c3",
+        "Regn": "2024UGMM033",
+        "Name": "RINI BHOWMIK",
+        "Cgpa": 8.51,
+        "Sgpa": 8.5,
+        "__v": 0
+    },
+    {
+        "_id": "69602d433ac4d7760ba788c5",
+        "Regn": "2024UGMM034",
+        "Name": "ABHYUDAY ANAND",
+        "Cgpa": 8.81,
+        "Sgpa": 8.88,
+        "__v": 0
+    },
+    {
+        "_id": "69602d473ac4d7760ba788c7",
+        "Regn": "2024UGMM035",
+        "Name": "BANDANA SINGH",
+        "Cgpa": 8.31,
+        "Sgpa": 8.17,
+        "__v": 0
+    },
+    {
+        "_id": "69602d4b3ac4d7760ba788c9",
+        "Regn": "2024UGMM036",
+        "Name": "PAWAN GUPTA",
+        "Cgpa": 8.7,
+        "Sgpa": 8.63,
+        "__v": 0
+    },
+    {
+        "_id": "69602d4e3ac4d7760ba788cb",
+        "Regn": "2024UGMM037",
+        "Name": "SUTHAR ASHWINKUMAR NARAYAN",
+        "Cgpa": 9.07,
+        "Sgpa": 8.96,
+        "__v": 0
+    },
+    {
+        "_id": "69602d523ac4d7760ba788cd",
+        "Regn": "2024UGMM038",
+        "Name": "MADHUSUDAN KUMAR",
+        "Cgpa": 6.47,
+        "Sgpa": 6.33,
+        "__v": 0
+    },
+    {
+        "_id": "69602d563ac4d7760ba788cf",
+        "Regn": "2024UGMM039",
+        "Name": "PAYAL KUMARI",
+        "Cgpa": 7.04,
+        "Sgpa": 7.29,
+        "__v": 0
+    },
+    {
+        "_id": "69602d5a3ac4d7760ba788d1",
+        "Regn": "2024UGMM040",
+        "Name": "AKHIL KUMAR",
+        "Cgpa": 8.27,
+        "Sgpa": 8.25,
+        "__v": 0
+    },
+    {
+        "_id": "69602d5d3ac4d7760ba788d3",
+        "Regn": "2024UGMM041",
+        "Name": "SUDHA HARSHINI",
+        "Cgpa": 8.34,
+        "Sgpa": 9.13,
+        "__v": 0
+    },
+    {
+        "_id": "69602d613ac4d7760ba788d5",
+        "Regn": "2024UGMM042",
+        "Name": "SONAKSHI KUMARI",
+        "Cgpa": 8.67,
+        "Sgpa": 8.29,
+        "__v": 0
+    },
+    {
+        "_id": "69602d643ac4d7760ba788d7",
+        "Regn": "2024UGMM043",
+        "Name": "VIVEK KUMAR MAHATHA",
+        "Cgpa": 8.71,
+        "Sgpa": 8.75,
+        "__v": 0
+    },
+    {
+        "_id": "69602d683ac4d7760ba788d9",
+        "Regn": "2024UGMM044",
+        "Name": "DHIRAJ ORAON",
+        "Cgpa": 0,
+        "Sgpa": 0,
+        "__v": 0
+    },
+    {
+        "_id": "69602d6c3ac4d7760ba788db",
+        "Regn": "2024UGMM045",
+        "Name": "NITISH KUMAR",
+        "Cgpa": 7.7,
+        "Sgpa": 7.33,
+        "__v": 0
+    },
+    {
+        "_id": "69602d6f3ac4d7760ba788dd",
+        "Regn": "2024UGMM046",
+        "Name": "AYAN GHOSH",
+        "Cgpa": 7.03,
+        "Sgpa": 6.96,
+        "__v": 0
+    },
+    {
+        "_id": "69602d743ac4d7760ba788df",
+        "Regn": "2024UGMM047",
+        "Name": "VINIT SINGH",
+        "Cgpa": 7.81,
+        "Sgpa": 7.29,
+        "__v": 0
+    },
+    {
+        "_id": "69602d783ac4d7760ba788e1",
+        "Regn": "2024UGMM048",
+        "Name": "NIRANJANA R L",
+        "Cgpa": 0,
+        "Sgpa": 0,
+        "__v": 0
+    },
+    {
+        "_id": "69602d7b3ac4d7760ba788e3",
+        "Regn": "2024UGMM049",
+        "Name": "KUMAR SAMBHAV ARYAN",
+        "Cgpa": 8.34,
+        "Sgpa": 7.75,
+        "__v": 0
+    },
+    {
+        "_id": "69602d7f3ac4d7760ba788e5",
+        "Regn": "2024UGMM050",
+        "Name": "ZAARA PERVEEN",
+        "Cgpa": 7.8,
+        "Sgpa": 7.25,
+        "__v": 0
+    },
+    {
+        "_id": "69602d833ac4d7760ba788e7",
+        "Regn": "2024UGMM051",
+        "Name": "PRIYANSHU KUMAR SINGH",
+        "Cgpa": 8.71,
+        "Sgpa": 8.54,
+        "__v": 0
+    },
+    {
+        "_id": "69602d863ac4d7760ba788e9",
+        "Regn": "2024UGMM052",
+        "Name": "KOUSTAV CHATTERJEE",
+        "Cgpa": 0,
+        "Sgpa": 7.88,
+        "__v": 0
+    },
+    {
+        "_id": "69602d8a3ac4d7760ba788eb",
+        "Regn": "2024UGMM053",
+        "Name": "ANJU KUMARI",
+        "Cgpa": 7.97,
+        "Sgpa": 7.13,
+        "__v": 0
+    },
+    {
+        "_id": "69602d8d3ac4d7760ba788ed",
+        "Regn": "2024UGMM054",
+        "Name": "SAGAR RAVIDAS",
+        "Cgpa": 7.57,
+        "Sgpa": 7.83,
+        "__v": 0
+    },
+    {
+        "_id": "69602d913ac4d7760ba788ef",
+        "Regn": "2024UGMM055",
+        "Name": "ARCHANA KUMARI",
+        "Cgpa": 8.16,
+        "Sgpa": 8.54,
+        "__v": 0
+    },
+    {
+        "_id": "69602d953ac4d7760ba788f1",
+        "Regn": "2024UGMM056",
+        "Name": "ANISH SINGH",
+        "Cgpa": 8.51,
+        "Sgpa": 8.54,
+        "__v": 0
+    },
+    {
+        "_id": "69602d993ac4d7760ba788f3",
+        "Regn": "2024UGMM057",
+        "Name": "ADITYA SINGH",
+        "Cgpa": 8.79,
+        "Sgpa": 8.92,
+        "__v": 0
+    },
+    {
+        "_id": "69602d9d3ac4d7760ba788f5",
+        "Regn": "2024UGMM058",
+        "Name": "PRAVESH",
+        "Cgpa": 7.81,
+        "Sgpa": 8.13,
+        "__v": 0
+    },
+    {
+        "_id": "69602da03ac4d7760ba788f7",
+        "Regn": "2024UGMM059",
+        "Name": "HARSHIT BARNWAL",
+        "Cgpa": 8.41,
+        "Sgpa": 8.46,
+        "__v": 0
+    },
+    {
+        "_id": "69602da43ac4d7760ba788f9",
+        "Regn": "2024UGMM060",
+        "Name": "VISHNU VIVEK",
+        "Cgpa": 0,
+        "Sgpa": 6.79,
+        "__v": 0
+    },
+    {
+        "_id": "69602da83ac4d7760ba788fb",
+        "Regn": "2024UGMM061",
+        "Name": "RAJ KUMAR SAW",
+        "Cgpa": 7.71,
+        "Sgpa": 8.17,
+        "__v": 0
+    },
+    {
+        "_id": "69602dab3ac4d7760ba788fd",
+        "Regn": "2024UGMM062",
+        "Name": "RICHA KUMARI",
+        "Cgpa": 8.36,
+        "Sgpa": 8.46,
+        "__v": 0
+    },
+    {
+        "_id": "69602daf3ac4d7760ba788ff",
+        "Regn": "2024UGMM063",
+        "Name": "ADITYA SINGH",
+        "Cgpa": 7.37,
+        "Sgpa": 7.75,
+        "__v": 0
+    },
+    {
+        "_id": "69602db23ac4d7760ba78901",
+        "Regn": "2024UGMM064",
+        "Name": "VAIBHAV SRIVASTAVA",
+        "Cgpa": 7.59,
+        "Sgpa": 7.63,
+        "__v": 0
+    },
+    {
+        "_id": "69602db63ac4d7760ba78903",
+        "Regn": "2024UGMM065",
+        "Name": "SONALI KUMARI SRIVASTAVA",
+        "Cgpa": 8.27,
+        "Sgpa": 8.5,
+        "__v": 0
+    },
+    {
+        "_id": "69602dba3ac4d7760ba78905",
+        "Regn": "2024UGMM066",
+        "Name": "MADAVI YASHASHWINI",
+        "Cgpa": 6.51,
+        "Sgpa": 6.88,
+        "__v": 0
+    },
+    {
+        "_id": "69602dbe3ac4d7760ba78907",
+        "Regn": "2024UGMM067",
+        "Name": "ANSH KUMAR",
+        "Cgpa": 6.6,
+        "Sgpa": 6.42,
+        "__v": 0
+    },
+    {
+        "_id": "69602dc23ac4d7760ba78909",
+        "Regn": "2024UGMM068",
+        "Name": "AKASH KUMAR",
+        "Cgpa": 7.66,
+        "Sgpa": 7.83,
+        "__v": 0
+    },
+    {
+        "_id": "69602dc53ac4d7760ba7890b",
+        "Regn": "2024UGMM069",
+        "Name": "SHUBHAM SHARMA",
+        "Cgpa": 8.53,
+        "Sgpa": 8.5,
+        "__v": 0
+    },
+    {
+        "_id": "69602dc93ac4d7760ba7890d",
+        "Regn": "2024UGMM070",
+        "Name": "ABHISHEK KUMAR SAW",
+        "Cgpa": 6.43,
+        "Sgpa": 6.75,
+        "__v": 0
+    },
+    {
+        "_id": "69602dcd3ac4d7760ba7890f",
+        "Regn": "2024UGMM071",
+        "Name": "GOPAL",
+        "Cgpa": 6.97,
+        "Sgpa": 7.21,
+        "__v": 0
+    },
+    {
+        "_id": "69602dd13ac4d7760ba78911",
+        "Regn": "2024UGMM072",
+        "Name": "SANCHARI SHIT",
+        "Cgpa": 7.81,
+        "Sgpa": 7.88,
+        "__v": 0
+    },
+    {
+        "_id": "69602dd43ac4d7760ba78913",
+        "Regn": "2024UGMM073",
+        "Name": "SHREYA MAURYA",
+        "Cgpa": 7.86,
+        "Sgpa": 8.21,
+        "__v": 0
+    },
+    {
+        "_id": "69602dd83ac4d7760ba78915",
+        "Regn": "2024UGMM074",
+        "Name": "RAJ KISHORE MARANDI",
+        "Cgpa": 6.26,
+        "Sgpa": 6,
+        "__v": 0
+    },
+    {
+        "_id": "69602ddc3ac4d7760ba78917",
+        "Regn": "2024UGMM075",
+        "Name": "NIKHIL YADAV",
+        "Cgpa": 7,
+        "Sgpa": 6.96,
+        "__v": 0
+    },
+    {
+        "_id": "69602ddf3ac4d7760ba78919",
+        "Regn": "2024UGMM076",
+        "Name": "NITIN KUMAR",
+        "Cgpa": 7.61,
+        "Sgpa": 7.67,
+        "__v": 0
+    },
+    {
+        "_id": "69602de33ac4d7760ba7891b",
+        "Regn": "2024UGMM077",
+        "Name": "ADITYA RAJ",
+        "Cgpa": 7.91,
+        "Sgpa": 8.67,
+        "__v": 0
+    },
+    {
+        "_id": "69602de73ac4d7760ba7891d",
+        "Regn": "2024UGMM078",
+        "Name": "AATISH GAURAV",
+        "Cgpa": 8.47,
+        "Sgpa": 8.67,
+        "__v": 0
+    },
+    {
+        "_id": "69602dea3ac4d7760ba7891f",
+        "Regn": "2024UGMM079",
+        "Name": "PIYUSH KUMAR ANAND",
+        "Cgpa": 7.76,
+        "Sgpa": 7.96,
+        "__v": 0
+    },
+    {
+        "_id": "69602dee3ac4d7760ba78921",
+        "Regn": "2024UGMM080",
+        "Name": "UTSAV KUMAR",
+        "Cgpa": 7.91,
+        "Sgpa": 8.13,
+        "__v": 0
+    },
+    {
+        "_id": "69602df23ac4d7760ba78923",
+        "Regn": "2024UGMM081",
+        "Name": "ANKIT SINGH",
+        "Cgpa": 7.6,
+        "Sgpa": 7.13,
+        "__v": 0
+    },
+    {
+        "_id": "69602df53ac4d7760ba78925",
+        "Regn": "2024UGMM082",
+        "Name": "MANISH KUMAR",
+        "Cgpa": 7.71,
+        "Sgpa": 8.13,
+        "__v": 0
+    },
+    {
+        "_id": "69602df93ac4d7760ba78927",
+        "Regn": "2024UGMM083",
+        "Name": "MUDAVATH SAITEJA",
+        "Cgpa": 6.29,
+        "Sgpa": 6.58,
+        "__v": 0
+    },
+    {
+        "_id": "69602dfd3ac4d7760ba78929",
+        "Regn": "2024UGMM084",
+        "Name": "BHUKYA RAJENDAR",
+        "Cgpa": 6.43,
+        "Sgpa": 6.29,
+        "__v": 0
+    },
+    {
+        "_id": "69602e003ac4d7760ba7892b",
+        "Regn": "2024UGMM085",
+        "Name": "SWETA KUMARI",
+        "Cgpa": 6.71,
+        "Sgpa": 6.79,
+        "__v": 0
+    },
+    {
+        "_id": "69602e043ac4d7760ba7892d",
+        "Regn": "2024UGMM086",
+        "Name": "NEETU SINGH",
+        "Cgpa": 8.13,
+        "Sgpa": 7.88,
+        "__v": 0
+    },
+    {
+        "_id": "69602e073ac4d7760ba7892f",
+        "Regn": "2024UGMM087",
+        "Name": "ADITYA KUMAR RAVI",
+        "Cgpa": 7.21,
+        "Sgpa": 7.17,
+        "__v": 0
+    },
+    {
+        "_id": "69602e0b3ac4d7760ba78931",
+        "Regn": "2024UGMM088",
+        "Name": "ADITYA KUMAR",
+        "Cgpa": 7.44,
+        "Sgpa": 7.29,
+        "__v": 0
+    },
+    {
+        "_id": "69602e0f3ac4d7760ba78933",
+        "Regn": "2024UGMM089",
+        "Name": "NILANJAN MAZUMDER",
+        "Cgpa": 7.74,
+        "Sgpa": 8.17,
+        "__v": 0
+    },
+    {
+        "_id": "69602e123ac4d7760ba78935",
+        "Regn": "2024UGMM090",
+        "Name": "HARSH",
+        "Cgpa": 7.97,
+        "Sgpa": 8.25,
+        "__v": 0
+    },
+    {
+        "_id": "69602e163ac4d7760ba78937",
+        "Regn": "2024UGMM091",
+        "Name": "ANURAG SINGH",
+        "Cgpa": 8.4,
+        "Sgpa": 8.79,
+        "__v": 0
+    },
+    {
+        "_id": "69602e193ac4d7760ba78939",
+        "Regn": "2024UGMM092",
+        "Name": "NUNSAVATH SRIKANTH",
+        "Cgpa": 0,
+        "Sgpa": 5.75,
+        "__v": 0
+    },
+    {
+        "_id": "69602e1d3ac4d7760ba7893b",
+        "Regn": "2024UGMM093",
+        "Name": "KAPIL JAT",
+        "Cgpa": 8,
+        "Sgpa": 8.38,
+        "__v": 0
+    },
+    {
+        "_id": "69602e213ac4d7760ba7893d",
+        "Regn": "2024UGMM094",
+        "Name": "DEEPAK KUMAR",
+        "Cgpa": 8.8,
+        "Sgpa": 9.17,
+        "__v": 0
+    },
+    {
+        "_id": "69602e243ac4d7760ba7893f",
+        "Regn": "2024UGMM095",
+        "Name": "DEBJIT GORAI",
+        "Cgpa": 7.13,
+        "Sgpa": 7.17,
+        "__v": 0
+    },
+    {
+        "_id": "69602e283ac4d7760ba78941",
+        "Regn": "2024UGMM096",
+        "Name": "SUMAN DAS",
+        "Cgpa": 7.2,
+        "Sgpa": 7.29,
+        "__v": 0
+    },
+    {
+        "_id": "69602e2c3ac4d7760ba78943",
+        "Regn": "2024UGMM097",
+        "Name": "AMIT MAHTO",
+        "Cgpa": 7.33,
+        "Sgpa": 7.42,
+        "__v": 0
     }
 ]
