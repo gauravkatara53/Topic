@@ -16,7 +16,7 @@ export default async function CalendarPage() {
     });
 
     return (
-        <div className="space-y-6 max-w-6xl mx-auto h-[calc(100vh-120px)] flex flex-col pb-10">
+        <div className="space-y-6 max-w-6xl mx-auto h-[calc(100vh-120px)] min-h-[500px] flex flex-col pb-10">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
                 <div className="space-y-1">
                     <h2 className="text-3xl font-bold tracking-tight text-slate-800">College Calendar</h2>

@@ -105,17 +105,19 @@ export default function InteractiveCalendar({ initialEvents }: { initialEvents: 
 
     return (
         <div className="h-full w-full custom-calendar-wrapper flex flex-col space-y-4">
-            <div className="flex justify-between items-center relative z-10 px-2 pt-2">
-                <div className="flex gap-4 items-center pl-2">
-                    <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-green-500" /><span className="text-xs text-slate-500 font-medium">Holiday</span></div>
-                    <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-red-500" /><span className="text-xs text-slate-500 font-medium">Exam</span></div>
-                    <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-orange-500" /><span className="text-xs text-slate-500 font-medium">Academic</span></div>
-                    <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-purple-500" /><span className="text-xs text-slate-500 font-medium">Event</span></div>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center relative z-10 px-2 pt-2 gap-4">
+                <div className="flex flex-wrap gap-x-4 gap-y-2 items-center pl-2">
+                    <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-green-500" /><span className="text-xs text-slate-500 font-medium whitespace-nowrap">Holiday</span></div>
+                    <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-red-500" /><span className="text-xs text-slate-500 font-medium whitespace-nowrap">Exam</span></div>
+                    <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-orange-500" /><span className="text-xs text-slate-500 font-medium whitespace-nowrap">Academic</span></div>
+                    <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-purple-500" /><span className="text-xs text-slate-500 font-medium whitespace-nowrap">Event</span></div>
                 </div>
-                <AddEventDialog onEventAdded={handleEventAdded} />
+                <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
+                    <AddEventDialog onEventAdded={handleEventAdded} />
+                </div>
             </div>
 
-            <div className="flex-1 min-h-0 relative">
+            <div className={`flex-1 min-h-[400px] relative ${selectedDate && selectedDateEvents.length > 0 ? 'hidden sm:block' : 'block'}`}>
                 <Calendar
                     localizer={localizer}
                     events={events}
@@ -140,12 +142,20 @@ export default function InteractiveCalendar({ initialEvents }: { initialEvents: 
 
             {/* Event Details Panel */}
             {selectedDate && selectedDateEvents.length > 0 && (
-                <div className="shrink-0 max-h-48 bg-slate-50 border border-slate-200 rounded-xl p-5 overflow-y-auto">
-                    <div className="flex items-center gap-2 mb-4 pb-2 border-b border-slate-200">
-                        <CalendarIcon className="h-5 w-5 text-slate-400" />
-                        <h3 className="font-semibold text-slate-700">
-                            {format(selectedDate, "EEEE, MMMM d, yyyy")}
-                        </h3>
+                <div className="shrink-0 max-h-[60vh] sm:max-h-48 bg-slate-50 border border-slate-200 rounded-xl p-5 overflow-y-auto">
+                    <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-200">
+                        <div className="flex items-center gap-2">
+                            <CalendarIcon className="h-5 w-5 text-slate-400" />
+                            <h3 className="font-semibold text-slate-700">
+                                {format(selectedDate, "EEEE, MMMM d, yyyy")}
+                            </h3>
+                        </div>
+                        <button 
+                            onClick={() => setSelectedDate(null)}
+                            className="text-xs font-semibold text-primary sm:hidden bg-teal-50 px-3 py-1 rounded-full"
+                        >
+                            Back to Calendar
+                        </button>
                     </div>
 
                     <div className="space-y-3">

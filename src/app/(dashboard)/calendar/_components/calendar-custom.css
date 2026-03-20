@@ -4,10 +4,33 @@
   font-family: inherit;
 }
 
+.custom-calendar-wrapper .rbc-toolbar {
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 640px) {
+  .custom-calendar-wrapper .rbc-toolbar {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.custom-calendar-wrapper .rbc-toolbar-label {
+  font-weight: 700;
+  font-size: 1.1em;
+  color: #1e293b;
+}
+
 .custom-calendar-wrapper .rbc-toolbar button {
-  border-radius: 6px;
-  color: hsl(var(--foreground));
-  border-color: hsl(var(--border));
+  border-radius: 8px;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  padding: 6px 12px;
+  background-color: white;
+  transition: all 0.2s;
 }
 
 .custom-calendar-wrapper .rbc-toolbar button.rbc-active {
@@ -29,6 +52,20 @@
   background-color: white;
   border-radius: 12px;
   overflow: hidden;
+  min-width: 300px; /* Prevent extreme squeezing */
+}
+
+@media (max-width: 639px) {
+  .custom-calendar-wrapper .rbc-header {
+    padding: 4px 0;
+    font-size: 0.75rem;
+  }
+  
+  .custom-calendar-wrapper .rbc-date-cell {
+    padding-right: 4px;
+    padding-top: 2px;
+    font-size: 0.85rem;
+  }
 }
 
 .custom-calendar-wrapper .rbc-agenda-view table.rbc-agenda-table {
