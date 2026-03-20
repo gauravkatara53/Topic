@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUser, useClerk } from "@clerk/nextjs";
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import {
     LayoutDashboard,
@@ -70,51 +70,61 @@ export function Sidebar() {
         }
     }, [user]);
 
-    let branch = dbUser?.branch || null;
-    let semester = dbUser?.semester || null;
+    const { branch, semester, subText } = useMemo(() => {
+        let b = dbUser?.branch || null;
+        let s = dbUser?.semester || null;
 
-    if (dbUser?.rollNumber && dbUser.rollNumber.length >= 8) {
-        const rollDisplay = dbUser.rollNumber.toUpperCase();
-        const admissionYear = parseInt(rollDisplay.substring(0, 4), 10);
-        const bCode = rollDisplay.substring(6, 8);
+        if (dbUser?.rollNumber && dbUser.rollNumber.length >= 8) {
+            const rollDisplay = dbUser.rollNumber.toUpperCase();
+            const admissionYear = parseInt(rollDisplay.substring(0, 4), 10);
+            const bCode = rollDisplay.substring(6, 8);
 
-        const branchMap: Record<string, string> = {
-            CS: "CSE",
-            EC: "ECE",
-            EE: "EE",
-            CE: "CE",
-            ME: "ME",
-            MM: "MME",
-            PI: "PIE",
-            EM: "ECM"
-        };
+            const branchMap: Record<string, string> = {
+                CS: "CSE",
+                EC: "ECE",
+                EE: "EE",
+                CE: "CE",
+                ME: "ME",
+                MM: "MME",
+                PI: "PIE",
+                EM: "ECM"
+            };
 
-        if (branchMap[bCode]) {
-            branch = branchMap[bCode];
-        }
-
-        if (!isNaN(admissionYear)) {
-            const currentYear = new Date().getFullYear();
-            const currentMonth = new Date().getMonth();
-            const yearsDifference = currentYear - admissionYear;
-            if (currentMonth < 6) {
-                semester = yearsDifference * 2;
-            } else {
-                semester = yearsDifference * 2 + 1;
+            if (branchMap[bCode]) {
+                b = branchMap[bCode];
             }
-            semester = Math.max(1, Math.min(8, semester));
+
+            if (!isNaN(admissionYear)) {
+                const currentYear = new Date().getFullYear();
+                const currentMonth = new Date().getMonth();
+                const yearsDifference = currentYear - admissionYear;
+                if (currentMonth < 6) {
+                    s = yearsDifference * 2;
+                } else {
+                    s = yearsDifference * 2 + 1;
+                }
+                s = Math.max(1, Math.min(8, s));
+            }
         }
-    }
 
-    let subText = null;
-    if (branch && semester) {
-        subText = `${branch} · ${semester}${semester === 1 || semester === 2 ? 'st' : semester === 3 || semester === 4 ? 'nd' : semester === 5 || semester === 6 ? 'rd' : 'th'} Sem`;
-    } else if (branch) {
-        subText = branch;
-    }
+        let st = null;
+        if (b && s) {
+            st = `${b} · ${s}${s === 1 || s === 2 ? 'st' : s === 3 || s === 4 ? 'nd' : s === 5 || s === 6 ? 'rd' : 'th'} Sem`;
+        } else if (b) {
+            st = b;
+        }
 
-    const name = user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : (dbUser?.name || "Student");
-    const initials = name !== "Student" ? name.split(" ").map((n: string) => n[0]).join("").toUpperCase().substring(0, 2) : "ST";
+        return { branch: b, semester: s, subText: st };
+    }, [dbUser]);
+
+    const name = useMemo(() => {
+        return user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : (dbUser?.name || "Student");
+    }, [user, dbUser]);
+
+    const initials = useMemo(() => {
+        return name !== "Student" ? name.split(" ").map((n: string) => n[0]).join("").toUpperCase().substring(0, 2) : "ST";
+    }, [name]);
+
     const imageUrl = user?.imageUrl;
 
     return (

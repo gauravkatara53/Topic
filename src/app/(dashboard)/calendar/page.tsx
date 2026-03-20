@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
 import InteractiveCalendar from "./_components/interactive-calendar";
 
@@ -7,8 +8,6 @@ export const metadata: Metadata = {
     title: "College Calendar",
     description: "Keep track of upcoming college events, exams, holidays, and important academic deadlines.",
 };
-
-export const dynamic = "force-dynamic";
 
 export default async function CalendarPage() {
     const events = await prisma.calendarEvent.findMany({
@@ -25,7 +24,9 @@ export default async function CalendarPage() {
             </div>
 
             <div className="flex-1 bg-card rounded-xl border shadow-sm p-4 ">
-                <InteractiveCalendar initialEvents={events} />
+                <Suspense fallback={<div className="h-full w-full flex items-center justify-center">Loading calendar...</div>}>
+                    <InteractiveCalendar initialEvents={events} />
+                </Suspense>
             </div>
         </div>
     );
