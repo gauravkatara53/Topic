@@ -150,7 +150,7 @@ export default function InteractiveCalendar({ initialEvents }: { initialEvents: 
                                 {format(selectedDate, "EEEE, MMMM d, yyyy")}
                             </h3>
                         </div>
-                        <button 
+                        <button
                             onClick={() => setSelectedDate(null)}
                             className="text-xs font-semibold text-primary sm:hidden bg-teal-50 px-3 py-1 rounded-full"
                         >

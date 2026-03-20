@@ -4,8 +4,8 @@ import InteractiveCalendar from "./_components/interactive-calendar";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "College Calendar",
-  description: "Keep track of upcoming college events, exams, holidays, and important academic deadlines.",
+    title: "College Calendar",
+    description: "Keep track of upcoming college events, exams, holidays, and important academic deadlines.",
 };
 
 export const dynamic = "force-dynamic";
@@ -24,7 +24,7 @@ export default async function CalendarPage() {
                 </div>
             </div>
 
-            <div className="flex-1 bg-card rounded-xl border shadow-sm p-4 overflow-hidden">
+            <div className="flex-1 bg-card rounded-xl border shadow-sm p-4 ">
                 <InteractiveCalendar initialEvents={events} />
             </div>
         </div>
