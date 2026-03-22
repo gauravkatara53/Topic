@@ -14,7 +14,8 @@ import {
     GraduationCap,
     Grid2X2,
     User,
-    Trophy
+    Trophy,
+    FileSearch
 } from "lucide-react";
 
 const routes = [
@@ -47,6 +48,11 @@ const routes = [
         label: "CG Leaderboard",
         icon: Trophy,
         href: "/cg-leaderboard",
+    },
+    {
+        label: "ATS Checker",
+        icon: FileSearch,
+        href: "/ats-checker",
     },
     {
         label: "Profile",
