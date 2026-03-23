@@ -40,7 +40,10 @@ interface HistoryEntry {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const GEMINI_API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY ?? "";
+const GEMINI_API_KEYS = (process.env.NEXT_PUBLIC_GEMINI_API_KEY || "")
+  .split(",")
+  .map(k => k.trim())
+  .filter(Boolean);
 const GEMINI_MODEL   = "gemini-2.5-flash";
 const MAX_HISTORY    = 10;
 
@@ -108,6 +111,44 @@ function saveHistory(userId: string, entries: HistoryEntry[]) {
   try {
     localStorage.setItem(historyKey(userId), JSON.stringify(entries.slice(0, MAX_HISTORY)));
   } catch {}
+}
+
+function getRateLimit(userId: string): number[] {
+  try {
+    const raw = localStorage.getItem(`ats-rate-${userId}`);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function getActiveKeyIndex() {
+  if (typeof window !== "undefined") {
+    return parseInt(localStorage.getItem("ats-gemini-key") || "0", 10);
+  }
+  return 0;
+}
+
+function setActiveKeyIndex(idx: number) {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("ats-gemini-key", idx.toString());
+  }
+}
+
+function recordEvaluation(userId: string) {
+  const now = Date.now();
+  const limits = getRateLimit(userId).filter(t => now - t < 30 * 60 * 1000);
+  limits.push(now);
+  try { localStorage.setItem(`ats-rate-${userId}`, JSON.stringify(limits)); } catch {}
+}
+
+function canEvaluateRate(userId: string): { allowed: boolean; waitMinutes?: number } {
+  const now = Date.now();
+  const limits = getRateLimit(userId).filter(t => now - t < 30 * 60 * 1000);
+  if (limits.length >= 5) {
+    const oldest = limits[0];
+    const waitMs = (30 * 60 * 1000) - (now - oldest);
+    return { allowed: false, waitMinutes: Math.ceil(waitMs / 60000) };
+  }
+  return { allowed: true };
 }
 
 function gradeColor(grade: string) {
@@ -429,6 +470,7 @@ export function ATSCheckerClient({ userId }: { userId: string }) {
   const [result, setResult] = useState<ATSResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [duplicateWarning, setDuplicateWarning] = useState(false);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
 
   // Ref for auto-scroll to results
@@ -446,7 +488,7 @@ export function ATSCheckerClient({ userId }: { userId: string }) {
   }
 
   function handleClear() {
-    setResumeText(""); setFileName(""); setPageCount(0);
+    setResumeText(""); setFileName(""); setPageCount(0); setDuplicateWarning(false);
   }
 
   function handleClearHistory() {
@@ -454,76 +496,129 @@ export function ATSCheckerClient({ userId }: { userId: string }) {
     setHistory([]);
   }
 
-  async function evaluate() {
+  async function evaluate(overrideDuplicate = false) {
     if (!canEvaluate) return;
 
-    if (!GEMINI_API_KEY) {
+    if (GEMINI_API_KEYS.length === 0) {
       setError("Gemini API key is not configured. Please add NEXT_PUBLIC_GEMINI_API_KEY to your .env file.");
       return;
     }
 
+    const rateCheck = canEvaluateRate(userId);
+    if (!rateCheck.allowed) {
+      setError(`Rate limit reached. You can only evaluate 5 resumes per 30 minutes. Please wait ${rateCheck.waitMinutes} minutes.`);
+      return;
+    }
+
+    if (!overrideDuplicate) {
+      const isDuplicate = history.some(h => h.fileName === (fileName || "Resume.pdf"));
+      if (isDuplicate) {
+        setDuplicateWarning(true);
+        return;
+      }
+    }
+
+    setDuplicateWarning(false);
     setLoading(true);
     setError(null);
     setResult(null);
 
-    try {
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: `${SYSTEM_PROMPT}\n\nJD_TEXT:\n${jd}\n\nRESUME_TEXT:\n${resumeText}` }] }],
-            generationConfig: {
-              temperature: 0.2,
-              maxOutputTokens: 8192,
-              responseMimeType: "application/json",
-            }
-          })
+    let startIndex = getActiveKeyIndex();
+    let attempts = 0;
+    let finalError = "Evaluation failed.";
+
+    while (attempts < GEMINI_API_KEYS.length) {
+      const currentIndex = (startIndex + attempts) % GEMINI_API_KEYS.length;
+      const currentKey = GEMINI_API_KEYS[currentIndex];
+
+      try {
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${currentKey}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: `${SYSTEM_PROMPT}\n\nJD_TEXT:\n${jd}\n\nRESUME_TEXT:\n${resumeText}` }] }],
+              generationConfig: {
+                temperature: 0.2,
+                maxOutputTokens: 8192,
+                responseMimeType: "application/json",
+              }
+            })
+          }
+        );
+
+        if (!res.ok) {
+          const isQuotaError = res.status === 429 || res.status === 403;
+          if (isQuotaError && GEMINI_API_KEYS.length > 1) {
+            console.warn(`[ATS Checker] API Key at index ${currentIndex} hit rate limit / quota (${res.status}). Switching to next key...`);
+            attempts++;
+            continue;
+          }
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err?.error?.message || `API error ${res.status}`);
         }
-      );
 
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err?.error?.message || `API error ${res.status}`);
+        // Success! Track the active key so future requests skip directly to this one
+        setActiveKeyIndex(currentIndex);
+
+        const data = await res.json();
+        const parts: any[] = data?.candidates?.[0]?.content?.parts ?? [];
+        const raw: string = parts.filter((p: any) => !p.thought).map((p: any) => p.text ?? "").join("");
+
+        if (!raw.trim()) throw new Error("Empty response from Gemini. Try again.");
+
+        const start = raw.indexOf("{");
+        const end   = raw.lastIndexOf("}");
+        if (start === -1 || end === -1) throw new Error("Could not find JSON in response. Try again.");
+        const parsed: ATSResult = JSON.parse(raw.slice(start, end + 1));
+
+        setResult(parsed);
+
+        // ── Save to history ──
+        const entry: HistoryEntry = {
+          id: Date.now().toString(),
+          date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+          fileName: fileName || "Resume.pdf",
+          jdSnippet: jd.trim().slice(0, 65) + (jd.trim().length > 65 ? "…" : ""),
+          score: parsed.overall_score,
+          grade: parsed.grade,
+          verdict: parsed.verdict,
+        };
+        const updated = [entry, ...history].slice(0, MAX_HISTORY);
+        setHistory(updated);
+        saveHistory(userId, updated);
+
+        // ── Auto-scroll to results ──
+        setTimeout(() => {
+          resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 150);
+
+        // ── Record Rate Limit Use ──
+        recordEvaluation(userId);
+
+        setLoading(false);
+        return; // Exit the function entirely on success
+
+      } catch (e: any) {
+        const msg = e.message || "";
+        if ((msg.includes("429") || msg.includes("quota")) && GEMINI_API_KEYS.length > 1) {
+          console.warn(`[ATS Checker] Key ${currentIndex} failed with quota string. Switching to next...`);
+          attempts++;
+          continue;
+        }
+        
+        finalError = msg || "Something went wrong. Please try again.";
+        break; // Break the loop on a critical/network error so we don't spam 5 times
       }
+    }
 
-      const data = await res.json();
-      const parts: any[] = data?.candidates?.[0]?.content?.parts ?? [];
-      const raw: string = parts.filter((p: any) => !p.thought).map((p: any) => p.text ?? "").join("");
-
-      if (!raw.trim()) throw new Error("Empty response from Gemini. Try again.");
-
-      const start = raw.indexOf("{");
-      const end   = raw.lastIndexOf("}");
-      if (start === -1 || end === -1) throw new Error("Could not find JSON in response. Try again.");
-      const parsed: ATSResult = JSON.parse(raw.slice(start, end + 1));
-
-      setResult(parsed);
-
-      // ── Save to history ──
-      const entry: HistoryEntry = {
-        id: Date.now().toString(),
-        date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
-        fileName: fileName || "Resume.pdf",
-        jdSnippet: jd.trim().slice(0, 65) + (jd.trim().length > 65 ? "…" : ""),
-        score: parsed.overall_score,
-        grade: parsed.grade,
-        verdict: parsed.verdict,
-      };
-      const updated = [entry, ...history].slice(0, MAX_HISTORY);
-      setHistory(updated);
-      saveHistory(userId, updated);
-
-      // ── Auto-scroll to results ──
-      setTimeout(() => {
-        resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 150);
-
-    } catch (e: any) {
-      setError(e.message || "Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
+    // If we exited the loop without returning, it means we failed either due to exhaustion or a critical error
+    setLoading(false);
+    if (attempts >= GEMINI_API_KEYS.length) {
+      setError("All available AI API keys have exhausted their quota. Please try again later.");
+    } else {
+      setError(finalError);
     }
   }
 
@@ -584,10 +679,9 @@ export function ATSCheckerClient({ userId }: { userId: string }) {
         </div>
       </div>
 
-      {/* CTA */}
       <div className="flex flex-col items-center gap-2">
         <button
-          onClick={evaluate}
+          onClick={() => evaluate(false)}
           disabled={!canEvaluate}
           className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#1b254b] to-[#2dd4bf] text-white font-bold text-base rounded-2xl shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-100 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
         >
@@ -624,6 +718,27 @@ export function ATSCheckerClient({ userId }: { userId: string }) {
             <p className="text-sm font-semibold text-red-700">Evaluation Failed</p>
             <p className="text-sm text-red-600 opacity-80 mt-0.5">{error}</p>
           </div>
+        </div>
+      )}
+
+      {/* Duplicate Warning */}
+      {duplicateWarning && (
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 animate-in fade-in slide-in-from-bottom-2 shadow-sm">
+          <div className="flex items-start gap-3">
+            <span className="text-xl shrink-0">⚠️</span>
+            <div className="text-center sm:text-left">
+              <p className="text-sm font-semibold text-amber-800">Duplicate Resume Detected</p>
+              <p className="text-sm text-amber-700 opacity-90 mt-0.5 max-w-lg">
+                You have already analyzed <strong>{fileName || "this resume"}</strong> previously. Evaluating it again will consume one of your 5 available evaluations per 30 minutes.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => evaluate(true)}
+            className="shrink-0 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-white text-sm font-bold rounded-xl transition-all shadow-sm"
+          >
+            Analyze Anyway
+          </button>
         </div>
       )}
 
