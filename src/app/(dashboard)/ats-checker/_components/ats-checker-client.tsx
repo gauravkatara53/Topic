@@ -14,12 +14,18 @@ interface ATSResult {
   grade: string;
   verdict: string;
   breakdown: {
-    keyword_match: ScoreItem;
-    experience_relevance: ScoreItem;
-    skills_alignment: ScoreItem;
-    education_certifications: ScoreItem;
-    ats_formatting: ScoreItem;
-    impact_quantification: ScoreItem;
+    ats_parse_rate: ScoreItem;
+    contact_details: ScoreItem;
+    sections: ScoreItem;
+    dates: ScoreItem;
+    repetition: ScoreItem;
+    quantifying_impact: ScoreItem;
+    leadership_keywords: ScoreItem;
+    drive_action_verbs: ScoreItem;
+    communication_keywords: ScoreItem;
+    analytical_keywords: ScoreItem;
+    spelling_grammar: ScoreItem;
+    jd_tailoring: ScoreItem;
   };
   missing_keywords: string[];
   matched_keywords: string[];
@@ -49,26 +55,77 @@ const MAX_HISTORY    = 10;
 
 const SYSTEM_PROMPT = `You are an expert ATS (Applicant Tracking System) evaluator with 10+ years of experience in HR tech and recruitment automation. Your job is to deeply analyze a candidate's resume against a provided Job Description (JD) and return a precise, honest, and actionable ATS compatibility report.
 
-EVALUATION CRITERIA (each scored individually, total = 10):
-1. Keyword Match (2.5 pts) — Hard skills, tools, technologies, role-specific keywords. Exact + semantic equivalents.
-2. Experience Relevance (2.0 pts) — Duration and domain alignment.
-3. Skills Alignment (2.0 pts) — Technical + soft skills match.
-4. Education & Certifications (1.0 pt) — Degree, field, certifications.
-5. Resume Formatting & ATS Readability (1.5 pts) — Standard sections, no heavy formatting/tables/graphics.
-6. Impact & Quantification (1.0 pt) — Measurable achievements vs vague responsibilities.
+EVALUATION CRITERIA (Total = 100 pts. Start at max points per category and deduct based on rules):
+1. ATS Parse Rate (15 pts)
+   - No email found -> deduct -3
+   - No phone number found -> deduct -2
+   - Tab characters > 10 (table structure) -> deduct -5
+   - Box-drawing characters detected -> deduct -5
+2. Contact Details (10 pts)
+   - No email -> deduct -4
+   - No phone -> deduct -3
+   - No LinkedIn URL -> deduct -2
+   - No GitHub / portfolio link -> deduct -1
+3. Sections (10 pts)
+   - Missing Education section -> deduct -2.5
+   - Missing Experience / Internship section -> deduct -2.5
+   - Missing Skills section -> deduct -2.5
+   - Missing Projects section -> deduct -2.5
+   - Has "Hobbies" section -> deduct -1
+   - Has "References" section -> deduct -1
+   - Has "Objective" section -> deduct -1
+4. Dates (5 pts)
+   - No years (20XX) found at all -> deduct -5
+   - Years found but no Month Year format -> deduct -2 (Preferred format: Jun 2024 - Present)
+5. Repetition (8 pts)
+   - Same word (5+ letters) used 4+ times -> flag it
+   - More than 3 such words -> deduct -4
+   - 1-2 repeated words -> deduct -2
+6. Quantifying Impact (12 pts)
+   - Fewer than 3 numbers/% in entire resume -> deduct -6
+   - 3-5 numbers found -> deduct -3
+   - Less than 30% of bullet points contain a number -> deduct -3
+7. Leadership Keywords (8 pts)
+   - 0 leadership verbs found -> deduct -8
+   - Fewer than 3 found -> deduct -3
+   - Target words: led, managed, coordinated, spearheaded, initiated, directed, oversaw, mentored, supervised, launched, drove, owned
+8. Drive / Action Verbs (7 pts)
+   - Fewer than 4 action verbs found -> deduct -4
+   - Target words: built, developed, created, designed, engineered, deployed, shipped, optimized, improved, reduced, increased, automated, integrated, delivered
+9. Communication Keywords (5 pts)
+   - 0 communication verbs found -> deduct -3
+   - Target words: collaborated, communicated, presented, reported, documented, coordinated, liaised, facilitated
+10. Analytical Keywords (5 pts)
+    - 0 analytical verbs found -> deduct -3
+    - Target words: analyzed, researched, evaluated, assessed, identified, measured, diagnosed, investigated, tested, debugged
+11. Spelling & Grammar (8 pts)
+    - Each detected typo -> deduct -2
+    - Mixed verb tenses (past + present in same resume) -> deduct -2
+    - Common typos to flag: managment, achivements, responsibilites, proficent, experianced, enviroment, colaborate
+12. JD Tailoring (7 pts)
+    - No JD provided -> 0 pts, skip
+    - Match < 40% of JD keywords -> deduct -5
+    - Match 40-60% -> deduct -2
+    - Match > 60% -> full 7 pts.
 
 RESPOND ONLY with this exact JSON (no markdown fences, no extra text):
 {
-  "overall_score": <number out of 10, one decimal>,
-  "grade": "<A / B / C / D / F>",
+  "overall_score": <number out of 100>,
+  "grade": "<A (>=85) / B (>=70) / C (>=55) / D (>=40) / F (<40)>",
   "verdict": "<one line summary>",
   "breakdown": {
-    "keyword_match": { "score": <x out of 2.5>, "comment": "<short insight>" },
-    "experience_relevance": { "score": <x out of 2.0>, "comment": "<short insight>" },
-    "skills_alignment": { "score": <x out of 2.0>, "comment": "<short insight>" },
-    "education_certifications": { "score": <x out of 1.0>, "comment": "<short insight>" },
-    "ats_formatting": { "score": <x out of 1.5>, "comment": "<short insight>" },
-    "impact_quantification": { "score": <x out of 1.0>, "comment": "<short insight>" }
+    "ats_parse_rate": { "score": <x out of 15>, "comment": "<short insight>" },
+    "contact_details": { "score": <x out of 10>, "comment": "<short insight>" },
+    "sections": { "score": <x out of 10>, "comment": "<short insight>" },
+    "dates": { "score": <x out of 5>, "comment": "<short insight>" },
+    "repetition": { "score": <x out of 8>, "comment": "<short insight>" },
+    "quantifying_impact": { "score": <x out of 12>, "comment": "<short insight>" },
+    "leadership_keywords": { "score": <x out of 8>, "comment": "<short insight>" },
+    "drive_action_verbs": { "score": <x out of 7>, "comment": "<short insight>" },
+    "communication_keywords": { "score": <x out of 5>, "comment": "<short insight>" },
+    "analytical_keywords": { "score": <x out of 5>, "comment": "<short insight>" },
+    "spelling_grammar": { "score": <x out of 8>, "comment": "<short insight>" },
+    "jd_tailoring": { "score": <x out of 7>, "comment": "<short insight>" }
   },
   "missing_keywords": ["<keyword1>", "..."],
   "matched_keywords": ["<keyword1>", "..."],
@@ -86,12 +143,18 @@ const GRADE_CONFIG: Record<string, { color: string; bg: string; label: string }>
 };
 
 const BREAKDOWN_META = [
-  { key: "keyword_match",          label: "Keyword Match",         max: 2.5, icon: "🔍" },
-  { key: "experience_relevance",   label: "Experience Relevance",  max: 2.0, icon: "💼" },
-  { key: "skills_alignment",       label: "Skills Alignment",      max: 2.0, icon: "⚡" },
-  { key: "education_certifications", label: "Education & Certs",   max: 1.0, icon: "🎓" },
-  { key: "ats_formatting",         label: "ATS Formatting",        max: 1.5, icon: "📄" },
-  { key: "impact_quantification",  label: "Impact & Quantification",max: 1.0, icon: "📊" },
+  { key: "ats_parse_rate",         label: "ATS Parse Rate",        max: 15, icon: "📄" },
+  { key: "contact_details",        label: "Contact Details",       max: 10, icon: "📞" },
+  { key: "sections",               label: "Sections",              max: 10, icon: "📑" },
+  { key: "dates",                  label: "Dates",                 max: 5, icon: "📅" },
+  { key: "repetition",             label: "Repetition",            max: 8, icon: "🔁" },
+  { key: "quantifying_impact",     label: "Quantifying Impact",    max: 12, icon: "📊" },
+  { key: "leadership_keywords",    label: "Leadership Keywords",   max: 8, icon: "👑" },
+  { key: "drive_action_verbs",     label: "Drive / Action Verbs",  max: 7, icon: "⚡" },
+  { key: "communication_keywords", label: "Communication Keywords",max: 5, icon: "💬" },
+  { key: "analytical_keywords",    label: "Analytical Keywords",   max: 5, icon: "🔍" },
+  { key: "spelling_grammar",       label: "Spelling & Grammar",    max: 8, icon: "✍️" },
+  { key: "jd_tailoring",           label: "JD Tailoring",          max: 7, icon: "🎯" },
 ] as const;
 
 // ─── History helpers ──────────────────────────────────────────────────────────
@@ -162,8 +225,8 @@ function gradeBg(grade: string) {
 
 function ScoreRing({ score }: { score: number }) {
   const r = 52, circ = 2 * Math.PI * r;
-  const dash = ((score / 10) * 100 / 100) * circ;
-  const grade = score >= 8.5 ? "A" : score >= 7 ? "B" : score >= 5.5 ? "C" : score >= 4 ? "D" : "F";
+  const dash = (score / 100) * circ;
+  const grade = score >= 85 ? "A" : score >= 70 ? "B" : score >= 55 ? "C" : score >= 40 ? "D" : "F";
   const cfg = GRADE_CONFIG[grade];
   return (
     <div className="flex flex-col items-center gap-2">
@@ -175,8 +238,8 @@ function ScoreRing({ score }: { score: number }) {
             style={{ transition: "stroke-dasharray 1s ease" }} />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-3xl font-black text-[#1b254b]">{score.toFixed(1)}</span>
-          <span className="text-xs text-slate-400 font-medium">/ 10</span>
+          <span className="text-3xl font-black text-[#1b254b]">{score.toFixed(0)}</span>
+          <span className="text-xs text-slate-400 font-medium">/ 100</span>
         </div>
       </div>
       <span className="text-xs font-bold px-3 py-1 rounded-full" style={{ color: cfg.color, background: cfg.bg }}>
@@ -362,7 +425,7 @@ function PDFUploadZone({ resumeText, fileName, pageCount, extracting, onTextExtr
 
 function MiniScoreArc({ score, grade }: { score: number; grade: string }) {
   const r = 26, circ = 2 * Math.PI * r;
-  const dash = (score / 10) * circ;
+  const dash = (score / 100) * circ;
   const color = gradeColor(grade);
   return (
     <div className="relative w-16 h-16 shrink-0">
@@ -373,7 +436,7 @@ function MiniScoreArc({ score, grade }: { score: number; grade: string }) {
           style={{ transition: "stroke-dasharray 0.8s ease" }} />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-sm font-black leading-none" style={{ color }}>{score.toFixed(1)}</span>
+        <span className="text-sm font-black leading-none" style={{ color }}>{score.toFixed(0)}</span>
       </div>
     </div>
   );
@@ -445,10 +508,10 @@ function HistoryPanel({ entries, onClear }: { entries: HistoryEntry[]; onClear: 
               <div className="px-4 pb-4">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-[10px] text-slate-400">ATS Score</span>
-                  <span className="text-[10px] font-bold" style={{ color }}>{entry.score.toFixed(1)} / 10</span>
+                  <span className="text-[10px] font-bold" style={{ color }}>{entry.score.toFixed(0)} / 100</span>
                 </div>
                 <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                  <div className="h-full rounded-full" style={{ width: `${(entry.score / 10) * 100}%`, background: color }} />
+                  <div className="h-full rounded-full" style={{ width: `${(entry.score / 100) * 100}%`, background: color }} />
                 </div>
               </div>
             </div>

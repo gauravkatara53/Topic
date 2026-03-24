@@ -27,6 +27,12 @@ model User {
   files              File[]
   attendanceRecords  AttendanceRecord[]
   portalCredentials  PortalCredential?
+  followedSheets          UserFollowedSheet[]
+  followedPopularSheets   UserFollowedPopularSheet[]
+  questionRevisions       UserQuestionRevision[]
+  completedQuestions      UserCompletedQuestion[]
+  starredQuestions        UserStarredQuestion[]
+  highlightedQuestions    UserQuestionHighlight[]
 }
 
 model Announcement {
@@ -85,4 +91,137 @@ model PortalCredential {
   encryptedPassword String
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+}
+
+model DSASheet {
+  id                       String  @id @default(auto()) @map("_id") @db.ObjectId
+  questionId               Int?    @map("id")
+  title                    String?
+  url                      String?
+  difficulty               String?
+  acceptance               Float?
+  frequency                Float?
+  tags                     String?
+  companies                String?
+  companies_with_timeframe String?
+
+  @@map("DSA_Sheet")
+}
+
+model DSASheetCompany {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  company String @unique
+  count   Int
+
+  @@map("DSA_SHEET_COMPANY")
+}
+
+model UserFollowedSheet {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId  String   
+  colorTheme String?  @default("default")
+  createdAt  DateTime @default(now())
+  
+  @@unique([userId, companyId])
+}
+
+model UserFollowedPopularSheet {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  popularSheetId String
+  createdAt      DateTime @default(now())
+  
+  @@unique([userId, popularSheetId])
+}
+
+model UserQuestionRevision {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId   String   
+  companyId    String?  // Context of which sheet the user was inside when scheduling
+  lastRevised  DateTime?
+  nextRevision DateTime?
+  status       String   @default("Pending") // E.g., Pending, Overdue, Completed - tracked for scheduler algorithms
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([userId, questionId])
+}
+
+model UserCompletedQuestion {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId String   
+  companyId  String?  // Easily aggregatable metric for overview cards
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, questionId])
+}
+
+model UserStarredQuestion {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId String   
+  companyId  String?  // Context of sheet where they clicked star
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, questionId])
+}
+
+model UserQuestionHighlight {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId String   
+  companyId  String?  
+  colorTheme String   @default("default")
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, questionId])
+}
+
+model PopularSheet {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  slug        String   @unique
+  description String?
+
+  questions PopularSheetQuestion[]
+
+  @@map("sheets")
+}
+
+model PopularQuestion {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  questionId  Json?    // Mixed types in DB (e.g. "287" vs 701747), using Json to prevent conversion errors
+  name        String
+  slug        String?
+  platform    String?
+  difficulty  String?
+  problemUrl  String?
+  topics      String[]
+
+  sheets PopularSheetQuestion[]
+
+  @@map("questions")
+}
+
+model PopularSheetQuestion {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  sheetId    String   @db.ObjectId
+  questionId String   @db.ObjectId // This relates to PopularQuestion.id (_id)
+  topic      String?
+  subTopic   String?
+  resource   String? @default("")
+
+  sheet    PopularSheet    @relation(fields: [sheetId], references: [id], onDelete: Cascade)
+  question PopularQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@map("sheetquestions")
 }

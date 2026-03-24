@@ -15,7 +15,8 @@ import {
     Grid2X2,
     User,
     Trophy,
-    FileSearch
+    FileSearch,
+    Code2
 } from "lucide-react";
 
 const routes = [
@@ -53,6 +54,11 @@ const routes = [
         label: "ATS Checker",
         icon: FileSearch,
         href: "/ats-checker",
+    },
+    {
+        label: "DSA Sheets",
+        icon: Code2,
+        href: "/dsa-sheets",
     },
     {
         label: "Profile",
