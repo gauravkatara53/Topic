@@ -56,12 +56,27 @@ export default async function PopularSheetPage({ params }: Props) {
     });
     isFollowing = !!followRecord;
 
+    // Optimize: Only fetch progress data for questions IN THIS SHEET
+    const sheetQuestionIds = sheet.questions.map((sq: any) => sq.question.id);
+
     const [completed, starred, highlights, revisions, notes] = await Promise.all([
-      prisma.userCompletedQuestion.findMany({ where: { userId }, select: { questionId: true } }),
-      prisma.userStarredQuestion.findMany({ where: { userId }, select: { questionId: true } }),
-      prisma.userQuestionHighlight.findMany({ where: { userId } }),
-      prisma.userQuestionRevision.findMany({ where: { userId } }),
-      prisma.userQuestionNote.findMany({ where: { userId } })
+      prisma.userCompletedQuestion.findMany({ 
+        where: { userId, questionId: { in: sheetQuestionIds } }, 
+        select: { questionId: true } 
+      }),
+      prisma.userStarredQuestion.findMany({ 
+        where: { userId, questionId: { in: sheetQuestionIds } }, 
+        select: { questionId: true } 
+      }),
+      prisma.userQuestionHighlight.findMany({ 
+        where: { userId, questionId: { in: sheetQuestionIds } } 
+      }),
+      prisma.userQuestionRevision.findMany({ 
+        where: { userId, questionId: { in: sheetQuestionIds } } 
+      }),
+      prisma.userQuestionNote.findMany({ 
+        where: { userId, questionId: { in: sheetQuestionIds } } 
+      })
     ]);
 
     userCompletedIds = completed.map(c => c.questionId);

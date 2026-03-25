@@ -52,31 +52,32 @@ export default async function CompanySheetPage({ params }: Props) {
     });
     isFollowing = !!followRecord;
 
-    if (isFollowing) {
-      userRevisions = await prisma.userQuestionRevision.findMany({
-        where: { userId }
-      });
-    }
+    // Optimize: Only fetch progress data for questions in this company sheet
+    const sheetQuestionIds = questions.map(q => q.id);
 
-    const dbCompleted = await prisma.userCompletedQuestion.findMany({
-      where: { userId }
-    });
+    const [dbCompleted, dbStarred, highlights, notes, revisions] = await Promise.all([
+      prisma.userCompletedQuestion.findMany({
+        where: { userId, questionId: { in: sheetQuestionIds } }
+      }),
+      prisma.userStarredQuestion.findMany({
+        where: { userId, questionId: { in: sheetQuestionIds } }
+      }),
+      prisma.userQuestionHighlight.findMany({
+        where: { userId, questionId: { in: sheetQuestionIds } }
+      }),
+      prisma.userQuestionNote.findMany({
+        where: { userId, questionId: { in: sheetQuestionIds } }
+      }),
+      isFollowing ? prisma.userQuestionRevision.findMany({
+        where: { userId, questionId: { in: sheetQuestionIds } }
+      }) : Promise.resolve([])
+    ]);
+
     userCompletedIds = dbCompleted.map((c: any) => c.questionId);
-
-    const dbStarred = await prisma.userStarredQuestion.findMany({
-      where: { userId }
-    });
     userStarredIds = dbStarred.map((s: any) => s.questionId);
-
-    const highlights = await prisma.userQuestionHighlight.findMany({
-      where: { userId }
-    });
     userHighlights = highlights.map((h: any) => ({ questionId: h.questionId, colorTheme: h.colorTheme }));
-
-    const notes = await prisma.userQuestionNote.findMany({
-      where: { userId }
-    });
     userNotes = notes.map((n: any) => ({ questionId: n.questionId, content: n.content }));
+    userRevisions = revisions;
   }
 
   return <CompanySheetClient 

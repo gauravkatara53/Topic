@@ -40,18 +40,34 @@ export default async function CustomSheetPage({ params }: Props) {
 
   if (!sheet || sheet.userId !== userId) notFound();
 
+  // Optimize: Only fetch progress data for questions in this custom sheet
+  const sheetQuestionIds = sheet.questions.map((sq: any) => sq.questionId);
+
   const [completed, starred, highlights, revisions, notes] = await Promise.all([
-    prisma.userCompletedQuestion.findMany({ where: { userId }, select: { questionId: true } }),
-    prisma.userStarredQuestion.findMany({ where: { userId }, select: { questionId: true } }),
-    prisma.userQuestionHighlight.findMany({ where: { userId } }),
-    prisma.userQuestionRevision.findMany({ where: { userId } }),
-    prisma.userQuestionNote.findMany({ where: { userId } })
+    prisma.userCompletedQuestion.findMany({ 
+      where: { userId, questionId: { in: sheetQuestionIds } }, 
+      select: { questionId: true } 
+    }),
+    prisma.userStarredQuestion.findMany({ 
+      where: { userId, questionId: { in: sheetQuestionIds } }, 
+      select: { questionId: true } 
+    }),
+    prisma.userQuestionHighlight.findMany({ 
+      where: { userId, questionId: { in: sheetQuestionIds } } 
+    }),
+    prisma.userQuestionRevision.findMany({ 
+      where: { userId, questionId: { in: sheetQuestionIds } } 
+    }),
+    prisma.userQuestionNote.findMany({ 
+      where: { userId, questionId: { in: sheetQuestionIds } } 
+    })
   ]);
 
   const userCompletedIds = completed.map(c => c.questionId);
   const userStarredIds = starred.map(s => s.questionId);
   const userHighlights = highlights.map(h => ({ questionId: h.questionId, colorTheme: h.colorTheme }));
   const userNotes = notes.map(n => ({ questionId: n.questionId, content: n.content }));
+  const userRevisions = revisions;
 
   return (
     <CustomSheetClient 

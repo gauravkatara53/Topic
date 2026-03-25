@@ -35,8 +35,9 @@ export default async function MySheetsPage() {
   });
 
 
-  // Fetch Popular Sheets for rendering in My Sheets tab
-  const popularSheets = await prisma.popularSheet.findMany({
+  // Fetch ONLY followed Popular Sheets for rendering in My Sheets tab
+  const popularSheets = followedPopularIds.length > 0 ? await prisma.popularSheet.findMany({
+    where: { id: { in: followedPopularIds } },
     include: {
       questions: {
         include: {
@@ -44,7 +45,7 @@ export default async function MySheetsPage() {
         }
       }
     }
-  });
+  }) : [];
 
   // Calculate some progress data
   let userCompletedCountByCompany: Record<string, number> = {};
