@@ -43,6 +43,7 @@ export default async function PopularSheetPage({ params }: Props) {
   let userStarredIds: string[] = [];
   let userHighlights: { questionId: string, colorTheme: string }[] = [];
   let userRevisions: any[] = [];
+  let userNotes: { questionId: string, content: string }[] = [];
 
   if (userId) {
     const followRecord = await prisma.userFollowedPopularSheet.findUnique({
@@ -55,17 +56,19 @@ export default async function PopularSheetPage({ params }: Props) {
     });
     isFollowing = !!followRecord;
 
-    const [completed, starred, highlights, revisions] = await Promise.all([
+    const [completed, starred, highlights, revisions, notes] = await Promise.all([
       prisma.userCompletedQuestion.findMany({ where: { userId }, select: { questionId: true } }),
       prisma.userStarredQuestion.findMany({ where: { userId }, select: { questionId: true } }),
       prisma.userQuestionHighlight.findMany({ where: { userId } }),
-      prisma.userQuestionRevision.findMany({ where: { userId } })
+      prisma.userQuestionRevision.findMany({ where: { userId } }),
+      prisma.userQuestionNote.findMany({ where: { userId } })
     ]);
 
     userCompletedIds = completed.map(c => c.questionId);
     userStarredIds = starred.map(s => s.questionId);
     userHighlights = highlights.map(h => ({ questionId: h.questionId, colorTheme: h.colorTheme }));
     userRevisions = revisions;
+    userNotes = notes.map(n => ({ questionId: n.questionId, content: n.content }));
   }
 
   return (
@@ -77,6 +80,7 @@ export default async function PopularSheetPage({ params }: Props) {
       initialStarredIds={userStarredIds}
       initialHighlights={userHighlights}
       initialRevisions={userRevisions}
+      initialNotes={userNotes}
     />
   );
 }

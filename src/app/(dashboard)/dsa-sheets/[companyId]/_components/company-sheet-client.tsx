@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronDown, ChevronRight, CheckCircle2, Circle, Star, ExternalLink, Share2, Target, Bookmark, RotateCcw, FileText, Search, Filter, ArrowUpDown, Clock, Save } from "lucide-react";
+import { Palette, ChevronLeft, ChevronDown, ChevronRight, CheckCircle2, Circle, Star, ExternalLink, Share2, Target, Bookmark, RotateCcw, FileText, Search, Filter, ArrowUpDown, Clock, Save } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { toggleFollowSheet, updateQuestionRevision, toggleQuestionCompletion, toggleQuestionStar, updateQuestionHighlight } from "@/actions/dsa-sheets";
-import { Palette } from "lucide-react";
+import { toggleFollowSheet, updateQuestionRevision, toggleQuestionCompletion, toggleQuestionStar, updateQuestionHighlight, updateQuestionNote } from "@/actions/dsa-sheets";
 import { toast } from "sonner";
+import { QuestionDrawer } from "../../_components/question-drawer";
 
 // Dummy Data
 const SHEET_DATA = {
@@ -74,7 +74,8 @@ export function CompanySheetClient({
   initialCompleted = [],
   dbRevisions = [],
   initialStarredIds = [],
-  initialHighlights = []
+  initialHighlights = [],
+  initialNotes = []
 }: {
   companyId: string,
   dbQuestions: any[],
@@ -83,8 +84,16 @@ export function CompanySheetClient({
   initialCompleted?: string[],
   dbRevisions?: any[],
   initialStarredIds?: string[],
-  initialHighlights?: { questionId: string, colorTheme: string }[]
+  initialHighlights?: { questionId: string, colorTheme: string }[],
+  initialNotes?: { questionId: string, content: string }[]
 }) {
+  const [localNotes, setLocalNotes] = useState<Record<string, string>>(() => {
+    const acc: Record<string, string> = {};
+    (initialNotes || []).forEach(note => { acc[note.questionId] = note.content; });
+    return acc;
+  });
+  const [selectedQuestion, setSelectedQuestion] = useState<{ id: string, data: any } | null>(null);
+  const [tempNote, setTempNote] = useState("");
   const niceName = companyId.charAt(0).toUpperCase() + companyId.slice(1);
   const realTitle = `${niceName} Master DSA Sheet`;
 
@@ -140,6 +149,19 @@ export function CompanySheetClient({
     const pref = localStorage.getItem("showRevisionOnComplete");
     if (pref === "false") setShowRevisionModalPref(false);
   }, []);
+
+  const handleSaveNote = async (content: string) => {
+    if (!selectedQuestion) return;
+    const qid = selectedQuestion.id;
+    setLocalNotes(prev => ({ ...prev, [qid]: content }));
+    
+    try {
+      await updateQuestionNote(qid, content);
+      toast.success("Note saved!");
+    } catch (error) {
+      toast.error("Failed to save note.");
+    }
+  };
 
   const [highlightPopoverOpen, setHighlightPopoverOpen] = useState<string | null>(null);
   const [highlights, setHighlights] = useState<Record<string, string>>(() => {
@@ -528,14 +550,18 @@ export function CompanySheetClient({
                     const themeClasses = HIGHLIGHT_THEMES[curHighlight] || "";
 
                     return (
-                      <div key={q.id} className={cn(
-                        "grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 items-center transition-colors hover:bg-slate-50 relative group/row",
-                        themeClasses ? themeClasses : (isDone ? "bg-emerald-50/30" : "bg-white")
-                      )}>
+                      <div 
+                        key={q.id} 
+                        onClick={() => setSelectedQuestion({ id: q.id, data: q })}
+                        className={cn(
+                          "grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 items-center transition-colors hover:bg-slate-50 relative group/row cursor-pointer",
+                          themeClasses ? themeClasses : (isDone ? "bg-emerald-50/30" : "bg-white")
+                        )}
+                      >
 
                         {/* Status Checkbox */}
                         <div className="md:col-span-1 flex items-center shrink-0">
-                          <button onClick={() => toggleCompletion(q)} className="focus:outline-none rounded-full transition-transform active:scale-90">
+                          <button onClick={(e) => { e.stopPropagation(); toggleCompletion(q); }} className="focus:outline-none rounded-full transition-transform active:scale-90">
                             {isDone
                               ? <CheckCircle2 className="w-5 h-5 text-[#22c55e] stroke-[2px]" />
                               : <Circle className="w-5 h-5 text-[#22c55e] stroke-[2px]" />
@@ -546,9 +572,9 @@ export function CompanySheetClient({
                         {/* Title & Timeframe */}
                         <div className="md:col-span-5 flex-1 min-w-0 pr-2">
                           <div className="flex flex-col xl:flex-row xl:items-center gap-2">
-                            <a href={q.url} target="_blank" rel="noopener noreferrer" className={cn(
+                            <a href={q.url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={cn(
                               "text-[13px] font-bold truncate block transition-colors hover:underline underline-offset-2 decoration-slate-300",
-                              isDone ? "text-slate-500" : "text-slate-800"
+                              isDone ? "text-slate-500 opacity-80" : "text-slate-800"
                             )}>
                               {q.title}
                             </a>
@@ -592,7 +618,18 @@ export function CompanySheetClient({
                             </div>
                           )}
                         </div>                        {/* Actions */}
-                        <div className="md:col-span-1 flex items-center justify-end gap-3 shrink-0 mt-3 md:mt-0">
+                        <div className="md:col-span-1 flex items-center justify-end gap-3 shrink-0 mt-3 md:mt-0" onClick={(e) => e.stopPropagation()}>
+                          <button 
+                            onClick={() => {
+                              setSelectedQuestion({ id: q.id, data: q });
+                            }}
+                            className={cn(
+                              "transition-all duration-300 flex shrink-0", 
+                              localNotes[q.id] ? "text-orange-500" : "text-slate-300 hover:text-orange-500"
+                            )}
+                          >
+                            <FileText className="w-4 h-4" />
+                          </button>
                           <button onClick={() => toggleStar(q.id)} className={cn("transition-colors flex shrink-0", isStarred ? "text-orange-400" : "text-slate-300 hover:text-orange-400")}>
                             <Star className={cn("w-4 h-4", isStarred && "fill-orange-400")} />
                           </button>
@@ -724,7 +761,30 @@ export function CompanySheetClient({
           </div>
         </div>
       )}
-
+      {/* Sidebar Drawer */}
+      <QuestionDrawer 
+        isOpen={!!selectedQuestion}
+        onClose={() => setSelectedQuestion(null)}
+        question={selectedQuestion?.data}
+        isCompleted={selectedQuestion ? completed.has(selectedQuestion.id) : false}
+        isStarred={selectedQuestion ? starred.has(selectedQuestion.id) : false}
+        notes={selectedQuestion ? (localNotes[selectedQuestion.id] || "") : ""}
+        onSaveNote={handleSaveNote}
+        onToggleCompletion={() => selectedQuestion && toggleCompletion(selectedQuestion.data)}
+        onToggleStar={() => selectedQuestion && toggleStar(selectedQuestion.id)}
+        alternateQuestions={(() => {
+          if (!selectedQuestion) return [];
+          const qId = selectedQuestion.id;
+          const category = sheet.categories.find((cat: any) => 
+            cat.questions.some((q: any) => q.id === qId)
+          );
+          if (!category) return [];
+          return category.questions
+            .filter((q: any) => q.id !== qId)
+            .map((q: any) => ({ ...q, name: q.title }))
+            .slice(0, 5);
+        })()}
+      />
     </div>
   );
 }

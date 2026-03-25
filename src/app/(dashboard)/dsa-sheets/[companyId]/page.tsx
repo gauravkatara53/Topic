@@ -37,7 +37,9 @@ export default async function CompanySheetPage({ params }: Props) {
   let isFollowing = false;
   let userRevisions: any[] = [];
   let userCompletedIds: string[] = [];
+  let userStarredIds: string[] = [];
   let userHighlights: { questionId: string, colorTheme: string }[] = [];
+  let userNotes: { questionId: string, content: string }[] = [];
 
   if (userId) {
     const followRecord = await prisma.userFollowedSheet.findUnique({
@@ -59,12 +61,22 @@ export default async function CompanySheetPage({ params }: Props) {
     const dbCompleted = await prisma.userCompletedQuestion.findMany({
       where: { userId }
     });
-    userCompletedIds = dbCompleted.map(c => c.questionId);
+    userCompletedIds = dbCompleted.map((c: any) => c.questionId);
+
+    const dbStarred = await prisma.userStarredQuestion.findMany({
+      where: { userId }
+    });
+    userStarredIds = dbStarred.map((s: any) => s.questionId);
 
     const highlights = await prisma.userQuestionHighlight.findMany({
       where: { userId }
     });
-    userHighlights = highlights.map(h => ({ questionId: h.questionId, colorTheme: h.colorTheme }));
+    userHighlights = highlights.map((h: any) => ({ questionId: h.questionId, colorTheme: h.colorTheme }));
+
+    const notes = await prisma.userQuestionNote.findMany({
+      where: { userId }
+    });
+    userNotes = notes.map((n: any) => ({ questionId: n.questionId, content: n.content }));
   }
 
   return <CompanySheetClient 
@@ -74,6 +86,8 @@ export default async function CompanySheetPage({ params }: Props) {
     userId={userId} 
     dbRevisions={userRevisions} 
     initialCompleted={userCompletedIds}
+    initialStarredIds={userStarredIds}
     initialHighlights={userHighlights}
+    initialNotes={userNotes}
   />;
 }

@@ -230,3 +230,16 @@ export async function togglePopularSheetFollow(popularSheetId: string) {
   revalidatePath('/dsa-sheets');
   return { success: true };
 }
+
+export async function updateQuestionNote(questionId: string, content: string) {
+  const { userId } = await auth();
+  if (!userId) throw new Error("Unauthorized");
+
+  await prisma.userQuestionNote.upsert({
+    where: { userId_questionId: { userId, questionId } },
+    update: { content },
+    create: { userId, questionId, content }
+  });
+
+  return { success: true };
+}

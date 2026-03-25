@@ -2,10 +2,13 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Search, Map, Database, LayoutTemplate, BriefcaseBusiness, ListTodo, CheckCircle2, Sparkles, Clock, CalendarDays, Circle, FileText, Save, Palette, ChevronDown, ChevronRight, Users, ArrowRight, Star } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Search, Map, Database, LayoutTemplate, BriefcaseBusiness, ListTodo, CheckCircle2, Sparkles, Clock, CalendarDays, Circle, FileText, Save, Palette, ChevronDown, ChevronRight, Users, ArrowRight, Star, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toggleQuestionCompletion, updateQuestionRevision, updateRevisionStatus, updateFollowedSheetTheme, toggleQuestionStar, updateQuestionHighlight, togglePopularSheetFollow } from "@/actions/dsa-sheets";
 import { toast } from "sonner";
+import { createCustomSheet } from "@/actions/custom-sheets";
+import { format } from "date-fns";
 
 const TABS = [
   "Company Wise", "All", "My Sheets", "Revisions", "My Stats", "Popular", "Complete DSA"
@@ -136,8 +139,82 @@ const CircularProgress = ({ percentage, size = 120, strokeWidth = 10 }: { percen
   );
 };
 
+const SheetCard = ({
+  company,
+  followed,
+  solvedCount,
+  totalQuestions,
+  progress,
+  onPaletteClick
+}: {
+  company: any,
+  followed?: any,
+  solvedCount: number,
+  totalQuestions: number,
+  progress: number,
+  onPaletteClick: (val: { id: string, name: string }) => void
+}) => {
+  const curThemeName = followed?.theme || "default";
+  const currentTheme = SHEET_THEMES[curThemeName] || SHEET_THEMES.default;
+
+  return (
+    <div className="relative group">
+      <Link
+        href={`/dsa-sheets/${company.company}`}
+        className={cn(
+          "rounded-[24px] border hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col h-full relative overflow-hidden shadow-sm bg-clip-padding",
+          currentTheme.bg,
+          currentTheme.border,
+          currentTheme.hover
+        )}
+      >
+        {/* Top Progress Bar */}
+        <div className={cn("w-full h-8 flex items-center justify-between relative px-4 border-b border-black/5", currentTheme.progressBg)}>
+          <div
+            className={cn("absolute top-0 left-0 h-full transition-all duration-1000 ease-out", currentTheme.progressFill)}
+            style={{ width: `${progress}%` }}
+          />
+          <span className="relative z-10 text-[11.5px] font-[800] tracking-wide ml-auto select-none">
+            {Math.round(progress)}%
+          </span>
+        </div>
+
+        <div className={cn("p-5 flex flex-col flex-1", currentTheme.bg)}>
+          <div className="flex items-start justify-between mb-2 mt-1">
+            <h3 className={cn("text-[17px] font-bold capitalize leading-tight", currentTheme.text)}>
+              {company.company} Sheet
+            </h3>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                onPaletteClick({ id: company.company, name: company.company });
+              }}
+              className="p-1.5 hover:bg-black/5 rounded-lg transition-colors"
+            >
+              <Palette className="w-4 h-4 text-slate-400" />
+            </button>
+          </div>
+
+          <p className="text-[13px] text-slate-500 line-clamp-2 flex-1 mb-8 font-medium">
+            The DSA sheet by {company.company} is manually designed to cover almost every concept in Data Structures and Algorithms.
+          </p>
+
+          <div className="flex items-center justify-between pt-4 border-t border-black/5">
+            <div className="flex items-center gap-1.5 text-slate-400">
+              <ListTodo className="w-3.5 h-3.5" /> <span className="text-[12px] font-bold">{totalQuestions} questions</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-emerald-500">
+              <CheckCircle2 className="w-3.5 h-3.5" /> <span className="text-[12px] font-bold">{solvedCount} solved</span>
+            </div>
+          </div>
+        </div>
+      </Link>
+    </div>
+  );
+};
+
 export function DSASheetsClient({
-  dbCompanies,
+  dbCompanies = [],
   followedSheets = [],
   userId,
   completedData = {},
@@ -146,9 +223,11 @@ export function DSASheetsClient({
   statsData = { totalCompleted: 0, completedToday: 0, completedRevisions: 0 },
   starredData = [],
   popularSheets = [],
-  followedPopularIds = []
+  followedPopularIds = [],
+  userCustomSheets = [],
+  initialTab = "Company Wise"
 }: {
-  dbCompanies: any[],
+  dbCompanies?: any[],
   followedSheets?: any[],
   userId?: string | null,
   completedData?: Record<string, number>,
@@ -157,9 +236,13 @@ export function DSASheetsClient({
   statsData?: { totalCompleted: number, completedToday: number, completedRevisions: number },
   starredData?: any[],
   popularSheets?: any[],
-  followedPopularIds?: string[]
+  followedPopularIds?: string[],
+  userCustomSheets?: any[],
+  initialTab?: string
 }) {
-  const [activeTab, setActiveTab] = useState("Company Wise");
+  const router = useRouter();
+  const pathname = usePathname();
+  const activeTab = initialTab || "Company Wise";
   const [search, setSearch] = useState("");
   const [expandedTopics, setExpandedTopics] = useState<Record<string, boolean>>({});
 
@@ -185,6 +268,24 @@ export function DSASheetsClient({
     }
     setFollowedPopular(newFollowed);
     await togglePopularSheetFollow(sheetId);
+  };
+
+  const [customSheets, setCustomSheets] = useState(userCustomSheets || []);
+
+  const handleCreateSheet = async () => {
+    if (!userId) {
+      toast.error("Sign in to create sheets");
+      return;
+    }
+    try {
+      const name = `Untitled Sheet - ${customSheets.length + 1}`;
+      const newSheet = await createCustomSheet(name);
+      setCustomSheets([newSheet as any, ...customSheets]);
+      router.push(`/dsa-sheets/custom/${newSheet.id}`);
+      toast.success("Sheet created!");
+    } catch (error) {
+      toast.error("Failed to create sheet");
+    }
   };
 
   const HIGHLIGHT_THEMES: Record<string, string> = {
@@ -247,7 +348,7 @@ export function DSASheetsClient({
     }
   };
 
-  const [localRevisions, setLocalRevisions] = useState<Record<string, { lastRevised: string, nextRevision: string, status: string }>>(() => {
+  const [localRevisions, setLocalRevisions] = useState<Record<string, { lastRevised: string, nextRevision: string, status?: string }>>(() => {
     const acc: Record<string, any> = {};
     (revisionsData || []).forEach(rev => {
       acc[rev.questionId] = {
@@ -277,7 +378,7 @@ export function DSASheetsClient({
   const handleRevisionChange = (qId: string, field: 'lastRevised' | 'nextRevision', val: string) => {
     setLocalRevisions(prev => ({
       ...prev,
-      [qId]: { ...(prev[qId] || { lastRevised: "", nextRevision: "" }), [field]: val }
+      [qId]: { ...(prev[qId] || { lastRevised: "", nextRevision: "", status: 'Pending' }), [field]: val }
     }));
   };
 
@@ -340,6 +441,20 @@ export function DSASheetsClient({
     }
   };
 
+  const navigateToTab = (tab: string) => {
+    const routeMap: Record<string, string> = {
+      "Company Wise": "/dsa-sheets",
+      "All": "/dsa-sheets/all",
+      "My Sheets": "/dsa-sheets/my-sheets",
+      "Revisions": "/dsa-sheets/revisions",
+      "My Stats": "/dsa-sheets/stats",
+      "Popular": "/dsa-sheets/popular",
+      "Complete DSA": "/dsa-sheets/complete"
+    };
+    const route = routeMap[tab] || "/dsa-sheets";
+    router.push(route);
+  };
+
   const filteredData = (dbCompanies || []).filter(c => c.company && String(c.company).toLowerCase().includes(search.toLowerCase()));
 
   return (
@@ -376,7 +491,7 @@ export function DSASheetsClient({
         {TABS.map(tab => (
           <button
             key={tab}
-            onClick={() => setActiveTab(tab)}
+            onClick={() => navigateToTab(tab)}
             className={cn(
               "whitespace-nowrap px-4 py-2 rounded-xl text-sm font-semibold transition-all border",
               activeTab === tab
@@ -408,7 +523,7 @@ export function DSASheetsClient({
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-slate-100 to-transparent group-hover:via-[#2dd4bf] transition-all"></div>
 
                 <h3 className="text-lg font-bold text-[#1b254b] mb-2 capitalize">{company.company}</h3>
-                <p className="text-sm text-slate-500 leading-relaxed flex-1">
+                <p className="text-sm text-slate-500 leading-relaxed flex-1 line-clamp-2">
                   Master your interviews with this comprehensive collection of {company.count} previously asked questions at {String(company.company).charAt(0).toUpperCase() + String(company.company).slice(1)}.
                 </p>
 
@@ -436,125 +551,148 @@ export function DSASheetsClient({
             )}
           </div>
         ) : activeTab === "My Sheets" ? (
-          <div className="space-y-6">
-            <h3 className="text-xl font-bold text-slate-800">Followed Sheets</h3>
-            {!userId ? (
-              <div className="py-12 text-center bg-slate-50 border border-slate-200 rounded-2xl">
-                <p className="text-slate-600 font-medium">Please sign in to view your followed sheets.</p>
-                <Link href="/sign-in" className="mt-4 inline-block px-6 py-2 bg-[#1b254b] text-white rounded-lg font-bold">Sign In</Link>
-              </div>
-            ) : followedSheets.length === 0 ? (
-              <div className="py-12 text-center bg-slate-50 border border-slate-200 rounded-2xl">
-                <p className="text-slate-600 font-medium">You haven't followed any sheets yet.</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {dbCompanies.filter(c => followedSheets.some(f => f.companyId.toLowerCase() === c.company.toLowerCase())).map(company => {
-                  const solvedCount = completedData[company.company.toLowerCase()] || 0;
-                  const totalCount = company.count;
-                  const progressPct = Math.max(0, Math.min(100, Math.round((solvedCount / Math.max(1, totalCount)) * 100)));
-                  const curThemeName = localThemes[company.company.toLowerCase()] || "default";
-                  const currentTheme = SHEET_THEMES[curThemeName] || SHEET_THEMES.default;
+          <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* Followed Sheets Section */}
+            <div className="space-y-6">
+              <h2 className="text-2xl font-black text-[#1b254b]">Followed Sheets</h2>
+              {!userId ? (
+                <div className="py-12 text-center bg-white border border-slate-200 border-dashed rounded-[32px]">
+                  <p className="text-slate-500 font-bold mb-6">Please sign in to view your followed sheets.</p>
+                  <Link href="/sign-in" className="inline-block px-8 py-3 bg-[#1b254b] text-white rounded-2xl font-black shadow-lg shadow-black/10 transition-all hover:scale-105 active:scale-95">Sign In</Link>
+                </div>
+              ) : (followedSheets.length === 0 && followedPopular.size === 0) ? (
+                <div className="py-20 flex flex-col items-center justify-center bg-slate-50/50 rounded-[32px] border border-dashed border-slate-200">
+                  <div className="p-4 bg-white rounded-2xl shadow-sm mb-4">
+                    <Star className="w-8 h-8 text-slate-300" />
+                  </div>
+                  <p className="text-slate-400 font-bold">You haven't followed any sheets yet.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {dbCompanies.filter(c => followedSheets.some(f => f.companyId.toLowerCase() === c.company.toLowerCase())).map(company => {
+                    const followed = followedSheets.find(f => f.companyId.toLowerCase() === company.company.toLowerCase());
+                    const solvedCount = completedData[company.company.toLowerCase()] || 0;
+                    const totalQuestions = company.count;
+                    const progress = (solvedCount / totalQuestions) * 100;
 
-                  return (
-                    <div key={company.id} className="relative group">
-                      <Link
-                        href={`/dsa-sheets/${company.company}`}
-                        className={cn(
-                          "rounded-[16px] border hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col h-full relative overflow-hidden shadow-sm bg-clip-padding",
-                          currentTheme.bg,
-                          currentTheme.border,
-                          currentTheme.hover
-                        )}
-                      >
-                        {/* Top Progress Bar */}
-                        <div className={cn("w-full h-8 flex items-center justify-between relative px-4 border-b border-black/5", currentTheme.progressBg)}>
-                          <div
-                            className={cn("absolute top-0 left-0 h-full transition-all duration-1000 ease-out", currentTheme.progressFill)}
-                            style={{ width: `${progressPct}%` }}
-                          ></div>
-                          <span className="relative z-10 text-[10px] font-bold text-transparent select-none">P</span>
-                          <span className={cn(
-                            "relative z-10 text-[11.5px] font-[800] tracking-wide shrink-0 select-none",
-                            progressPct > 90 ? "text-white" : currentTheme.text
-                          )}>
-                            {progressPct}%
-                          </span>
-                        </div>
+                    return (
+                      <SheetCard
+                        key={company.id}
+                        company={company}
+                        followed={followed}
+                        solvedCount={solvedCount}
+                        totalQuestions={totalQuestions}
+                        progress={progress}
+                        onPaletteClick={(val) => setPaletteOpen(val.id)}
+                      />
+                    );
+                  })}
 
-                        <div className={cn("p-5 flex flex-col flex-1", currentTheme.bg)}>
-                          <div className="flex items-start justify-between mb-4 mt-1">
-                            <h3 className={cn("text-[17px] font-bold capitalize leading-tight", currentTheme.text)}>
-                              {company.company} Sheet
-                            </h3>
-                            <span className="text-[12px] font-medium text-slate-500 flex items-center gap-1.5 shrink-0">
-                              <ListTodo className="w-3.5 h-3.5 text-slate-400" /> {Math.floor(company.count * 14.5)} Followers
+                  {/* Followed Popular Sheets */}
+                  {popularSheets.filter(ps => followedPopular.has(ps.id)).map(sheet => {
+                    const totalQuestions = (sheet.questions || []).length;
+                    const solvedCount = (sheet.questions || []).filter((sq: any) => completed.has(sq.question.id)).length;
+                    const progress = totalQuestions > 0 ? (solvedCount / totalQuestions) * 100 : 0;
+
+                    return (
+                      <div key={sheet.id} className="relative group">
+                        <Link
+                          href={`/dsa-sheets/popular/${sheet.slug}`}
+                          className="rounded-[24px] border border-slate-200 hover:border-[#2dd4bf] hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col h-full relative overflow-hidden shadow-sm bg-white"
+                        >
+                          <div className="w-full h-8 flex items-center justify-between relative px-4 bg-[#f0fdfa] border-b border-black/5">
+                            <div className="absolute top-0 left-0 h-full bg-[#2dd4bf] transition-all duration-1000" style={{ width: `${progress}%` }} />
+                            <span className="relative z-10 text-[11.5px] font-[800] tracking-wide ml-auto">
+                              {Math.round(progress)}%
                             </span>
                           </div>
+                          <div className="p-5 flex flex-col flex-1 bg-white">
+                            <h3 className="text-[17px] font-bold text-[#1e293b] capitalize leading-tight mb-2">{sheet.name}</h3>
+                            <p className="text-[13px] text-slate-500 line-clamp-2 mb-8 flex-1">{sheet.description}</p>
+                            <div className="flex items-center justify-between pt-4 border-t border-slate-50">
+                              <div className="flex items-center gap-1.5 text-slate-400">
+                                <ListTodo className="w-3.5 h-3.5" /> <span className="text-[12px] font-bold">{totalQuestions} Questions</span>
+                              </div>
+                              <div className="flex items-center gap-1.5 text-emerald-500">
+                                <CheckCircle2 className="w-3.5 h-3.5" /> <span className="text-[12px] font-bold">{solvedCount} Solved</span>
+                              </div>
+                            </div>
+                          </div>
+                        </Link>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
 
-                          <p className="text-[13px] text-slate-500 leading-relaxed font-medium line-clamp-2 flex-1 mb-6">
-                            The DSA sheet by {company.company} is manually designed to cover almost every concept in Data Structures and Algorithms...
-                          </p>
+            {/* Custom Sheets Section */}
+            <div className="space-y-6 pt-12 border-t border-slate-100">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-black text-[#1b254b]">Custom Sheets</h2>
+                  <p className="text-[13px] font-bold text-slate-400 mt-1 uppercase tracking-wider">Your personal collections</p>
+                </div>
+                <button
+                  onClick={handleCreateSheet}
+                  className="px-6 py-2.5 bg-[#1b254b] hover:bg-slate-800 text-white font-black rounded-xl transition-all shadow-lg shadow-black/10 flex items-center gap-2 active:scale-95"
+                >
+                  <Plus className="w-5 h-5 text-[#2dd4bf]" /> Create New Sheet
+                </button>
+              </div>
 
-                          <div className="flex items-center justify-between pt-4 border-t border-slate-200/50">
-                            <span className="flex items-center gap-1.5 text-[12px] font-bold text-[#64748b]">
-                              <ListTodo className="w-4 h-4 text-slate-400" /> {totalCount} questions
-                            </span>
-                            <span className="flex items-center gap-1.5 text-[12px] font-bold text-emerald-600 bg-emerald-50/50 px-2 py-1 rounded-md">
-                              <CheckCircle2 className="w-4 h-4 text-emerald-500 stroke-[2.5]" /> {solvedCount} solved
-                            </span>
+              {!userId ? (
+                <div className="py-12 flex flex-col items-center justify-center bg-slate-50/50 rounded-[32px] border border-dashed border-slate-200">
+                  <p className="text-slate-400 font-bold italic">Sign in to start creating custom sheets</p>
+                </div>
+              ) : (customSheets || []).length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {customSheets.map(sheet => {
+                    const total = (sheet.questions || []).length;
+                    const solved = (sheet.questions || []).filter((q: any) => completed.has(q.question.id)).length;
+                    const progress = total > 0 ? (solved / total) * 100 : 0;
+
+                    return (
+                      <Link
+                        key={sheet.id}
+                        href={`/dsa-sheets/custom/${sheet.id}`}
+                        className="rounded-[24px] border border-slate-200 hover:border-[#2dd4bf] hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col h-full relative overflow-hidden shadow-sm bg-white"
+                      >
+                        <div className="w-full h-8 flex items-center justify-between relative px-4 bg-[#f0fdfa] border-b border-black/5">
+                          <div className="absolute top-0 left-0 h-full bg-[#2dd4bf] transition-all duration-1000" style={{ width: `${progress}%` }} />
+                          <span className="relative z-10 text-[11.5px] font-[800] tracking-wide ml-auto">
+                            {Math.round(progress)}%
+                          </span>
+                        </div>
+                        <div className="p-5 flex flex-col flex-1 bg-white">
+                          <h3 className="text-[17px] font-bold text-[#1e293b] capitalize leading-tight mb-2 group-hover:text-[#2dd4bf] transition-colors">{sheet.name}</h3>
+                          <p className="text-[13px] text-slate-500 line-clamp-2 mb-8 flex-1 font-medium">{sheet.description || "Personal collection of DSA problems."}</p>
+                          <div className="flex items-center justify-between pt-4 border-t border-slate-50">
+                            <div className="flex items-center gap-1.5 text-slate-400">
+                              <ListTodo className="w-3.5 h-3.5" /> <span className="text-[12px] font-bold">{total} Questions</span>
+                            </div>
+                            <div className="flex items-center gap-1.5 text-emerald-500">
+                              <CheckCircle2 className="w-3.5 h-3.5" /> <span className="text-[12px] font-bold">{solved} Solved</span>
+                            </div>
                           </div>
                         </div>
                       </Link>
-                    </div>
-                  );
-                })}
-
-                {/* Followed Popular Sheets */}
-                {popularSheets.filter(ps => followedPopular.has(ps.id)).map(sheet => {
-                  const totalQuestions = sheet.questions.length;
-                  const solvedCount = sheet.questions.filter((sq: any) => completed.has(sq.question.id || sq.question._id)).length;
-                  const progress = totalQuestions > 0 ? (solvedCount / totalQuestions) * 100 : 0;
-
-                  return (
-                    <div key={sheet.id} className="relative group">
-                      <Link
-                        href={`/dsa-sheets/popular/${sheet.slug}`}
-                        className="group bg-white rounded-[24px] border border-slate-200 overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 cursor-pointer flex flex-col h-full"
-                      >
-                      {/* Vibrant Progress Header */}
-                      <div className={cn(
-                        "h-12 flex items-center justify-between px-6 relative overflow-hidden transition-colors duration-500",
-                        progress === 100 ? "bg-[#2dd4bf]" : progress > 50 ? "bg-[#e0fdf9]" : "bg-[#f8fafc]"
-                      )}>
-                        <div 
-                          className="absolute top-0 left-0 h-full bg-[#ccfbf1] transition-all duration-1000 ease-out opacity-40"
-                          style={{ width: `${progress}%` }}
-                        />
-                        <div className="z-10 w-full flex justify-end">
-                           <span className={cn(
-                             "text-[12px] font-black tracking-tighter",
-                             progress === 100 ? "text-white" : "text-slate-800"
-                           )}>{Math.round(progress)}%</span>
-                        </div>
-                      </div>
-                      
-                      <div className="p-6 flex flex-col flex-1">
-                        <div className="flex items-start justify-between mb-3">
-                          <h3 className="text-[18px] font-black text-slate-800 tracking-tight leading-tight pr-4">
-                            {sheet.name}
-                          </h3>
-                        </div>
-                        <p className="text-[12px] text-slate-500 font-medium leading-relaxed mb-6">
-                          {sheet.description || "The DSA sheet curated to cover almost every concept in Data Structures & Algorithms."}
-                        </p>
-                      </div>
-                    </Link>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="py-20 flex flex-col items-center justify-center bg-white rounded-[40px] border border-dashed border-slate-200 shadow-sm group">
+                  <div className="p-6 bg-slate-50 rounded-[24px] transition-all group-hover:bg-orange-50 mb-6">
+                    <Plus className="w-10 h-10 text-slate-300 group-hover:text-orange-400 group-hover:rotate-90 transition-all duration-500" />
                   </div>
-                );
-              })}
-              </div>
-            )}
+                  <h3 className="text-xl font-black text-[#1b254b] mb-2 tracking-tight">No custom sheets yet</h3>
+                  <p className="text-[14px] font-bold text-slate-400 mb-8 max-w-[280px] text-center">Create your own collection of questions to track your personal goals.</p>
+                  <button onClick={handleCreateSheet} className="text-orange-600 font-black hover:scale-105 transition-all active:scale-95 flex items-center gap-2 bg-orange-50 px-8 py-3 rounded-2xl border border-orange-100">
+                    Get Started <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         ) : activeTab === "Revisions" ? (
           <div className="space-y-8 animate-in fade-in duration-300">
@@ -818,42 +956,43 @@ export function DSASheetsClient({
                   <div key={sheet.id} className="relative group">
                     <Link
                       href={`/dsa-sheets/popular/${sheet.slug}`}
-                      className="group bg-white rounded-[24px] border border-slate-200 overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 cursor-pointer flex flex-col h-full"
+                      className="rounded-[16px] border border-slate-200 hover:border-[#2dd4bf] hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col h-full relative overflow-hidden shadow-sm bg-white"
                     >
-                      {/* Vibrant Progress Header */}
-                      <div className={cn(
-                        "h-14 flex items-center justify-between px-6 relative overflow-hidden transition-colors duration-500",
-                        progress === 100 ? "bg-[#2dd4bf]" : progress > 50 ? "bg-[#e0fdf9]" : "bg-[#f8fafc]"
-                      )}>
-                        <div 
-                          className="absolute top-0 left-0 h-full bg-[#ccfbf1] transition-all duration-1000 ease-out opacity-40"
+                      {/* Top Progress Bar */}
+                      <div className="w-full h-8 flex items-center justify-between relative px-4 bg-[#f0fdfa] border-b border-black/5">
+                        <div
+                          className="absolute top-0 left-0 h-full bg-[#2dd4bf] transition-all duration-1000 ease-out"
                           style={{ width: `${progress}%` }}
                         />
-                        <div className="z-10 w-full flex justify-end">
-                           <span className={cn(
-                             "text-[13px] font-black tracking-tighter",
-                             progress === 100 ? "text-white" : "text-slate-800"
-                           )}>{Math.round(progress)}%</span>
-                        </div>
+                        <span className="relative z-10 text-[10px] font-bold text-transparent select-none">P</span>
+                        <span className={cn(
+                          "relative z-10 text-[11.5px] font-[800] tracking-wide shrink-0",
+                          progress > 90 ? "text-white" : "text-[#1e293b]"
+                        )}>
+                          {Math.round(progress)}%
+                        </span>
                       </div>
-                      
-                      <div className="p-6 flex flex-col flex-1">
-                        <div className="flex items-start justify-between mb-4">
-                          <h3 className="text-[20px] font-black text-slate-800 tracking-tight transition-colors group-hover:text-[#2dd4bf] leading-tight pr-4">
+
+                      <div className="p-5 flex flex-col flex-1 bg-white">
+                        <div className="flex items-start justify-between mb-4 mt-1">
+                          <h3 className="text-[17px] font-bold text-[#1e293b] capitalize leading-tight">
                             {sheet.name}
                           </h3>
+                          <span className="text-[12px] font-medium text-slate-500 flex items-center gap-1.5 shrink-0">
+                            <ListTodo className="w-3.5 h-3.5 text-slate-400" /> {Math.floor(totalQuestions * 3.7 + 124)} Followers
+                          </span>
                         </div>
-                        <p className="text-[13px] text-slate-500 font-medium leading-relaxed mb-8 flex-1">
-                          {sheet.description}
+                        <p className="text-[13px] text-slate-500 leading-relaxed font-medium line-clamp-2 mb-8 flex-1">
+                          {sheet.description || "The DSA sheet curated to cover almost every concept in Data Structures & Algorithms."}
                         </p>
 
                         <div className="flex items-center justify-between pt-4 border-t border-slate-50">
                           <div className="flex items-center gap-2">
-                             <span className="text-[12px] font-bold text-slate-600">{totalQuestions} questions</span>
+                            <span className="text-[12px] font-bold text-slate-600">{totalQuestions} questions</span>
                           </div>
-                          <div className="bg-[#f0fdfa] text-[#22c55e] px-2.5 py-1 rounded-full flex items-center gap-1.5 border border-[#ccfbf1]">
-                             <CheckCircle2 className="w-3.5 h-3.5" />
-                             <span className="text-[11px] font-black uppercase tracking-tight">{solvedCount} solved</span>
+                          <div className="bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-full flex items-center gap-1.5 border border-emerald-100">
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            <span className="text-[11px] font-black uppercase tracking-tight">{solvedCount} solved</span>
                           </div>
                         </div>
                       </div>

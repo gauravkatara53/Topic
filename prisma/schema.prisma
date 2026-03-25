@@ -33,6 +33,8 @@ model User {
   completedQuestions      UserCompletedQuestion[]
   starredQuestions        UserStarredQuestion[]
   highlightedQuestions    UserQuestionHighlight[]
+  questionNotes           UserQuestionNote[]
+  customSheets            UserCustomSheet[]
 }
 
 model Announcement {
@@ -208,6 +210,7 @@ model PopularQuestion {
   topics      String[]
 
   sheets PopularSheetQuestion[]
+  customSheetQuestions CustomSheetQuestion[]
 
   @@map("questions")
 }
@@ -224,4 +227,42 @@ model PopularSheetQuestion {
   question PopularQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@map("sheetquestions")
+}
+
+model UserQuestionNote {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId String   
+  content    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([userId, questionId])
+}
+
+model UserCustomSheet {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  colorTheme  String?  @default("default")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  questions   CustomSheetQuestion[]
+}
+
+model CustomSheetQuestion {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  sheetId    String   @db.ObjectId
+  questionId String   @db.ObjectId
+  topic      String?
+  subTopic   String?
+  
+  sheet    UserCustomSheet @relation(fields: [sheetId], references: [id], onDelete: Cascade)
+  question PopularQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@map("customsheetquestions")
 }
