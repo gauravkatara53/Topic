@@ -191,10 +191,13 @@ export function CustomSheetClient({
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10 animate-in fade-in duration-700">
       {/* Breadcrumbs */}
       <nav className="flex items-center gap-2 text-[13px] font-bold text-slate-400">
-        <Link href="/dsa-sheets" className="flex items-center gap-1 hover:text-[#1b254b] transition-colors">
+        <button 
+          onClick={() => router.back()} 
+          className="flex items-center gap-1 hover:text-[#1b254b] transition-colors outline-none"
+        >
           <ChevronLeft className="w-4 h-4" />
           Back to Sheets
-        </Link>
+        </button>
         <span className="text-slate-200">/</span>
         <span className="text-[#1b254b]">{sheet.name}</span>
       </nav>
