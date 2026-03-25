@@ -8,6 +8,9 @@ import { cn } from "@/lib/utils";
 import { toggleQuestionCompletion, updateQuestionRevision, updateRevisionStatus, updateFollowedSheetTheme, toggleQuestionStar, updateQuestionHighlight, togglePopularSheetFollow } from "@/actions/dsa-sheets";
 import { toast } from "sonner";
 import { createCustomSheet } from "@/actions/custom-sheets";
+import { BulkImportModal } from "./bulk-import-modal";
+import { QuestionDrawer } from "./question-drawer";
+import { RevisionPicker } from "./revision-picker";
 import { format } from "date-fns";
 
 const TABS = [
@@ -1010,30 +1013,23 @@ export function DSASheetsClient({
       </div>
 
       {revisionModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl w-full max-w-sm p-6 shadow-2xl animate-in zoom-in-95 fade-in duration-200">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={() => setRevisionModalOpen(null)}
+        >
+          <div
+            className="bg-white rounded-2xl w-full max-w-sm p-6 shadow-2xl animate-in zoom-in-95 fade-in duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 className="text-xl font-black text-slate-800 mb-1 tracking-tight">Revision Dates</h3>
             <p className="text-xs text-slate-500 mb-5 font-medium line-clamp-2">{revisionModalOpen.title}</p>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Last Revised</label>
-                <input
-                  type="date"
-                  value={localRevisions[revisionModalOpen.id]?.lastRevised || ""}
-                  onChange={(e) => handleRevisionChange(revisionModalOpen.id, 'lastRevised', e.target.value)}
-                  className="w-full text-sm font-medium text-slate-700 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20 transition-all cursor-pointer"
-                />
-              </div>
-              <div>
-                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Next Revision</label>
-                <input
-                  type="date"
-                  value={localRevisions[revisionModalOpen.id]?.nextRevision || ""}
-                  onChange={(e) => handleRevisionChange(revisionModalOpen.id, 'nextRevision', e.target.value)}
-                  className="w-full text-sm font-medium text-slate-700 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20 transition-all cursor-pointer"
-                />
-              </div>
+            <div className="mt-4">
+              <RevisionPicker
+                lastRevised={localRevisions[revisionModalOpen.id]?.lastRevised || ""}
+                nextRevision={localRevisions[revisionModalOpen.id]?.nextRevision || ""}
+                onChange={(field, val) => handleRevisionChange(revisionModalOpen.id, field, val)}
+              />
             </div>
 
             <div className="mt-6 flex items-center gap-3 justify-end">

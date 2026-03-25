@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { toggleFollowSheet, updateQuestionRevision, toggleQuestionCompletion, toggleQuestionStar, updateQuestionHighlight, updateQuestionNote } from "@/actions/dsa-sheets";
 import { toast } from "sonner";
 import { QuestionDrawer } from "../../_components/question-drawer";
+import { RevisionPicker } from "../../_components/revision-picker";
 
 // Dummy Data
 const SHEET_DATA = {
@@ -684,40 +685,33 @@ export function CompanySheetClient({
 
       {/* Revision Modal Popup */}
       {revisionModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl w-full max-w-sm p-6 shadow-2xl animate-in zoom-in-95 fade-in duration-200">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm"
+          onClick={() => setRevisionModalOpen(null)}
+        >
+          <div 
+            className="bg-white rounded-2xl w-full max-w-sm p-6 shadow-2xl animate-in zoom-in-95 fade-in duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 className="text-xl font-black text-slate-800 mb-1 tracking-tight">Revision Schedule</h3>
             <p className="text-xs text-slate-500 mb-5 font-medium line-clamp-2">{revisionModalOpen.title}</p>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Last Revised</label>
-                <input
-                  type="date"
-                  value={(() => {
+            <div className="mt-4 text-left">
+               <RevisionPicker 
+                  lastRevised={(() => {
                     const rev = localRevisions[revisionModalOpen.id];
                     if (!rev?.lastRevised) return "";
                     const d = new Date(rev.lastRevised);
                     return isNaN(d.getTime()) ? "" : d.toISOString().split('T')[0];
                   })()}
-                  onChange={(e) => handleRevisionChange(revisionModalOpen.id, 'lastRevised', e.target.value)}
-                  className="w-full text-sm font-medium text-slate-700 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-[#2dd4bf] focus:ring-2 focus:ring-[#2dd4bf]/20 transition-all cursor-pointer"
-                />
-              </div>
-              <div>
-                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Next Revision</label>
-                <input
-                  type="date"
-                  value={(() => {
+                  nextRevision={(() => {
                     const rev = localRevisions[revisionModalOpen.id];
                     if (!rev?.nextRevision) return "";
                     const d = new Date(rev.nextRevision);
                     return isNaN(d.getTime()) ? "" : d.toISOString().split('T')[0];
                   })()}
-                  onChange={(e) => handleRevisionChange(revisionModalOpen.id, 'nextRevision', e.target.value)}
-                  className="w-full text-sm font-medium text-slate-700 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-[#2dd4bf] focus:ring-2 focus:ring-[#2dd4bf]/20 transition-all cursor-pointer"
-                />
-              </div>
+                  onChange={(field, val) => handleRevisionChange(revisionModalOpen.id, field, val)}
+               />
             </div>
 
             <div className="mt-6 flex items-center justify-between">
