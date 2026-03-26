@@ -110,20 +110,20 @@ export default function CGLeaderboardPage() {
 
     const getRankBadge = (rank: number) => {
         if (rank === 1) return <Medal className="h-5 w-5 text-yellow-500 fill-yellow-500/20" />;
-        if (rank === 2) return <Medal className="h-5 w-5 text-slate-400 fill-slate-400/20" />;
-        if (rank === 3) return <Medal className="h-5 w-5 text-amber-700 fill-amber-700/20" />;
-        return <span className="text-slate-500 font-semibold w-5 text-center">#{rank}</span>;
+        if (rank === 2) return <Medal className="h-5 w-5 text-slate-400 fill-slate-400/20 dark:text-slate-300 dark:fill-slate-300/20" />;
+        if (rank === 3) return <Medal className="h-5 w-5 text-amber-700 fill-amber-700/20 dark:text-amber-500 dark:fill-amber-500/20" />;
+        return <span className="text-slate-500 dark:text-slate-400 font-semibold w-5 text-center">#{rank}</span>;
     };
 
     return (
         <div className="max-w-7xl mx-auto space-y-6">
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold flex items-center gap-2 text-slate-800">
+                    <h1 className="text-2xl font-bold flex items-center gap-2 text-slate-800 dark:text-slate-100">
                         <Trophy className="h-7 w-7 text-teal-500" />
                         CGPA Leaderboard
                     </h1>
-                    <p className="text-slate-500 text-sm mt-1">
+                    <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
                         Top academic performers across all batches and branches.
                     </p>
                 </div>
@@ -131,46 +131,46 @@ export default function CGLeaderboardPage() {
 
             {/* Statistics Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                    <div className="h-12 w-12 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center">
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700/60 shadow-sm flex items-center gap-4">
+                    <div className="h-12 w-12 bg-blue-50 dark:bg-blue-500/10 text-blue-500 dark:text-blue-400 rounded-full flex items-center justify-center">
                         <Users className="h-6 w-6" />
                     </div>
                     <div>
-                        <p className="text-sm text-slate-500 font-medium">Total Students</p>
-                        <p className="text-2xl font-bold text-slate-800">{filteredData.length}</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Total Students</p>
+                        <p className="text-2xl font-bold text-slate-800 dark:text-slate-100">{filteredData.length}</p>
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                    <div className="h-12 w-12 bg-teal-50 text-teal-500 rounded-full flex items-center justify-center">
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700/60 shadow-sm flex items-center gap-4">
+                    <div className="h-12 w-12 bg-teal-50 dark:bg-teal-500/10 text-teal-500 dark:text-teal-400 rounded-full flex items-center justify-center">
                         <TrendingUp className="h-6 w-6" />
                     </div>
                     <div>
-                        <p className="text-sm text-slate-500 font-medium">Highest CGPA</p>
-                        <p className="text-2xl font-bold text-slate-800">{highestCgpa?.toFixed(2) || "0.00"}</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Highest CGPA</p>
+                        <p className="text-2xl font-bold text-slate-800 dark:text-slate-100">{highestCgpa?.toFixed(2) || "0.00"}</p>
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                    <div className="h-12 w-12 bg-purple-50 text-purple-500 rounded-full flex items-center justify-center">
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700/60 shadow-sm flex items-center gap-4">
+                    <div className="h-12 w-12 bg-purple-50 dark:bg-purple-500/10 text-purple-500 dark:text-purple-400 rounded-full flex items-center justify-center">
                         <Calculator className="h-6 w-6" />
                     </div>
                     <div>
-                        <p className="text-sm text-slate-500 font-medium">Average CGPA</p>
-                        <p className="text-2xl font-bold text-slate-800">{averageCgpa.toFixed(2)}</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Average CGPA</p>
+                        <p className="text-2xl font-bold text-slate-800 dark:text-slate-100">{averageCgpa.toFixed(2)}</p>
                     </div>
                 </div>
             </div>
 
             {/* Filters and Search */}
-            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-4 justify-between items-center">
+            <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700/60 shadow-sm flex flex-col md:flex-row gap-4 justify-between items-center">
                 <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
                     <div className="w-full sm:w-40">
                         <Select value={filterBatch} onValueChange={(v) => { setFilterBatch(v); setCurrentPage(1); }}>
-                            <SelectTrigger>
+                            <SelectTrigger className="bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-700/60 text-slate-900 dark:text-slate-100">
                                 <SelectValue placeholder="Batch" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100">
                                 <SelectItem value="All">All Batches</SelectItem>
                                 {uniqueBatches.map(batch => (
                                     <SelectItem key={batch} value={batch}>{batch}</SelectItem>
@@ -181,10 +181,10 @@ export default function CGLeaderboardPage() {
 
                     <div className="w-full sm:w-40">
                         <Select value={filterBranch} onValueChange={(v) => { setFilterBranch(v); setCurrentPage(1); }}>
-                            <SelectTrigger>
+                            <SelectTrigger className="bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-700/60 text-slate-900 dark:text-slate-100">
                                 <SelectValue placeholder="Branch" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100">
                                 <SelectItem value="All">All Branches</SelectItem>
                                 {uniqueBranches.map(branch => (
                                     <SelectItem key={branch} value={branch}>{branch}</SelectItem>
@@ -195,21 +195,21 @@ export default function CGLeaderboardPage() {
                 </div>
 
                 <div className="relative w-full md:w-72 mt-4 md:mt-0">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-500" />
                     <input
                         type="text"
                         placeholder="Search by Name or Reg No..."
                         value={searchTerm}
                         onChange={handleSearchChange}
-                        className="w-full pl-9 pr-4 py-2 bg-slate-50 hover:bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all shadow-sm"
+                        className="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-900/50 hover:bg-white dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700/60 rounded-lg text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all shadow-sm"
                     />
                 </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700/60 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm text-left">
-                        <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-medium">
+                        <thead className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700/60 text-slate-500 dark:text-slate-400 font-medium">
                             <tr>
                                 <th className="px-6 py-4 w-20 text-center">Rank</th>
                                 <th className="px-6 py-4">Student</th>
@@ -219,34 +219,34 @@ export default function CGLeaderboardPage() {
                                 <th className="px-6 py-4 text-right">CGPA</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100">
+                        <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
                             {paginatedData.length > 0 ? (
                                 paginatedData.map((student, index) => {
                                     const currentRank = startIndex + index + 1;
                                     return (
-                                        <tr key={student.Regn} className="hover:bg-slate-50/50 transition-colors group">
-                                            <td className="px-6 py-4 text-center flex justify-center items-center h-full">
+                                        <tr key={student.Regn} className="hover:bg-slate-50/50 dark:hover:bg-slate-700/50 transition-colors group">
+                                            <td className="px-6 py-4 text-center flex justify-center items-center h-full text-slate-700 dark:text-slate-300">
                                                 {getRankBadge(currentRank)}
                                             </td>
                                             <td className="px-6 py-4 border-l-2 border-transparent group-hover:border-teal-400 transition-all">
-                                                <div className="font-semibold text-slate-800 flex items-center gap-2">
+                                                <div className="font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                                                     {student.Name || "Unknown"}
-                                                    {student.GlobalRank === 1 && <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold tracking-wider bg-yellow-100 text-yellow-700">#1 GLOBAL</span>}
+                                                    {student.GlobalRank === 1 && <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold tracking-wider bg-yellow-100 text-yellow-700 dark:bg-yellow-500/20 dark:text-yellow-400">#1 GLOBAL</span>}
                                                 </div>
-                                                <div className="text-xs text-slate-400 sm:hidden mt-0.5">{student.Regn}</div>
+                                                <div className="text-xs text-slate-400 dark:text-slate-500 sm:hidden mt-0.5">{student.Regn}</div>
                                             </td>
-                                            <td className="px-6 py-4 text-slate-500 hidden sm:table-cell font-mono text-xs">
+                                            <td className="px-6 py-4 text-slate-500 dark:text-slate-400 hidden sm:table-cell font-mono text-xs">
                                                 {student.Regn}
                                             </td>
                                             <td className="px-6 py-4 hidden md:table-cell">
-                                                <span className="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600">
+                                                <span className="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
                                                     {extractBranch(student.Regn)}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-4 text-center text-slate-500 font-medium">
+                                            <td className="px-6 py-4 text-center text-slate-500 dark:text-slate-400 font-medium">
                                                 {student.Sgpa?.toFixed(2) || "-"}
                                             </td>
-                                            <td className="px-6 py-4 text-right font-bold text-teal-600">
+                                            <td className="px-6 py-4 text-right font-bold text-teal-600 dark:text-teal-400">
                                                 {student.Cgpa?.toFixed(2) || "-"}
                                             </td>
                                         </tr>
@@ -254,7 +254,7 @@ export default function CGLeaderboardPage() {
                                 })
                             ) : (
                                 <tr>
-                                    <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
+                                    <td colSpan={6} className="px-6 py-12 text-center text-slate-500 dark:text-slate-400">
                                         No results found
                                     </td>
                                 </tr>
@@ -265,26 +265,26 @@ export default function CGLeaderboardPage() {
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                    <div className="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
-                        <p className="text-xs text-slate-500">
-                            Showing <span className="font-medium text-slate-800">{startIndex + 1}</span> to{" "}
-                            <span className="font-medium text-slate-800">
+                    <div className="p-4 border-t border-slate-200 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-900/50 flex items-center justify-between">
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                            Showing <span className="font-medium text-slate-800 dark:text-slate-200">{startIndex + 1}</span> to{" "}
+                            <span className="font-medium text-slate-800 dark:text-slate-200">
                                 {Math.min(startIndex + ITEMS_PER_PAGE, filteredData.length)}
                             </span>{" "}
-                            of <span className="font-medium text-slate-800">{filteredData.length}</span> students
+                            of <span className="font-medium text-slate-800 dark:text-slate-200">{filteredData.length}</span> students
                         </p>
                         <div className="flex gap-1">
                             <button
                                 onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                                 disabled={currentPage === 1}
-                                className="p-1 px-3 text-sm font-medium rounded-md border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
+                                className="p-1 px-3 text-sm font-medium rounded-md border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
                             >
                                 <ChevronLeft className="h-4 w-4" /> Prev
                             </button>
                             <button
                                 onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                                 disabled={currentPage === totalPages}
-                                className="p-1 px-3 text-sm font-medium rounded-md border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
+                                className="p-1 px-3 text-sm font-medium rounded-md border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
                             >
                                 Next <ChevronRight className="h-4 w-4" />
                             </button>

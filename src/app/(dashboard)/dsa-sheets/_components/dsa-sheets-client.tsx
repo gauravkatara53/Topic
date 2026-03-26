@@ -16,11 +16,11 @@ import { PlatformsView } from "./platforms-view";
 import { format } from "date-fns";
 
 const TABS = [
-  "Company Wise", "All", "Popular", "My Sheets", "Revisions", "My Stats", "Portfolio", "Platforms"
+  "Company Wise", "All", "Popular", "My Sheets", "Revisions", "My Stats"
 ];
 
 const SHEET_THEMES: Record<string, { bg: string, progressBg: string, progressFill: string, text: string, hover: string, border: string }> = {
-  default: { bg: "bg-white", border: "border-slate-200", progressBg: "bg-[#f0fdfa]", progressFill: "bg-[#2dd4bf]", text: "text-[#1e293b]", hover: "hover:border-[#2dd4bf]" },
+  default: { bg: "bg-white dark:bg-slate-800", border: "border-slate-200 dark:border-slate-700", progressBg: "bg-[#f0fdfa] dark:bg-slate-900", progressFill: "bg-[#2dd4bf]", text: "text-[#1e293b] dark:text-white", hover: "hover:border-[#2dd4bf] dark:hover:border-[#2dd4bf]" },
   rose: {
     bg: "bg-rose-900/20",
     border: "border-rose-500",
@@ -174,12 +174,12 @@ const SheetCard = ({
         )}
       >
         {/* Top Progress Bar */}
-        <div className={cn("w-full h-8 flex items-center justify-between relative px-4 border-b border-black/5", currentTheme.progressBg)}>
+        <div className={cn("w-full h-8 flex items-center justify-between relative px-4 border-b border-black/5 dark:border-white/5", currentTheme.progressBg)}>
           <div
             className={cn("absolute top-0 left-0 h-full transition-all duration-1000 ease-out", currentTheme.progressFill)}
             style={{ width: `${progress}%` }}
           />
-          <span className="relative z-10 text-[11.5px] font-[800] tracking-wide ml-auto select-none">
+          <span className="relative z-10 text-[11.5px] font-[800] tracking-wide ml-auto select-none dark:text-white">
             {Math.round(progress)}%
           </span>
         </div>
@@ -493,8 +493,8 @@ export function DSASheetsClient({
       {/* Header & Search */}
       <div className="flex flex-col md:flex-row gap-8 justify-between items-start md:items-center">
         <div>
-          <h1 className="text-3xl font-black text-[#1b254b]">Track Coding Sheets in One Place</h1>
-          <p className="text-slate-500 mt-1">Practice with exclusive, previously asked interview questions from top tech companies</p>
+          <h1 className="text-3xl font-black text-[#1b254b] dark:text-white">Track Coding Sheets in One Place</h1>
+          <p className="text-slate-500 dark:text-slate-400 mt-1">Practice with exclusive, previously asked interview questions from top tech companies</p>
 
           <div className="relative mt-6 max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -503,7 +503,7 @@ export function DSASheetsClient({
               placeholder="Search any coding sheet"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#2dd4bf] focus:ring-1 focus:ring-[#2dd4bf] transition-all bg-white"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 focus:outline-none focus:border-[#2dd4bf] focus:ring-1 focus:ring-[#2dd4bf] transition-all bg-white dark:bg-slate-800 dark:text-white dark:placeholder-slate-400"
             />
           </div>
         </div>
@@ -526,7 +526,7 @@ export function DSASheetsClient({
               "whitespace-nowrap px-4 py-2 rounded-xl text-sm font-semibold transition-all border",
               activeTab === tab
                 ? "bg-gradient-to-r from-[#1b254b] to-[#243060] text-white border-transparent shadow-md"
-                : "bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+                : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700"
             )}
           >
             {tab}
@@ -537,7 +537,7 @@ export function DSASheetsClient({
       {/* Grid */}
       <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <h2 className="text-xl font-bold text-[#1b254b]">{activeTab} Sheets</h2>
+          <h2 className="text-xl font-bold text-[#1b254b] dark:text-white">{activeTab} Sheets</h2>
           <span className="text-xs text-[#2dd4bf] font-semibold cursor-pointer hover:underline">(Learn More)</span>
         </div>
 
@@ -547,17 +547,17 @@ export function DSASheetsClient({
               <Link
                 href={`/dsa-sheets/${company.company}`}
                 key={company.id}
-                className="group bg-white rounded-2xl border border-slate-200 p-5 hover:border-[#2dd4bf] hover:shadow-lg hover:-translate-y-1 transition-all flex flex-col h-full relative overflow-hidden"
+                className="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 hover:border-[#2dd4bf] hover:shadow-lg hover:-translate-y-1 transition-all flex flex-col h-full relative overflow-hidden"
               >
                 {/* Top decorative line */}
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-slate-100 to-transparent group-hover:via-[#2dd4bf] transition-all"></div>
 
-                <h3 className="text-lg font-bold text-[#1b254b] mb-2 capitalize">{company.company}</h3>
-                <p className="text-sm text-slate-500 leading-relaxed flex-1 line-clamp-2">
+                <h3 className="text-lg font-bold text-[#1b254b] dark:text-white mb-2 capitalize">{company.company}</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed flex-1 line-clamp-2">
                   Master your interviews with this comprehensive collection of {company.count} previously asked questions at {String(company.company).charAt(0).toUpperCase() + String(company.company).slice(1)}.
                 </p>
 
-                <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-100 text-slate-400 group-hover:text-slate-500">
+                <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-100 dark:border-slate-700 text-slate-400 dark:text-slate-500 group-hover:text-slate-500 dark:group-hover:text-slate-400">
                   <span className="flex items-center gap-1.5 text-xs font-semibold">
                     <ListTodo className="w-4 h-4" /> {company.count} Qs
                   </span>
@@ -584,15 +584,15 @@ export function DSASheetsClient({
           <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
             {/* Followed Sheets Section */}
             <div className="space-y-6">
-              <h2 className="text-2xl font-black text-[#1b254b]">Followed Sheets</h2>
+              <h2 className="text-2xl font-black text-[#1b254b] dark:text-white">Followed Sheets</h2>
               {!userId ? (
-                <div className="py-12 text-center bg-white border border-slate-200 border-dashed rounded-[32px]">
-                  <p className="text-slate-500 font-bold mb-6">Please sign in to view your followed sheets.</p>
+                <div className="py-12 text-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 border-dashed rounded-[32px]">
+                  <p className="text-slate-500 dark:text-slate-400 font-bold mb-6">Please sign in to view your followed sheets.</p>
                   <Link href="/sign-in" className="inline-block px-8 py-3 bg-[#1b254b] text-white rounded-2xl font-black shadow-lg shadow-black/10 transition-all hover:scale-105 active:scale-95">Sign In</Link>
                 </div>
               ) : (followedSheets.length === 0 && followedPopular.size === 0) ? (
-                <div className="py-20 flex flex-col items-center justify-center bg-slate-50/50 rounded-[32px] border border-dashed border-slate-200">
-                  <div className="p-4 bg-white rounded-2xl shadow-sm mb-4">
+                <div className="py-20 flex flex-col items-center justify-center bg-slate-50/50 dark:bg-slate-800/50 rounded-[32px] border border-dashed border-slate-200 dark:border-slate-700">
+                  <div className="p-4 bg-white dark:bg-slate-700 rounded-2xl shadow-sm mb-4">
                     <Star className="w-8 h-8 text-slate-300" />
                   </div>
                   <p className="text-slate-400 font-bold">You haven't followed any sheets yet.</p>
@@ -628,17 +628,17 @@ export function DSASheetsClient({
                       <div key={sheet.id} className="relative group">
                         <Link
                           href={`/dsa-sheets/popular/${sheet.slug}`}
-                          className="rounded-[24px] border border-slate-200 hover:border-[#2dd4bf] hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col h-full relative overflow-hidden shadow-sm bg-white"
+                          className="rounded-[24px] border border-slate-200 dark:border-slate-700 hover:border-[#2dd4bf] hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col h-full relative overflow-hidden shadow-sm bg-white dark:bg-slate-800"
                         >
-                          <div className="w-full h-8 flex items-center justify-between relative px-4 bg-[#f0fdfa] border-b border-black/5">
+                          <div className="w-full h-8 flex items-center justify-between relative px-4 bg-[#f0fdfa] dark:bg-slate-900 border-b border-black/5 dark:border-white/5">
                             <div className="absolute top-0 left-0 h-full bg-[#2dd4bf] transition-all duration-1000" style={{ width: `${progress}%` }} />
-                            <span className="relative z-10 text-[11.5px] font-[800] tracking-wide ml-auto">
+                            <span className="relative z-10 text-[11.5px] font-[800] tracking-wide ml-auto dark:text-white">
                               {Math.round(progress)}%
                             </span>
                           </div>
-                          <div className="p-5 flex flex-col flex-1 bg-white">
-                            <h3 className="text-[17px] font-bold text-[#1e293b] capitalize leading-tight mb-2">{sheet.name}</h3>
-                            <p className="text-[13px] text-slate-500 line-clamp-2 mb-8 flex-1">{sheet.description}</p>
+                          <div className="p-5 flex flex-col flex-1 bg-white dark:bg-slate-800">
+                            <h3 className="text-[17px] font-bold text-[#1e293b] dark:text-white capitalize leading-tight mb-2">{sheet.name}</h3>
+                            <p className="text-[13px] text-slate-500 dark:text-slate-400 line-clamp-2 mb-8 flex-1">{sheet.description}</p>
                             <div className="flex items-center justify-between pt-4 border-t border-slate-50">
                               <div className="flex items-center gap-1.5 text-slate-400">
                                 <ListTodo className="w-3.5 h-3.5" /> <span className="text-[12px] font-bold">{totalQuestions} Questions</span>
@@ -657,10 +657,10 @@ export function DSASheetsClient({
             </div>
 
             {/* Custom Sheets Section */}
-            <div className="space-y-6 pt-12 border-t border-slate-100">
+            <div className="space-y-6 pt-12 border-t border-slate-100 dark:border-slate-700">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-black text-[#1b254b]">Custom Sheets</h2>
+                  <h2 className="text-2xl font-black text-[#1b254b] dark:text-white">Custom Sheets</h2>
                   <p className="text-[13px] font-bold text-slate-400 mt-1 uppercase tracking-wider">Your personal collections</p>
                 </div>
                 <button
@@ -672,7 +672,7 @@ export function DSASheetsClient({
               </div>
 
               {!userId ? (
-                <div className="py-12 flex flex-col items-center justify-center bg-slate-50/50 rounded-[32px] border border-dashed border-slate-200">
+                <div className="py-12 flex flex-col items-center justify-center bg-slate-50/50 dark:bg-slate-800/50 rounded-[32px] border border-dashed border-slate-200 dark:border-slate-700">
                   <p className="text-slate-400 font-bold italic">Sign in to start creating custom sheets</p>
                 </div>
               ) : (customSheets || []).length > 0 ? (
@@ -686,17 +686,21 @@ export function DSASheetsClient({
                       <Link
                         key={sheet.id}
                         href={`/dsa-sheets/custom/${sheet.id}`}
-                        className="rounded-[24px] border border-slate-200 hover:border-[#2dd4bf] hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col h-full relative overflow-hidden shadow-sm bg-white"
+                        className="rounded-[24px] border border-slate-200 dark:border-slate-700 hover:border-[#2dd4bf] hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col h-full relative overflow-hidden shadow-sm bg-white dark:bg-slate-800"
                       >
-                        <div className="w-full h-8 flex items-center justify-between relative px-4 bg-[#f0fdfa] border-b border-black/5">
+                        <div className="w-full h-8 flex items-center justify-between relative px-4 bg-[#f0fdfa] dark:bg-slate-900 border-b border-black/5 dark:border-white/5">
                           <div className="absolute top-0 left-0 h-full bg-[#2dd4bf] transition-all duration-1000" style={{ width: `${progress}%` }} />
-                          <span className="relative z-10 text-[11.5px] font-[800] tracking-wide ml-auto">
+                          <span className="relative z-10 text-[10px] font-bold text-transparent select-none">P</span>
+                          <span className={cn(
+                            "relative z-10 text-[11.5px] font-[800] tracking-wide shrink-0",
+                            progress > 90 ? "text-white dark:text-white" : "text-[#1e293b] dark:text-white"
+                          )}>
                             {Math.round(progress)}%
                           </span>
                         </div>
-                        <div className="p-5 flex flex-col flex-1 bg-white">
-                          <h3 className="text-[17px] font-bold text-[#1e293b] capitalize leading-tight mb-2 group-hover:text-[#2dd4bf] transition-colors">{sheet.name}</h3>
-                          <p className="text-[13px] text-slate-500 line-clamp-2 mb-8 flex-1 font-medium">{sheet.description || "Personal collection of DSA problems."}</p>
+                        <div className="p-5 flex flex-col flex-1 bg-white dark:bg-slate-800">
+                          <h3 className="text-[17px] font-bold text-[#1e293b] dark:text-white capitalize leading-tight mb-2 group-hover:text-[#2dd4bf] transition-colors">{sheet.name}</h3>
+                          <p className="text-[13px] text-slate-500 dark:text-slate-400 line-clamp-2 mb-8 flex-1 font-medium">{sheet.description || "Personal collection of DSA problems."}</p>
                           <div className="flex items-center justify-between pt-4 border-t border-slate-50">
                             <div className="flex items-center gap-1.5 text-slate-400">
                               <ListTodo className="w-3.5 h-3.5" /> <span className="text-[12px] font-bold">{total} Questions</span>
@@ -711,11 +715,11 @@ export function DSASheetsClient({
                   })}
                 </div>
               ) : (
-                <div className="py-20 flex flex-col items-center justify-center bg-white rounded-[40px] border border-dashed border-slate-200 shadow-sm group">
-                  <div className="p-6 bg-slate-50 rounded-[24px] transition-all group-hover:bg-orange-50 mb-6">
+                <div className="py-20 flex flex-col items-center justify-center bg-white dark:bg-slate-800 rounded-[40px] border border-dashed border-slate-200 dark:border-slate-700 shadow-sm group">
+                  <div className="p-6 bg-slate-50 dark:bg-slate-700 rounded-[24px] transition-all group-hover:bg-orange-50 mb-6">
                     <Plus className="w-10 h-10 text-slate-300 group-hover:text-orange-400 group-hover:rotate-90 transition-all duration-500" />
                   </div>
-                  <h3 className="text-xl font-black text-[#1b254b] mb-2 tracking-tight">No custom sheets yet</h3>
+                  <h3 className="text-xl font-black text-[#1b254b] dark:text-white mb-2 tracking-tight">No custom sheets yet</h3>
                   <p className="text-[14px] font-bold text-slate-400 mb-8 max-w-[280px] text-center">Create your own collection of questions to track your personal goals.</p>
                   <button onClick={handleCreateSheet} className="text-orange-600 font-black hover:scale-105 transition-all active:scale-95 flex items-center gap-2 bg-orange-50 px-8 py-3 rounded-2xl border border-orange-100">
                     Get Started <ArrowRight className="w-4 h-4" />
@@ -727,10 +731,10 @@ export function DSASheetsClient({
         ) : activeTab === "Revisions" ? (
           <div className="space-y-8 animate-in fade-in duration-300">
             {!revisionsData || revisionsData.length === 0 ? (
-              <div className="py-20 flex flex-col items-center justify-center text-center bg-white rounded-[16px] border border-slate-200 border-dashed">
+              <div className="py-20 flex flex-col items-center justify-center text-center bg-white dark:bg-slate-800 rounded-[16px] border border-slate-200 dark:border-slate-700 border-dashed">
                 <Clock className="w-12 h-12 text-slate-300 mb-4" />
-                <h3 className="text-[17px] font-bold text-slate-800">No Revisions Scheduled</h3>
-                <p className="text-[13px] font-medium text-slate-500 mt-2 max-w-sm">Mark questions "Next Revision" date inside any active sheet to see them populate here chronologically.</p>
+                <h3 className="text-[17px] font-bold text-slate-800 dark:text-white">No Revisions Scheduled</h3>
+                <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mt-2 max-w-sm">Mark questions "Next Revision" date inside any active sheet to see them populate here chronologically.</p>
               </div>
             ) : (
               <div className="flex flex-col gap-8">
@@ -745,16 +749,16 @@ export function DSASheetsClient({
 
                   const renderList = (title: string, icon: any, list: any[], isOverdueHighlight = false, emptyMsg: string) => {
                     return (
-                      <div className="bg-white rounded-[16px] border border-slate-200 overflow-hidden shadow-sm">
-                        <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
-                          <h3 className="text-[16px] font-bold text-slate-800 flex items-center gap-2">
+                      <div className="bg-white dark:bg-slate-800 rounded-[16px] border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+                        <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-700/50 flex items-center justify-between">
+                          <h3 className="text-[16px] font-bold text-slate-800 dark:text-white flex items-center gap-2">
                             {icon} {title}
                           </h3>
-                          <span className="text-[12px] font-bold text-slate-500 bg-slate-200/50 px-2 py-0.5 rounded-full">{list.length}</span>
+                          <span className="text-[12px] font-bold text-slate-500 dark:text-slate-400 bg-slate-200/50 dark:bg-slate-600/50 px-2 py-0.5 rounded-full">{list.length}</span>
                         </div>
-                        <div className="divide-y divide-slate-100">
+                        <div className="divide-y divide-slate-100 dark:divide-slate-700">
                           {list.length === 0 ? (
-                            <div className="py-12 text-center text-slate-400 font-bold bg-white italic border-t border-slate-50">
+                            <div className="py-12 text-center text-slate-400 font-bold bg-white dark:bg-slate-800 italic border-t border-slate-50 dark:border-slate-700">
                               {emptyMsg}
                             </div>
                           ) : list.map((rev, idx) => {
@@ -766,7 +770,7 @@ export function DSASheetsClient({
                               <div 
                                 key={idx} 
                                 onClick={() => setSelectedQuestion({ id: q.id, data: q })}
-                                className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:px-6 sm:py-5 hover:bg-slate-50 transition-colors group cursor-pointer"
+                                className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:px-6 sm:py-5 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group cursor-pointer"
                               >
                                 <div className="flex-1 min-w-0 pr-4 flex items-start gap-3">
                                   <button
@@ -807,7 +811,7 @@ export function DSASheetsClient({
                                       target="_blank" 
                                       rel="noopener noreferrer" 
                                       onClick={(e) => e.stopPropagation()}
-                                      className="text-[15px] font-bold text-slate-800 hover:text-indigo-600 transition-colors truncate block"
+                                      className="text-[15px] font-bold text-slate-800 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors truncate block"
                                     >
                                       {q.title}
                                     </a>
@@ -820,7 +824,7 @@ export function DSASheetsClient({
                                     onChange={(e) => changeRevisionStatus(q.id, e.target.value)}
                                     className={cn(
                                       "text-[10px] font-bold px-2 py-1.5 rounded-md border outline-none cursor-pointer appearance-none transition-colors",
-                                      localRevisions[q.id]?.status === 'Completed' ? "bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100" : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                                      localRevisions[q.id]?.status === 'Completed' ? "bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100" : "bg-slate-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:bg-slate-100"
                                     )}
                                   >
                                     <option value="Pending">Pending</option>
@@ -829,12 +833,12 @@ export function DSASheetsClient({
 
                                   <div className="flex items-center gap-1.5 flex-wrap relative group mr-2">
                                     {(q.topics || []).slice(0, 2).map((topic: string) => (
-                                      <span key={topic} className="text-[9px] font-bold px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded">
+                                      <span key={topic} className="text-[9px] font-bold px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 rounded">
                                         {topic}
                                       </span>
                                     ))}
                                     {(q.topics || []).length > 2 && (
-                                      <span className="text-[9px] font-bold px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded cursor-help">
+                                      <span className="text-[9px] font-bold px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 rounded cursor-help">
                                         +{(q.topics || []).length - 2}
                                       </span>
                                     )}
@@ -875,57 +879,57 @@ export function DSASheetsClient({
         ) : activeTab === "My Stats" ? (
           <div className="space-y-8 animate-in fade-in duration-300">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              <div className="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col justify-between shadow-sm relative overflow-hidden">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 flex flex-col justify-between shadow-sm relative overflow-hidden">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-[14px] font-[600] text-slate-500">Total Questions Till Now</span>
+                  <span className="text-[14px] font-[600] text-slate-500 dark:text-slate-400">Total Questions Till Now</span>
                   <div className="p-2 bg-indigo-50 rounded-lg text-indigo-500">
                     <Database className="w-5 h-5" />
                   </div>
                 </div>
-                <h3 className="text-3xl font-[900] text-slate-800">{statsData?.totalCompleted || 0}</h3>
+                <h3 className="text-3xl font-[900] text-slate-800 dark:text-white">{statsData?.totalCompleted || 0}</h3>
               </div>
 
-              <div className="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col justify-between shadow-sm relative overflow-hidden">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 flex flex-col justify-between shadow-sm relative overflow-hidden">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-[14px] font-[600] text-slate-500">Questions Solved Today</span>
+                  <span className="text-[14px] font-[600] text-slate-500 dark:text-slate-400">Questions Solved Today</span>
                   <div className="p-2 bg-emerald-50 rounded-lg text-emerald-500">
                     <CheckCircle2 className="w-5 h-5" />
                   </div>
                 </div>
-                <h3 className="text-3xl font-[900] text-slate-800">{statsData?.completedToday || 0}</h3>
+                <h3 className="text-3xl font-[900] text-slate-800 dark:text-white">{statsData?.completedToday || 0}</h3>
               </div>
 
-              <div className="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col justify-between shadow-sm relative overflow-hidden">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 flex flex-col justify-between shadow-sm relative overflow-hidden">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-[14px] font-[600] text-slate-500">Total Revisions</span>
+                  <span className="text-[14px] font-[600] text-slate-500 dark:text-slate-400">Total Revisions</span>
                   <div className="p-2 bg-rose-50 rounded-lg text-rose-500">
                     <Clock className="w-5 h-5" />
                   </div>
                 </div>
-                <h3 className="text-3xl font-[900] text-slate-800">{statsData?.completedRevisions || 0}</h3>
+                <h3 className="text-3xl font-[900] text-slate-800 dark:text-white">{statsData?.completedRevisions || 0}</h3>
               </div>
             </div>
 
             <div className="mt-8">
-              <div className="mb-6 border-b border-slate-200 pb-4 flex items-center gap-3">
+              <div className="mb-6 border-b border-slate-200 dark:border-slate-700 pb-4 flex items-center gap-3">
                 <div className="p-2 bg-amber-50 rounded-lg border border-amber-100 flex items-center justify-center shadow-sm">
                   <Sparkles className="w-5 h-5 text-amber-500 fill-amber-500 flex-shrink-0" />
                 </div>
-                <h2 className="text-2xl sm:text-[26px] font-[900] text-slate-800 tracking-tight leading-none">
+                <h2 className="text-2xl sm:text-[26px] font-[900] text-slate-800 dark:text-white tracking-tight leading-none">
                   Bookmarked Questions
                 </h2>
               </div>
 
               {!starredData || starredData.length === 0 ? (
-                <div className="py-16 flex flex-col items-center justify-center text-center bg-white rounded-[16px] border border-slate-200 border-dashed">
+                <div className="py-16 flex flex-col items-center justify-center text-center bg-white dark:bg-slate-800 rounded-[16px] border border-slate-200 dark:border-slate-700 border-dashed">
                   <Sparkles className="w-12 h-12 text-slate-300 mb-4" />
-                  <h3 className="text-[17px] font-bold text-slate-800">No Bookmarks Yet</h3>
-                  <p className="text-[13px] font-medium text-slate-500 mt-2 max-w-sm">Star questions inside any active matching sheet to see them populate here.</p>
+                  <h3 className="text-[17px] font-bold text-slate-800 dark:text-white">No Bookmarks Yet</h3>
+                  <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mt-2 max-w-sm">Star questions inside any active matching sheet to see them populate here.</p>
                 </div>
               ) : (
                 <div className="flex flex-col gap-6">
-                  <div className="bg-white rounded-[16px] border border-slate-200 overflow-hidden shadow-sm">
-                    <div className="divide-y divide-slate-100">
+                  <div className="bg-white dark:bg-slate-800 rounded-[16px] border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+                    <div className="divide-y divide-slate-100 dark:divide-slate-700">
                       {starredData.map((star, idx) => {
                         const q = star.question;
                         const assignedCompany = star.companyId || q.companies?.split(',')[0]?.trim() || 'google';
@@ -934,7 +938,7 @@ export function DSASheetsClient({
                           <div 
                             key={idx} 
                             onClick={() => setSelectedQuestion({ id: q.id, data: q })}
-                            className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:px-6 sm:py-5 hover:bg-slate-50 transition-colors group cursor-pointer"
+                            className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:px-6 sm:py-5 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group cursor-pointer"
                           >
                             <div className="flex-1 min-w-0 pr-4 flex items-start gap-3">
                               <button
@@ -971,7 +975,7 @@ export function DSASheetsClient({
                                   target="_blank" 
                                   rel="noopener noreferrer" 
                                   onClick={(e) => e.stopPropagation()}
-                                  className="text-[15px] font-bold text-slate-800 hover:text-indigo-600 transition-colors truncate block"
+                                  className="text-[15px] font-bold text-slate-800 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors truncate block"
                                 >
                                   {q.title}
                                 </a>
@@ -993,7 +997,7 @@ export function DSASheetsClient({
                               </div>
                               <Link
                                 href={`/dsa-sheets/${assignedCompany}`}
-                                className="text-[12px] font-bold px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 transition-colors shadow-sm"
+                                className="text-[12px] font-bold px-4 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 transition-colors shadow-sm"
                               >
                                 Sheet
                               </Link>
@@ -1019,10 +1023,10 @@ export function DSASheetsClient({
                   <div key={sheet.id} className="relative group">
                     <Link
                       href={`/dsa-sheets/popular/${sheet.slug}`}
-                      className="rounded-[16px] border border-slate-200 hover:border-[#2dd4bf] hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col h-full relative overflow-hidden shadow-sm bg-white"
+                      className="rounded-[16px] border border-slate-200 dark:border-slate-700 hover:border-[#2dd4bf] hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col h-full relative overflow-hidden shadow-sm bg-white dark:bg-slate-800"
                     >
                       {/* Top Progress Bar */}
-                      <div className="w-full h-8 flex items-center justify-between relative px-4 bg-[#f0fdfa] border-b border-black/5">
+                      <div className="w-full h-8 flex items-center justify-between relative px-4 bg-[#f0fdfa] dark:bg-slate-900 border-b border-black/5 dark:border-white/5">
                         <div
                           className="absolute top-0 left-0 h-full bg-[#2dd4bf] transition-all duration-1000 ease-out"
                           style={{ width: `${progress}%` }}
@@ -1030,22 +1034,22 @@ export function DSASheetsClient({
                         <span className="relative z-10 text-[10px] font-bold text-transparent select-none">P</span>
                         <span className={cn(
                           "relative z-10 text-[11.5px] font-[800] tracking-wide shrink-0",
-                          progress > 90 ? "text-white" : "text-[#1e293b]"
+                          progress > 90 ? "text-white dark:text-white" : "text-[#1e293b] dark:text-white"
                         )}>
                           {Math.round(progress)}%
                         </span>
                       </div>
 
-                      <div className="p-5 flex flex-col flex-1 bg-white">
+                      <div className="p-5 flex flex-col flex-1 bg-white dark:bg-slate-800">
                         <div className="flex items-start justify-between mb-4 mt-1">
-                          <h3 className="text-[17px] font-bold text-[#1e293b] capitalize leading-tight">
+                          <h3 className="text-[17px] font-bold text-[#1e293b] dark:text-white capitalize leading-tight">
                             {sheet.name}
                           </h3>
                           <span className="text-[12px] font-medium text-slate-500 flex items-center gap-1.5 shrink-0">
                             <ListTodo className="w-3.5 h-3.5 text-slate-400" /> {Math.floor(totalQuestions * 3.7 + 124)} Followers
                           </span>
                         </div>
-                        <p className="text-[13px] text-slate-500 leading-relaxed font-medium line-clamp-2 mb-8 flex-1">
+                        <p className="text-[13px] text-slate-500 dark:text-slate-400 leading-relaxed font-medium line-clamp-2 mb-8 flex-1">
                           {sheet.description || "The DSA sheet curated to cover almost every concept in Data Structures & Algorithms."}
                         </p>
 

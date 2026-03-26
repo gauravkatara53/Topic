@@ -2,25 +2,27 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Menu, Search, PanelLeft, LogIn } from "lucide-react";
+import { Menu, Search, PanelLeft, LogIn, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Sidebar } from "./sidebar";
 import { GlobalSearch } from "./global-search";
 import { NotificationsPopover } from "./notifications-popover";
 import { UserButton, useUser } from "@clerk/nextjs";
+import { useTheme } from "./theme-provider";
 
 export function TopNav() {
     const [searchOpen, setSearchOpen] = React.useState(false);
     const { user } = useUser();
+    const { resolvedTheme, toggleTheme } = useTheme();
 
     return (
-        <div className="flex items-center justify-between px-4 py-4 bg-white w-full sticky top-0 z-40 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+        <div className="flex items-center justify-between px-4 py-4 bg-white dark:bg-slate-800 dark:border-b dark:border-slate-700 w-full sticky top-0 z-40 shadow-[0_1px_2px_rgba(0,0,0,0.02)] dark:shadow-[0_1px_4px_rgba(0,0,0,0.3)]">
             <div className="flex items-center gap-4">
                 <div className="md:hidden">
                     <Sheet>
                         <SheetTrigger asChild>
-                            <Button variant="ghost" size="icon" className="text-slate-500">
+                            <Button variant="ghost" size="icon" className="text-slate-500 dark:text-slate-400">
                                 <Menu className="h-5 w-5" />
                             </Button>
                         </SheetTrigger>
@@ -31,11 +33,11 @@ export function TopNav() {
                         </SheetContent>
                     </Sheet>
                 </div>
-                <div className="hidden md:flex items-center text-slate-400 hover:text-slate-600 transition-colors cursor-pointer mr-2">
+                <div className="hidden md:flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer mr-2">
                     <PanelLeft className="h-5 w-5" />
                 </div>
-                <span className="text-[15px] font-medium text-slate-500 hidden sm:inline-block tracking-tight">
-                    {user ? <>Welcome back, <span className="text-slate-900 font-semibold">{user.firstName || "Student"}</span></> : <>Welcome, <span className="text-slate-900 font-semibold">Guest</span></>}
+                <span className="text-[15px] font-medium text-slate-500 dark:text-slate-400 hidden sm:inline-block tracking-tight">
+                    {user ? <>Welcome back, <span className="text-slate-900 dark:text-white font-semibold">{user.firstName || "Student"}</span></> : <>Welcome, <span className="text-slate-900 dark:text-white font-semibold">Guest</span></>}
                 </span>
             </div>
 
@@ -43,10 +45,25 @@ export function TopNav() {
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="text-slate-400 hover:text-slate-600 rounded-full h-9 w-9"
+                    className="text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-200 rounded-full h-9 w-9"
                     onClick={() => setSearchOpen(true)}
                 >
                     <Search className="h-4 w-4" />
+                </Button>
+
+                {/* Dark Mode Toggle */}
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={toggleTheme}
+                    title={resolvedTheme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                    className="text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-yellow-400 rounded-full h-9 w-9 transition-all duration-200"
+                >
+                    {resolvedTheme === "dark" ? (
+                        <Sun className="h-4 w-4 transition-transform duration-300 rotate-0 hover:rotate-12" />
+                    ) : (
+                        <Moon className="h-4 w-4 transition-transform duration-300" />
+                    )}
                 </Button>
 
                 {/* <NotificationsPopover /> */}
@@ -71,3 +88,4 @@ export function TopNav() {
         </div>
     );
 }
+

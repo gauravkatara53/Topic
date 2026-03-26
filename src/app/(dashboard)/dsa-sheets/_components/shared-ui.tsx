@@ -95,7 +95,7 @@ export const CircularProgress = ({
 export const ProgressTopBar = ({ current, total, className }: { current: number, total: number, className?: string }) => {
   const percentage = total === 0 ? 0 : Math.min(100, Math.round((current / total) * 100));
   return (
-    <div className={cn("h-1 w-full bg-slate-100 overflow-hidden", className)}>
+    <div className={cn("h-1 w-full bg-slate-100 dark:bg-slate-800 overflow-hidden", className)}>
       <div
         className="h-full bg-[#2dd4bf] transition-all duration-700 ease-out shadow-[0_0_8px_rgba(45,212,191,0.3)]"
         style={{ width: `${percentage}%` }}

@@ -96,12 +96,12 @@ export function AttendancePromo() {
             {/* Stats Bar */}
             <section
                 ref={stats.ref}
-                className={`bg-white border-b border-slate-100 py-10 md:py-14 px-6 transition-all duration-700 ${stats.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+                className={`bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 py-10 md:py-14 px-6 transition-all duration-700 ${stats.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
             >
                 <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 text-center">
                     <div className="space-y-1">
-                        <p className="text-3xl md:text-4xl font-extrabold text-[#1b254b]"><AnimatedCounter end={500} suffix="+" /></p>
-                        <p className="text-sm text-slate-500 font-medium">Active Students</p>
+                        <p className="text-3xl md:text-4xl font-extrabold text-[#1b254b] dark:text-white"><AnimatedCounter end={500} suffix="+" /></p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Active Students</p>
                     </div>
                     <div className="space-y-1">
                         <p className="text-3xl md:text-4xl font-extrabold text-teal-500"><AnimatedCounter end={98} suffix="%" /></p>
@@ -121,12 +121,12 @@ export function AttendancePromo() {
             {/* Features Grid */}
             <section
                 ref={features.ref}
-                className="bg-slate-50 py-16 md:py-24 px-6 md:px-16"
+                className="bg-slate-50 dark:bg-slate-900 py-16 md:py-24 px-6 md:px-16"
             >
                 <div className="max-w-6xl mx-auto">
                     <div className={`text-center space-y-3 mb-12 md:mb-16 transition-all duration-700 ${features.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-                        <p className="text-teal-600 text-sm font-bold tracking-widest uppercase">Why Students Love It</p>
-                        <h2 className="text-3xl md:text-4xl font-extrabold text-slate-800 tracking-tight">Everything You Need to<br />Stay on Track</h2>
+                        <p className="text-teal-600 dark:text-teal-400 text-sm font-bold tracking-widest uppercase">Why Students Love It</p>
+                        <h2 className="text-3xl md:text-4xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight">Everything You Need to<br />Stay on Track</h2>
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-6 md:gap-8">
@@ -135,61 +135,61 @@ export function AttendancePromo() {
                                 icon: RefreshCw,
                                 title: "Auto Portal Sync",
                                 desc: "Automatically fetches your attendance from the college portal. No manual entry needed.",
-                                color: "bg-teal-50 text-teal-600 border-teal-100",
-                                iconBg: "bg-teal-100",
+                                color: "bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-100 dark:border-teal-500/20",
+                                iconBg: "bg-teal-100 dark:bg-teal-500/20",
                                 delay: "delay-0",
                             },
                             {
                                 icon: Target,
                                 title: "Smart Bunk Calculator",
                                 desc: "Know exactly how many classes you can bunk while staying above the threshold.",
-                                color: "bg-orange-50 text-orange-600 border-orange-100",
-                                iconBg: "bg-orange-100",
+                                color: "bg-orange-50 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-100 dark:border-orange-500/20",
+                                iconBg: "bg-orange-100 dark:bg-orange-500/20",
                                 delay: "delay-150",
                             },
                             {
                                 icon: BarChart3,
                                 title: "Subject Analytics",
                                 desc: "Beautiful charts and breakdowns for each subject. Spot risks before they become problems.",
-                                color: "bg-blue-50 text-blue-600 border-blue-100",
-                                iconBg: "bg-blue-100",
+                                color: "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-500/20",
+                                iconBg: "bg-blue-100 dark:bg-blue-500/20",
                                 delay: "delay-300",
                             },
                             {
                                 icon: Shield,
                                 title: "Risk Alerts",
                                 desc: "Get instant warnings when any subject drops below 75%. Never get detained again.",
-                                color: "bg-red-50 text-red-600 border-red-100",
-                                iconBg: "bg-red-100",
+                                color: "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-red-100 dark:border-red-500/20",
+                                iconBg: "bg-red-100 dark:bg-red-500/20",
                                 delay: "delay-100",
                             },
                             {
                                 icon: TrendingUp,
                                 title: "Trend Prediction",
                                 desc: "AI-powered predictions on your attendance trajectory for the rest of the semester.",
-                                color: "bg-purple-50 text-purple-600 border-purple-100",
-                                iconBg: "bg-purple-100",
+                                color: "bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-100 dark:border-purple-500/20",
+                                iconBg: "bg-purple-100 dark:bg-purple-500/20",
                                 delay: "delay-200",
                             },
                             {
                                 icon: Clock,
                                 title: "Last Updated Tracking",
                                 desc: "Always know when your attendance was last synced. Stay informed in real time.",
-                                color: "bg-emerald-50 text-emerald-600 border-emerald-100",
-                                iconBg: "bg-emerald-100",
+                                color: "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-500/20",
+                                iconBg: "bg-emerald-100 dark:bg-emerald-500/20",
                                 delay: "delay-300",
                             },
                         ].map((f, i) => (
                             <div
                                 key={f.title}
-                                className={`${f.color} border rounded-2xl p-6 md:p-8 hover:shadow-lg hover:-translate-y-1 transition-all duration-500 cursor-default ${features.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+                                className={`${f.color} border dark:border-slate-700/50 dark:bg-slate-800 rounded-2xl p-6 md:p-8 hover:shadow-lg hover:-translate-y-1 transition-all duration-500 cursor-default ${features.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
                                 style={{ transitionDelay: `${i * 100 + 200}ms` }}
                             >
                                 <div className={`h-12 w-12 ${f.iconBg} rounded-xl flex items-center justify-center mb-4`}>
                                     <f.icon className="h-6 w-6" />
                                 </div>
-                                <h3 className="text-lg font-bold text-slate-800 mb-2">{f.title}</h3>
-                                <p className="text-sm text-slate-600 leading-relaxed">{f.desc}</p>
+                                <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-2">{f.title}</h3>
+                                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{f.desc}</p>
                             </div>
                         ))}
                     </div>
@@ -199,12 +199,12 @@ export function AttendancePromo() {
             {/* How It Works */}
             <section
                 ref={howItWorks.ref}
-                className="bg-white py-16 md:py-24 px-6 md:px-16"
+                className="bg-white dark:bg-slate-800 py-16 md:py-24 px-6 md:px-16"
             >
                 <div className="max-w-6xl mx-auto">
                     <div className={`text-center space-y-3 mb-14 transition-all duration-700 ${howItWorks.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-                        <p className="text-orange-500 text-sm font-bold tracking-widest uppercase">How It Works</p>
-                        <h2 className="text-3xl md:text-4xl font-extrabold text-slate-800 tracking-tight">Three Steps to Freedom</h2>
+                        <p className="text-orange-500 dark:text-orange-400 text-sm font-bold tracking-widest uppercase">How It Works</p>
+                        <h2 className="text-3xl md:text-4xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight">Three Steps to Freedom</h2>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
@@ -219,8 +219,8 @@ export function AttendancePromo() {
                                         {s.step}
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-bold text-slate-800 mb-1">{s.title}</h3>
-                                        <p className="text-sm text-slate-500 leading-relaxed">{s.desc}</p>
+                                        <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-1">{s.title}</h3>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{s.desc}</p>
                                     </div>
                                 </div>
                             ))}
@@ -240,7 +240,7 @@ export function AttendancePromo() {
             </section>
 
             {/* Visual Feature Showcase */}
-            <section className="bg-gradient-to-br from-slate-50 to-slate-100 py-16 md:py-24 px-6 md:px-16">
+            <section className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 py-16 md:py-24 px-6 md:px-16">
                 <div
                     ref={testimonial.ref}
                     className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 md:gap-16 items-center"
@@ -255,18 +255,18 @@ export function AttendancePromo() {
                         />
                     </div>
                     <div className={`space-y-6 transition-all duration-700 delay-200 ${testimonial.inView ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"}`}>
-                        <h2 className="text-3xl md:text-4xl font-extrabold text-slate-800 tracking-tight leading-tight">
+                        <h2 className="text-3xl md:text-4xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight leading-tight">
                             Smart Enough to<br />
-                            <span className="text-orange-500">Calculate Your Bunks</span>
+                            <span className="text-orange-500 dark:text-orange-400">Calculate Your Bunks</span>
                         </h2>
-                        <p className="text-slate-500 text-lg leading-relaxed">
+                        <p className="text-slate-500 dark:text-slate-400 text-lg leading-relaxed">
                             Our smart predictor analyzes your attendance data and tells you exactly how many classes you can skip — per subject — while staying above the minimum threshold.
                         </p>
                         <div className="space-y-3">
                             {["Subject-wise bunk allowance", "Custom target percentage (50-100%)", "Real-time calculation updates"].map((item) => (
                                 <div key={item} className="flex items-center gap-3">
                                     <CheckCircle className="h-5 w-5 text-teal-500 shrink-0" />
-                                    <span className="text-sm font-medium text-slate-700">{item}</span>
+                                    <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{item}</span>
                                 </div>
                             ))}
                         </div>

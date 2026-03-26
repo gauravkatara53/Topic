@@ -375,26 +375,26 @@ export function CompanySheetClient({
     <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8 font-sans">
 
       {/* Breadcrumb / Top Bar */}
-      <div className="flex items-center justify-between text-sm text-slate-500 border-b border-slate-100 pb-4">
+      <div className="flex items-center justify-between text-sm text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700 pb-4">
         <div className="flex items-center gap-2">
           <Link href="/dsa-sheets" className="hover:text-[#1b254b] transition-colors flex items-center gap-1">
             <ChevronLeft className="w-4 h-4" /> Back to Sheets
           </Link>
           <span>/</span>
-          <span className="font-medium text-[#1b254b]">{realTitle}</span>
+          <span className="font-medium text-[#1b254b] dark:text-white">{realTitle}</span>
         </div>
       </div>
 
       {/* Header Section */}
       <div className="flex flex-col md:flex-row gap-8 justify-between items-start">
         <div className="flex-1 space-y-4">
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">{realTitle}</h1>
-          <p className="text-sm text-slate-500 leading-relaxed max-w-4xl pt-1">
+          <h1 className="text-3xl sm:text-4xl font-black text-slate-800 dark:text-white tracking-tight">{realTitle}</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-4xl pt-1">
             {sheet.description}
           </p>
           <div className="flex items-center gap-2 pt-2">
             {sheet.tags.map(tag => (
-              <span key={tag} className="text-[11px] font-bold px-2 py-1 rounded bg-slate-50 border border-slate-200 text-slate-500 uppercase flex items-center gap-1.5">
+              <span key={tag} className="text-[11px] font-bold px-2 py-1 rounded bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-300 uppercase flex items-center gap-1.5">
                 <Target className="w-3 h-3" />
                 {tag}
               </span>
@@ -426,7 +426,7 @@ export function CompanySheetClient({
               Share
             </button>
           </div>
-          <div className="relative w-28 h-28 flex items-center justify-center bg-slate-50 rounded-full">
+          <div className="relative w-28 h-28 flex items-center justify-center bg-slate-50 dark:bg-slate-700 rounded-full">
             <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
               <circle cx="50" cy="50" r={38} fill="none" stroke="#e2e8f0" strokeWidth="8" />
               {/* Easy - Green */}
@@ -445,16 +445,16 @@ export function CompanySheetClient({
                 style={{ transition: "stroke-dasharray 1s ease, transform 1s ease" }} />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center pt-1">
-              <span className="text-[22px] font-black text-slate-900 leading-none">{totalCompleted}</span>
-              <div className="w-8 h-[1.5px] bg-slate-900 my-1"></div>
-              <span className="text-[17px] font-black text-slate-900 leading-none">{totalQuestions}</span>
+              <span className="text-[22px] font-black text-slate-900 dark:text-white leading-none">{totalCompleted}</span>
+              <div className="w-8 h-[1.5px] bg-slate-900 dark:bg-white my-1"></div>
+              <span className="text-[17px] font-black text-slate-900 dark:text-white leading-none">{totalQuestions}</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Filter Bar */}
-      <div className="flex flex-col xl:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mt-6">
+      <div className="flex flex-col xl:flex-row items-center justify-between gap-4 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm mt-6">
         <div className="relative flex-1 w-full xl:max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
@@ -462,17 +462,17 @@ export function CompanySheetClient({
             placeholder="Search questions by name..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-[#2dd4bf] transition-all"
+            className="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2dd4bf] transition-all"
           />
         </div>
 
         <div className="flex flex-col sm:flex-row flex-wrap lg:flex-nowrap items-center gap-3 w-full xl:w-auto">
-          <div className="flex items-center gap-2 w-full sm:w-auto bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 focus-within:ring-1 focus-within:ring-[#2dd4bf] overflow-hidden">
+          <div className="flex items-center gap-2 w-full sm:w-auto bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-1.5 focus-within:ring-1 focus-within:ring-[#2dd4bf] overflow-hidden">
             <Clock className="w-4 h-4 text-slate-400 shrink-0" />
             <select
               value={timeFilter}
               onChange={(e) => setTimeFilter(e.target.value)}
-              className="w-full sm:w-36 bg-slate-50 text-sm focus:outline-none text-slate-600 appearance-none cursor-pointer capitalize outline-none border-none ring-0 shadow-none hover:bg-slate-50"
+              className="w-full sm:w-36 bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-sm focus:outline-none text-slate-600 appearance-none cursor-pointer capitalize outline-none border-none ring-0 shadow-none"
             >
               <option value="All Time">All Time</option>
               <option value="thirty-days">Last 30 Days</option>
@@ -482,12 +482,12 @@ export function CompanySheetClient({
             </select>
           </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 focus-within:ring-1 focus-within:ring-[#2dd4bf] overflow-hidden">
+          <div className="flex items-center gap-2 w-full sm:w-auto bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-1.5 focus-within:ring-1 focus-within:ring-[#2dd4bf] overflow-hidden">
             <ArrowUpDown className="w-4 h-4 text-slate-400 shrink-0" />
             <select
               value={diffFilter}
               onChange={(e) => setDiffFilter(e.target.value)}
-              className="w-full sm:w-36 bg-slate-50 text-sm focus:outline-none text-slate-600 appearance-none cursor-pointer outline-none border-none ring-0 shadow-none hover:bg-slate-50"
+              className="w-full sm:w-36 bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-sm focus:outline-none text-slate-600 appearance-none cursor-pointer outline-none border-none ring-0 shadow-none"
             >
               <option value="All Difficulties">All Difficulties</option>
               <option value="Easy">Easy</option>
@@ -496,12 +496,12 @@ export function CompanySheetClient({
             </select>
           </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 focus-within:ring-1 focus-within:ring-[#2dd4bf] overflow-hidden">
+          <div className="flex items-center gap-2 w-full sm:w-auto bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-1.5 focus-within:ring-1 focus-within:ring-[#2dd4bf] overflow-hidden">
             <Filter className="w-4 h-4 text-slate-400 shrink-0" />
             <select
               value={topicFilter}
               onChange={(e) => setTopicFilter(e.target.value)}
-              className="w-full sm:w-44 bg-slate-50 text-sm focus:outline-none text-slate-600 appearance-none cursor-pointer capitalize outline-none border-none ring-0 shadow-none hover:bg-slate-50"
+              className="w-full sm:w-44 bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-sm focus:outline-none text-slate-600 appearance-none cursor-pointer capitalize outline-none border-none ring-0 shadow-none"
             >
               {ALL_TOPICS.map(topic => (
                 <option key={topic} value={topic}>{topic}</option>
@@ -519,7 +519,7 @@ export function CompanySheetClient({
           const catCompleted = cat.questions.filter(q => completed.has(q.id)).length;
 
           return (
-            <div key={cat.id} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div key={cat.id} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
               {/* Category Progress Bar */}
               <div className="w-full h-2.5 bg-[#f0fdfa] border-b border-teal-100/30">
                 <div className="h-full bg-[#2dd4bf] transition-all duration-700 ease-in-out" style={{ width: `${(catCompleted / Math.max(1, cat.questions.length)) * 100}%` }}></div>
@@ -528,12 +528,12 @@ export function CompanySheetClient({
               {/* Category Header */}
               <button
                 onClick={() => toggleCategory(cat.id)}
-                className="w-full flex items-center justify-between p-4 bg-white hover:bg-slate-50 transition-colors border-b border-transparent data-[state=open]:border-slate-100"
+                className="w-full flex items-center justify-between p-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors border-b border-transparent data-[state=open]:border-slate-100"
                 data-state={isExpanded ? "open" : "closed"}
               >
                 <div className="flex items-end gap-3 px-2">
-                  <h2 className="text-[15px] font-bold text-slate-800">{cat.title.split('/')[0].trim()}</h2>
-                  <span className="text-[13px] font-bold text-slate-600 leading-none translate-y-[-2px]">
+                  <h2 className="text-[15px] font-bold text-slate-800 dark:text-white">{cat.title.split('/')[0].trim()}</h2>
+                  <span className="text-[13px] font-bold text-slate-600 dark:text-slate-400 leading-none translate-y-[-2px]">
                     {catCompleted} / {cat.questions.length}
                   </span>
                 </div>
@@ -542,7 +542,7 @@ export function CompanySheetClient({
 
               {/* Questions List */}
               {isExpanded && (
-                <div className="divide-y divide-slate-100 border-t border-slate-100">
+                <div className="divide-y divide-slate-100 dark:divide-slate-700 border-t border-slate-100 dark:border-slate-700">
                   {/* Rows */}
                   {cat.questions.map(q => {
                     const isDone = completed.has(q.id);
@@ -555,8 +555,8 @@ export function CompanySheetClient({
                         key={q.id} 
                         onClick={() => setSelectedQuestion({ id: q.id, data: q })}
                         className={cn(
-                          "grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 items-center transition-colors hover:bg-slate-50 relative group/row cursor-pointer",
-                          themeClasses ? themeClasses : (isDone ? "bg-emerald-50/30" : "bg-white")
+                          "grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 items-center transition-colors hover:bg-slate-50 dark:hover:bg-slate-700/50 relative group/row cursor-pointer",
+                          themeClasses ? themeClasses : (isDone ? "bg-emerald-50/30 dark:bg-emerald-900/10" : "bg-white dark:bg-slate-800")
                         )}
                       >
 
@@ -575,7 +575,7 @@ export function CompanySheetClient({
                           <div className="flex flex-col xl:flex-row xl:items-center gap-2">
                             <a href={q.url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={cn(
                               "text-[13px] font-bold truncate block transition-colors hover:underline underline-offset-2 decoration-slate-300",
-                              isDone ? "text-slate-500 opacity-80" : "text-slate-800"
+                              isDone ? "text-slate-500 dark:text-slate-500 opacity-80" : "text-slate-800 dark:text-white"
                             )}>
                               {q.title}
                             </a>
@@ -602,7 +602,7 @@ export function CompanySheetClient({
                         {/* Topics */}
                         <div className="md:col-span-3 hidden lg:flex items-center gap-1.5 justify-start pl-8 relative group">
                           {q.topics.slice(0, 2).map((t: string, idx: number) => (
-                            <span key={idx} className="text-[9px] font-bold px-1.5 py-0.5 bg-slate-50 text-slate-500 border border-slate-200 rounded whitespace-nowrap truncate max-w-[80px]">
+                            <span key={idx} className="text-[9px] font-bold px-1.5 py-0.5 bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-600 rounded whitespace-nowrap truncate max-w-[80px]">
                               {t}
                             </span>
                           ))}

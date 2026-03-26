@@ -69,8 +69,8 @@ export default async function AnnouncementsPage() {
         <div className="space-y-6 max-w-5xl mx-auto pb-10">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-1">
-                    <h2 className="text-3xl font-bold tracking-tight text-slate-800">Campus Notices</h2>
-                    <p className="text-slate-500 text-sm">Official announcements and college updates from NIT Jamshedpur</p>
+                    <h2 className="text-3xl font-bold tracking-tight text-slate-800 dark:text-slate-100">Campus Notices</h2>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">Official announcements and college updates from NIT Jamshedpur</p>
                 </div>
             </div>
 

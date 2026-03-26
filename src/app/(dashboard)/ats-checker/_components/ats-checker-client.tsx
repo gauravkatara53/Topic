@@ -238,11 +238,11 @@ function ScoreRing({ score }: { score: number }) {
             style={{ transition: "stroke-dasharray 1s ease" }} />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-3xl font-black text-[#1b254b]">{score.toFixed(0)}</span>
+          <span className="text-3xl font-black text-[#1b254b] dark:text-slate-100">{score.toFixed(0)}</span>
           <span className="text-xs text-slate-400 font-medium">/ 100</span>
         </div>
       </div>
-      <span className="text-xs font-bold px-3 py-1 rounded-full" style={{ color: cfg.color, background: cfg.bg }}>
+      <span className="text-xs font-bold px-3 py-1 rounded-full dark:bg-opacity-10 dark:!bg-slate-800 dark:border dark:border-current" style={{ color: cfg.color, background: cfg.bg }}>
         Grade {grade} · {cfg.label}
       </span>
     </div>
@@ -257,13 +257,13 @@ function BreakdownBar({ label, score, max, comment, icon }: {
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-semibold text-[#1b254b] flex items-center gap-1.5"><span>{icon}</span> {label}</span>
+        <span className="text-sm font-semibold text-[#1b254b] dark:text-slate-100 flex items-center gap-1.5"><span>{icon}</span> {label}</span>
         <span className="text-sm font-bold" style={{ color }}>{score} / {max}</span>
       </div>
-      <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+      <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
         <div className="h-full rounded-full transition-all duration-700" style={{ width: `${pct}%`, background: color }} />
       </div>
-      <p className="text-xs text-slate-500 leading-relaxed">{comment}</p>
+      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{comment}</p>
     </div>
   );
 }
@@ -271,8 +271,8 @@ function BreakdownBar({ label, score, max, comment, icon }: {
 function KeywordPill({ word, type }: { word: string; type: "match" | "miss" }) {
   return (
     <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-medium ${
-      type === "match" ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                      : "bg-red-50 text-red-600 border border-red-200"}`}>
+      type === "match" ? "bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20"
+                      : "bg-red-50 text-red-600 border border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20"}`}>
       {type === "match" ? "✓" : "✗"} {word}
     </span>
   );
@@ -280,11 +280,11 @@ function KeywordPill({ word, type }: { word: string; type: "match" | "miss" }) {
 
 function ListSection({ title, items, icon, color }: { title: string; items: string[]; icon: string; color: string }) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 space-y-3">
-      <h3 className="font-bold text-[#1b254b] flex items-center gap-2"><span>{icon}</span> {title}</h3>
+    <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm p-5 space-y-3">
+      <h3 className="font-bold text-[#1b254b] dark:text-slate-100 flex items-center gap-2"><span>{icon}</span> {title}</h3>
       <ul className="space-y-2">
         {items.map((item, i) => (
-          <li key={i} className="flex items-start gap-2.5 text-sm text-slate-600">
+          <li key={i} className="flex items-start gap-2.5 text-sm text-slate-600 dark:text-slate-300">
             <span className="mt-0.5 shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold text-white"
               style={{ background: color }}>{i + 1}</span>
             {item}
@@ -346,8 +346,8 @@ function PDFUploadZone({ resumeText, fileName, pageCount, extracting, onTextExtr
     const wordCount = resumeText.trim().split(/\s+/).filter(Boolean).length;
     return (
       <div className="flex flex-col gap-3 h-full">
-        <div className="flex-1 bg-emerald-50 border-2 border-emerald-300 rounded-xl p-5 flex flex-col items-center justify-center gap-3 text-center">
-          <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center">
+        <div className="flex-1 bg-emerald-50 dark:bg-emerald-500/10 border-2 border-emerald-300 dark:border-emerald-500/30 rounded-xl p-5 flex flex-col items-center justify-center gap-3 text-center">
+          <div className="w-14 h-14 bg-emerald-100 dark:bg-emerald-500/20 rounded-2xl flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
               <polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/>
@@ -355,15 +355,15 @@ function PDFUploadZone({ resumeText, fileName, pageCount, extracting, onTextExtr
             </svg>
           </div>
           <div>
-            <p className="font-bold text-emerald-800 text-sm truncate max-w-[220px]">{fileName}</p>
-            <p className="text-emerald-600 text-xs mt-0.5">{pageCount} page{pageCount !== 1 ? "s" : ""} · {wordCount.toLocaleString()} words extracted</p>
+            <p className="font-bold text-emerald-800 dark:text-emerald-400 text-sm truncate max-w-[220px]">{fileName}</p>
+            <p className="text-emerald-600 dark:text-emerald-500 text-xs mt-0.5">{pageCount} page{pageCount !== 1 ? "s" : ""} · {wordCount.toLocaleString()} words extracted</p>
           </div>
-          <div className="flex items-center gap-1.5 text-xs text-emerald-700 bg-emerald-100 px-3 py-1.5 rounded-full">
+          <div className="flex items-center gap-1.5 text-xs text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-500/20 px-3 py-1.5 rounded-full">
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             Text extracted successfully
           </div>
         </div>
-        <button onClick={onClear} className="text-xs text-slate-400 hover:text-red-500 transition-colors text-center py-1">
+        <button onClick={onClear} className="text-xs text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors text-center py-1">
           ✕ Remove and upload a different file
         </button>
       </div>
@@ -379,7 +379,7 @@ function PDFUploadZone({ resumeText, fileName, pageCount, extracting, onTextExtr
         onDrop={onDrop}
         className={`flex-1 min-h-[220px] rounded-xl border-2 border-dashed cursor-pointer transition-all duration-200 flex flex-col items-center justify-center gap-4 p-6 text-center select-none
           ${extracting ? "cursor-default" : ""}
-          ${dragging ? "border-[#2dd4bf] bg-teal-50 scale-[1.01]" : "border-slate-300 bg-slate-50 hover:border-[#2dd4bf] hover:bg-teal-50/40"}`}
+          ${dragging ? "border-[#2dd4bf] bg-teal-50 dark:bg-teal-500/10 scale-[1.01]" : "border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900/50 hover:border-[#2dd4bf] hover:bg-teal-50/40 dark:hover:bg-teal-500/10"}`}
       >
         <input ref={inputRef} type="file" accept="application/pdf" className="hidden"
           onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); e.target.value = ""; }} />
@@ -389,13 +389,13 @@ function PDFUploadZone({ resumeText, fileName, pageCount, extracting, onTextExtr
               <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeDasharray="31.4" strokeDashoffset="10" strokeLinecap="round" />
             </svg>
             <div>
-              <p className="text-sm font-semibold text-[#1b254b]">Extracting text from PDF…</p>
+              <p className="text-sm font-semibold text-[#1b254b] dark:text-slate-100">Extracting text from PDF…</p>
               <p className="text-xs text-slate-400 mt-0.5">Parsing all pages, hang tight</p>
             </div>
           </>
         ) : (
           <>
-            <div className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-colors ${dragging ? "bg-teal-100" : "bg-slate-100"}`}>
+            <div className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-colors ${dragging ? "bg-teal-100 dark:bg-teal-500/20" : "bg-slate-100 dark:bg-slate-800"}`}>
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
                 stroke={dragging ? "#2dd4bf" : "#94a3b8"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
@@ -404,9 +404,9 @@ function PDFUploadZone({ resumeText, fileName, pageCount, extracting, onTextExtr
               </svg>
             </div>
             <div>
-              <p className="text-sm font-bold text-[#1b254b]">{dragging ? "Drop your PDF here" : "Upload Resume PDF"}</p>
+              <p className="text-sm font-bold text-[#1b254b] dark:text-slate-100">{dragging ? "Drop your PDF here" : "Upload Resume PDF"}</p>
               <p className="text-xs text-slate-400 mt-1">Drag & drop or <span className="text-[#2dd4bf] font-semibold">browse files</span></p>
-              <p className="text-xs text-slate-300 mt-0.5">PDF only · Max 10 MB</p>
+              <p className="text-xs text-slate-300 dark:text-slate-500 mt-0.5">PDF only · Max 10 MB</p>
             </div>
           </>
         )}
@@ -449,7 +449,7 @@ function HistoryPanel({ entries, onClear }: { entries: HistoryEntry[]; onClear: 
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="font-black text-[#1b254b] text-lg flex items-center gap-2">
+        <h2 className="font-black text-[#1b254b] dark:text-slate-100 text-lg flex items-center gap-2">
           <span>🕒</span> Previous Evaluations
         </h2>
         <button onClick={onClear} className="text-xs text-slate-400 hover:text-red-500 transition-colors px-3 py-1.5 rounded-lg hover:bg-red-50">
@@ -466,7 +466,7 @@ function HistoryPanel({ entries, onClear }: { entries: HistoryEntry[]; onClear: 
           return (
             <div
               key={entry.id}
-              className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden flex flex-col"
+              className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden flex flex-col"
               style={{ borderLeft: `4px solid ${color}` }}
             >
               {/* Top: arc + grade chip + date */}
@@ -474,11 +474,11 @@ function HistoryPanel({ entries, onClear }: { entries: HistoryEntry[]; onClear: 
                 <MiniScoreArc score={entry.score} grade={entry.grade} />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ color, background: bg }}>
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-full dark:bg-opacity-10 dark:!bg-slate-800 dark:border dark:border-current" style={{ color, background: bg }}>
                       Grade {entry.grade}
                     </span>
                     {isRecent && (
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#1b254b] text-white">
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#1b254b] dark:bg-slate-700 text-white dark:text-slate-100">
                         Latest
                       </span>
                     )}
@@ -487,30 +487,30 @@ function HistoryPanel({ entries, onClear }: { entries: HistoryEntry[]; onClear: 
                 </div>
               </div>
 
-              <div className="h-px bg-slate-100 mx-4" />
+              <div className="h-px bg-slate-100 dark:bg-slate-700 mx-4" />
 
               {/* File + JD + verdict */}
               <div className="p-4 pt-3 space-y-1.5 flex-1">
-                <p className="text-sm font-semibold text-[#1b254b] truncate flex items-center gap-1.5">
+                <p className="text-sm font-semibold text-[#1b254b] dark:text-slate-100 truncate flex items-center gap-1.5">
                   <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-slate-400">
                     <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
                     <polyline points="14 2 14 8 20 8"/>
                   </svg>
                   {entry.fileName || "Resume.pdf"}
                 </p>
-                <p className="text-xs text-slate-400 truncate">{entry.jdSnippet}</p>
+                <p className="text-xs text-slate-400 dark:text-slate-500 truncate">{entry.jdSnippet}</p>
                 {entry.verdict && (
-                  <p className="text-xs text-slate-500 italic leading-relaxed line-clamp-2">"{entry.verdict}"</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 italic leading-relaxed line-clamp-2">"{entry.verdict}"</p>
                 )}
               </div>
 
               {/* Score bar */}
               <div className="px-4 pb-4">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[10px] text-slate-400">ATS Score</span>
+                  <span className="text-[10px] text-slate-400 dark:text-slate-500">ATS Score</span>
                   <span className="text-[10px] font-bold" style={{ color }}>{entry.score.toFixed(0)} / 100</span>
                 </div>
-                <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                <div className="h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                   <div className="h-full rounded-full" style={{ width: `${(entry.score / 100) * 100}%`, background: color }} />
                 </div>
               </div>
@@ -707,23 +707,23 @@ export function ATSCheckerClient({ userId }: { userId: string }) {
       {/* Inputs */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Job Description */}
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex flex-col gap-3">
-          <label className="text-sm font-bold text-[#1b254b] flex items-center gap-2">
-            <span className="w-6 h-6 bg-[#1b254b] text-white rounded-lg flex items-center justify-center text-[11px] font-black">JD</span>
+        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm p-5 flex flex-col gap-3">
+          <label className="text-sm font-bold text-[#1b254b] dark:text-slate-100 flex items-center gap-2">
+            <span className="w-6 h-6 bg-[#1b254b] dark:bg-slate-700 text-white rounded-lg flex items-center justify-center text-[11px] font-black">JD</span>
             Job Description
           </label>
           <textarea
             value={jd}
             onChange={e => setJd(e.target.value)}
             placeholder="Paste the full job description here…"
-            className="flex-1 min-h-[240px] resize-none text-sm bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-[#2dd4bf] placeholder:text-slate-400 text-slate-700"
+            className="flex-1 min-h-[240px] resize-none text-sm bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/60 rounded-xl p-3 outline-none focus:ring-2 focus:ring-[#2dd4bf] placeholder:text-slate-400 text-slate-700 dark:text-slate-300 transition-colors"
           />
           <p className="text-xs text-slate-400">{jd.trim().split(/\s+/).filter(Boolean).length} words</p>
         </div>
 
         {/* Resume PDF */}
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex flex-col gap-3">
-          <label className="text-sm font-bold text-[#1b254b] flex items-center gap-2">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm p-5 flex flex-col gap-3">
+          <label className="text-sm font-bold text-[#1b254b] dark:text-slate-100 flex items-center gap-2">
             <span className="w-6 h-6 bg-[#2dd4bf] text-white rounded-lg flex items-center justify-center">
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
@@ -775,23 +775,23 @@ export function ATSCheckerClient({ userId }: { userId: string }) {
 
       {/* Eval Error */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-2xl p-4 flex items-start gap-3">
+        <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-2xl p-4 flex items-start gap-3">
           <span className="text-xl shrink-0">⚠️</span>
           <div>
-            <p className="text-sm font-semibold text-red-700">Evaluation Failed</p>
-            <p className="text-sm text-red-600 opacity-80 mt-0.5">{error}</p>
+            <p className="text-sm font-semibold text-red-700 dark:text-red-400">Evaluation Failed</p>
+            <p className="text-sm text-red-600 dark:text-red-500 opacity-80 mt-0.5">{error}</p>
           </div>
         </div>
       )}
 
       {/* Duplicate Warning */}
       {duplicateWarning && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 animate-in fade-in slide-in-from-bottom-2 shadow-sm">
+        <div className="bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 animate-in fade-in slide-in-from-bottom-2 shadow-sm">
           <div className="flex items-start gap-3">
             <span className="text-xl shrink-0">⚠️</span>
             <div className="text-center sm:text-left">
-              <p className="text-sm font-semibold text-amber-800">Duplicate Resume Detected</p>
-              <p className="text-sm text-amber-700 opacity-90 mt-0.5 max-w-lg">
+              <p className="text-sm font-semibold text-amber-800 dark:text-amber-400">Duplicate Resume Detected</p>
+              <p className="text-sm text-amber-700 dark:text-amber-500 opacity-90 mt-0.5 max-w-lg">
                 You have already analyzed <strong>{fileName || "this resume"}</strong> previously. Evaluating it again will consume one of your 5 available evaluations per 30 minutes.
               </p>
             </div>
@@ -810,28 +810,28 @@ export function ATSCheckerClient({ userId }: { userId: string }) {
         <div ref={resultsRef} className="space-y-5 scroll-mt-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
           {/* Hero score */}
-          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 flex flex-col sm:flex-row items-center gap-6">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm p-6 flex flex-col sm:flex-row items-center gap-6">
             <ScoreRing score={result.overall_score} />
             <div className="flex-1 space-y-2 text-center sm:text-left">
-              <h2 className="text-2xl font-black text-[#1b254b]">ATS Score Report</h2>
+              <h2 className="text-2xl font-black text-[#1b254b] dark:text-slate-100">ATS Score Report</h2>
               {fileName && (
-                <p className="text-xs text-slate-400 flex items-center gap-1 justify-center sm:justify-start">
+                <p className="text-xs text-slate-400 dark:text-slate-500 flex items-center gap-1 justify-center sm:justify-start">
                   <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
                   {fileName}
                 </p>
               )}
-              <p className="text-slate-600 text-sm leading-relaxed">{result.verdict}</p>
+              <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">{result.verdict}</p>
               <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
-                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">{result.matched_keywords.length} Matched Keywords</span>
-                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-red-100 text-red-600">{result.missing_keywords.length} Missing Keywords</span>
-                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-blue-100 text-blue-700">{result.top_strengths.length} Key Strengths</span>
+                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">{result.matched_keywords.length} Matched Keywords</span>
+                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400">{result.missing_keywords.length} Missing Keywords</span>
+                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400">{result.top_strengths.length} Key Strengths</span>
               </div>
             </div>
           </div>
 
           {/* Breakdown */}
-          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-5">
-            <h2 className="font-black text-[#1b254b] text-lg">📋 Score Breakdown</h2>
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm p-6 space-y-5">
+            <h2 className="font-black text-[#1b254b] dark:text-slate-100 text-lg">📋 Score Breakdown</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
               {BREAKDOWN_META.map(({ key, label, max, icon }) => {
                 const item = result.breakdown[key as keyof typeof result.breakdown];
@@ -842,16 +842,16 @@ export function ATSCheckerClient({ userId }: { userId: string }) {
 
           {/* Keywords */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 space-y-3">
-              <h3 className="font-bold text-[#1b254b]">✅ Matched Keywords</h3>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm p-5 space-y-3">
+              <h3 className="font-bold text-[#1b254b] dark:text-slate-100">✅ Matched Keywords</h3>
               <div className="flex flex-wrap gap-2">
                 {result.matched_keywords.length > 0
                   ? result.matched_keywords.map(w => <KeywordPill key={w} word={w} type="match" />)
-                  : <p className="text-xs text-slate-400">None detected</p>}
+                  : <p className="text-xs text-slate-400 dark:text-slate-500">None detected</p>}
               </div>
             </div>
-            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 space-y-3">
-              <h3 className="font-bold text-[#1b254b]">❌ Missing Keywords</h3>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm p-5 space-y-3">
+              <h3 className="font-bold text-[#1b254b] dark:text-slate-100">❌ Missing Keywords</h3>
               <div className="flex flex-wrap gap-2">
                 {result.missing_keywords.length > 0
                   ? result.missing_keywords.map(w => <KeywordPill key={w} word={w} type="miss" />)
@@ -871,7 +871,7 @@ export function ATSCheckerClient({ userId }: { userId: string }) {
           <div className="flex justify-center">
             <button
               onClick={() => { setResult(null); handleClear(); setJd(""); setError(null); }}
-              className="text-sm text-slate-500 hover:text-[#1b254b] underline underline-offset-2 transition-colors"
+              className="text-sm text-slate-500 dark:text-slate-400 hover:text-[#1b254b] dark:hover:text-slate-100 underline underline-offset-2 transition-colors"
             >
               ← Start a new evaluation
             </button>

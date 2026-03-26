@@ -115,10 +115,10 @@ export function AttendanceDashboard({ initialRecords }: { initialRecords: any[] 
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between bg-white p-4 rounded-xl border border-slate-200/60 shadow-sm">
+            <div className="flex items-center justify-between bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200/60 dark:border-slate-700/60 shadow-sm">
                 <div>
-                    <h3 className="font-semibold text-slate-800">Live Attendance Sync</h3>
-                    <p className="text-sm text-slate-500">
+                    <h3 className="font-semibold text-slate-800 dark:text-slate-100">Live Attendance Sync</h3>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
                         {lastScraped ? `Last updated ${formatDistanceToNow(lastScraped)} ago` : "No data synced yet"}
                     </p>
                 </div>
@@ -169,11 +169,11 @@ export function AttendanceDashboard({ initialRecords }: { initialRecords: any[] 
 
             <div className="grid gap-6 md:grid-cols-[1fr_2fr]">
                 {/* Circular Progress Overview */}
-                <Card className="rounded-2xl border-slate-200/60 shadow-sm flex flex-col items-center justify-center p-8">
+                <Card className="rounded-2xl border-slate-200/60 dark:border-slate-700/60 bg-white dark:bg-slate-800 shadow-sm flex flex-col items-center justify-center p-8">
                     <div className="relative h-40 w-40 flex items-center justify-center">
                         {/* Fake SVG Circle to represent Circular Progress exactly like screenshot */}
-                        <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                            <circle cx="50" cy="50" r="40" stroke="#f1f5f9" strokeWidth="8" fill="none" />
+                        <svg className="w-full h-full transform -rotate-90 text-slate-100 dark:text-slate-700" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="40" stroke="currentColor" strokeWidth="8" fill="none" />
                             <circle
                                 cx="50" cy="50" r="40"
                                 stroke={globalAttendance >= 75 ? "#f59e0b" : "#ef4444"}
@@ -185,49 +185,49 @@ export function AttendanceDashboard({ initialRecords }: { initialRecords: any[] 
                         </svg>
                         <div className="absolute flex flex-col items-center justify-center text-center">
                             <span className="text-4xl font-bold text-orange-500">{globalAttendance.toFixed(0)}%</span>
-                            <span className="text-xs font-semibold text-slate-500 tracking-widest uppercase mt-1">Overall</span>
+                            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-widest uppercase mt-1">Overall</span>
                         </div>
                     </div>
                 </Card>
 
                 <div className="space-y-6">
                     <div className="grid grid-cols-2 gap-6">
-                        <Card className="rounded-2xl border-slate-200/60 shadow-sm p-6 flex flex-col justify-center">
-                            <p className="text-xs font-semibold tracking-widest text-slate-500 mb-2">ATTENDED</p>
-                            <h3 className="text-4xl font-bold text-slate-800">{totalAttended}</h3>
-                            <p className="text-sm text-slate-400 mt-1">classes</p>
+                        <Card className="rounded-2xl border-slate-200/60 dark:border-slate-700/60 bg-white dark:bg-slate-800 shadow-sm p-6 flex flex-col justify-center">
+                            <p className="text-xs font-semibold tracking-widest text-slate-500 dark:text-slate-400 mb-2">ATTENDED</p>
+                            <h3 className="text-4xl font-bold text-slate-800 dark:text-slate-100">{totalAttended}</h3>
+                            <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">classes</p>
                         </Card>
-                        <Card className="rounded-2xl border-slate-200/60 shadow-sm p-6 flex flex-col justify-center">
-                            <p className="text-xs font-semibold tracking-widest text-slate-500 mb-2">TOTAL</p>
-                            <h3 className="text-4xl font-bold text-slate-800">{totalClasses}</h3>
-                            <p className="text-sm text-slate-400 mt-1">classes</p>
+                        <Card className="rounded-2xl border-slate-200/60 dark:border-slate-700/60 bg-white dark:bg-slate-800 shadow-sm p-6 flex flex-col justify-center">
+                            <p className="text-xs font-semibold tracking-widest text-slate-500 dark:text-slate-400 mb-2">TOTAL</p>
+                            <h3 className="text-4xl font-bold text-slate-800 dark:text-slate-100">{totalClasses}</h3>
+                            <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">classes</p>
                         </Card>
                     </div>
 
-                    <div className="bg-orange-50/50 border border-orange-200 p-4 rounded-xl flex items-start gap-4">
-                        <div className="h-8 w-8 bg-orange-100 text-orange-500 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="bg-orange-50/50 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/20 p-4 rounded-xl flex items-start gap-4">
+                        <div className="h-8 w-8 bg-orange-100 dark:bg-orange-500/20 text-orange-500 dark:text-orange-400 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
                             <AlertTriangle className="h-4 w-4" />
                         </div>
                         <div className="space-y-0.5">
-                            <h4 className="text-sm font-semibold text-slate-800">{globalAttendance < 75 ? "Below 75% — Risk of Detention" : "Safe Zone"}</h4>
-                            <p className="text-sm text-slate-600">{globalAttendance < 75 ? "Attend more classes to reach 75%" : "You are currently meeting attendance requirements."}</p>
+                            <h4 className="text-sm font-semibold text-slate-800 dark:text-slate-200">{globalAttendance < 75 ? "Below 75% — Risk of Detention" : "Safe Zone"}</h4>
+                            <p className="text-sm text-slate-600 dark:text-slate-400">{globalAttendance < 75 ? "Attend more classes to reach 75%" : "You are currently meeting attendance requirements."}</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Smart Predictor */}
-            <Card className="rounded-2xl border-slate-200/60 shadow-sm overflow-hidden">
-                <CardHeader className="bg-white pb-4 border-b border-slate-100">
-                    <CardTitle className="text-lg font-bold flex items-center gap-2 text-slate-800">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-teal-600"><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></svg>
+            <Card className="rounded-2xl border-slate-200/60 dark:border-slate-700/60 bg-white dark:bg-slate-800 shadow-sm overflow-hidden">
+                <CardHeader className="bg-white dark:bg-slate-800 pb-4 border-b border-slate-100 dark:border-slate-700/50">
+                    <CardTitle className="text-lg font-bold flex items-center gap-2 text-slate-800 dark:text-slate-100">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-teal-600 dark:text-teal-400"><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></svg>
                         Smart Attendance Predictor
                     </CardTitle>
-                    <p className="text-sm text-slate-500">See how your attendance changes if you miss upcoming classes.</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">See how your attendance changes if you miss upcoming classes.</p>
                 </CardHeader>
-                <CardContent className="p-6 space-y-8 bg-slate-50/50">
+                <CardContent className="p-6 space-y-8 bg-slate-50/50 dark:bg-slate-900/50">
                     <div className="flex items-center gap-4">
-                        <span className="text-sm font-semibold text-slate-700 whitespace-nowrap">Target</span>
+                        <span className="text-sm font-semibold text-slate-700 dark:text-slate-200 whitespace-nowrap">Target</span>
                         <div className="flex-1 px-2">
                             <Slider
                                 defaultValue={[75]}
@@ -239,19 +239,19 @@ export function AttendanceDashboard({ initialRecords }: { initialRecords: any[] 
                                 className="w-full"
                             />
                         </div>
-                        <span className="text-sm font-bold text-slate-800 flex items-center gap-1 w-16 justify-end">
-                            {targetPercentage[0]}<span className="font-normal text-slate-500">%</span>
+                        <span className="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1 w-16 justify-end">
+                            {targetPercentage[0]}<span className="font-normal text-slate-500 dark:text-slate-400">%</span>
                         </span>
                     </div>
 
-                    <div className="bg-white p-6 rounded-xl border border-slate-200/60 shadow-sm space-y-4 transition-all w-full min-h-[100px] overflow-visible">
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200/60 dark:border-slate-700/60 shadow-sm space-y-4 transition-all w-full min-h-[100px] overflow-visible">
                         <div className="flex items-center justify-between">
-                            <span className="text-sm font-semibold text-slate-800">Overall Action Plan</span>
-                            <span className={`text-xl font-bold ${globalAttendance < globalTarget ? 'text-orange-500' : 'text-teal-500'}`}>
+                            <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">Overall Action Plan</span>
+                            <span className={`text-xl font-bold ${globalAttendance < globalTarget ? 'text-orange-500 dark:text-orange-400' : 'text-teal-500 dark:text-teal-400'}`}>
                                 {globalAttendance < globalTarget ? `Attend ${globalToAttend} blocks` : `Can bunk ${globalToBunk} blocks`}
                             </span>
                         </div>
-                        <div className="h-4 w-full bg-slate-100 rounded-full relative overflow-hidden">
+                        <div className="h-4 w-full bg-slate-100 dark:bg-slate-700 rounded-full relative overflow-hidden">
                             {/* Base Current Attendance Bar */}
                             <div
                                 className={`absolute top-0 left-0 h-full rounded-full transition-all duration-300 ${globalAttendance >= globalTarget ? 'bg-teal-500' : 'bg-orange-400'}`}
@@ -274,13 +274,13 @@ export function AttendanceDashboard({ initialRecords }: { initialRecords: any[] 
                             )}
 
                             {/* Target Line Indicator */}
-                            <div className="absolute top-0 bottom-0 w-0.5 bg-slate-800/40 z-20 pointer-events-none transition-all duration-300" style={{ left: `${globalTarget}%` }}></div>
+                            <div className="absolute top-0 bottom-0 w-0.5 bg-slate-800/40 dark:bg-slate-200/40 z-20 pointer-events-none transition-all duration-300" style={{ left: `${globalTarget}%` }}></div>
                         </div>
                     </div>
                 </CardContent>
             </Card>
 
-            <h3 className="text-xl font-bold text-slate-800 mt-8 mb-4">Subject-wise Breakdown</h3>
+            <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mt-8 mb-4">Subject-wise Breakdown</h3>
             {records.length === 0 ? (
                 <Card className="flex flex-col items-center justify-center p-12 text-center border-dashed border-2">
                     <ShieldAlert className="h-12 w-12 text-muted-foreground mb-4 opacity-20" />
@@ -298,7 +298,7 @@ export function AttendanceDashboard({ initialRecords }: { initialRecords: any[] 
                         const toBunkTarget = calcClassesToBunk(record.attended, record.total, targetLine);
 
                         return (
-                            <Card key={record.id} className="overflow-hidden flex flex-col h-full hover:shadow-md transition-shadow rounded-2xl border-slate-200/60 shadow-sm">
+                            <Card key={record.id} className="overflow-hidden flex flex-col h-full hover:shadow-md transition-shadow rounded-2xl border-slate-200/60 dark:border-slate-700/60 bg-white dark:bg-slate-800 shadow-sm">
                                 <CardHeader className="pb-2">
                                     <div className="flex justify-between items-start gap-2">
                                         <CardTitle className="text-lg leading-tight line-clamp-2" title={record.subject}>
@@ -316,8 +316,8 @@ export function AttendanceDashboard({ initialRecords }: { initialRecords: any[] 
                                 <CardContent className="space-y-4 flex-1">
                                     <div className="flex justify-between items-end">
                                         <div className="space-y-1">
-                                            <p className="text-sm text-slate-500 tracking-widest font-semibold text-xs">ATTENDED</p>
-                                            <p className="text-2xl font-bold">{record.attended} <span className="text-slate-400 text-sm font-normal">/ {record.total}</span></p>
+                                            <p className="text-sm text-slate-500 dark:text-slate-400 tracking-widest font-semibold text-xs">ATTENDED</p>
+                                            <p className="text-2xl font-bold text-slate-800 dark:text-slate-100">{record.attended} <span className="text-slate-400 dark:text-slate-500 text-sm font-normal">/ {record.total}</span></p>
                                         </div>
                                         <div className="text-right">
                                             <p className={`text-2xl font-black ${getStatusColor(p)}`}>
@@ -327,7 +327,7 @@ export function AttendanceDashboard({ initialRecords }: { initialRecords: any[] 
                                     </div>
 
                                     <div className="space-y-1">
-                                        <div className="h-2 w-full bg-slate-100 rounded-full relative overflow-hidden">
+                                        <div className="h-2 w-full bg-slate-100 dark:bg-slate-700 rounded-full relative overflow-hidden">
                                             {/* Base Current Attendance Bar */}
                                             <div
                                                 className={`absolute top-0 left-0 h-full rounded-full transition-all duration-1000 ease-out z-10 ${p >= targetLine ? 'bg-teal-500' : 'bg-orange-400'}`}
@@ -350,11 +350,11 @@ export function AttendanceDashboard({ initialRecords }: { initialRecords: any[] 
                                             )}
 
                                             {/* Target Line Indicator */}
-                                            <div className="absolute top-0 bottom-0 w-[1px] bg-slate-800/40 z-30 pointer-events-none transition-all duration-1000 ease-out" style={{ left: `${targetLine}%` }}></div>
+                                            <div className="absolute top-0 bottom-0 w-[1px] bg-slate-800/40 dark:bg-slate-200/40 z-30 pointer-events-none transition-all duration-1000 ease-out" style={{ left: `${targetLine}%` }}></div>
                                         </div>
                                     </div>
                                 </CardContent>
-                                <CardFooter className="bg-slate-50 mt-auto pb-4 pt-4 flex-col items-start gap-2 border-t border-slate-100 text-sm">
+                                <CardFooter className="bg-slate-50 dark:bg-slate-800/50 mt-auto pb-4 pt-4 flex-col items-start gap-2 border-t border-slate-100 dark:border-slate-700/50 text-sm">
                                     {p < targetLine ? (
                                         <div className="flex items-start gap-2 text-orange-600 font-medium">
                                             <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
@@ -366,7 +366,7 @@ export function AttendanceDashboard({ initialRecords }: { initialRecords: any[] 
                                             <span>Can safely bunk <strong>{toBunkTarget}</strong> {toBunkTarget === 1 ? 'class' : 'classes'}</span>
                                         </div>
                                     ) : (
-                                        <div className="flex items-start gap-2 text-slate-600 font-medium">
+                                        <div className="flex items-start gap-2 text-slate-600 dark:text-slate-400 font-medium">
                                             <ShieldAlert className="h-4 w-4 shrink-0 mt-0.5" />
                                             <span>On the margin (no bunks left)</span>
                                         </div>

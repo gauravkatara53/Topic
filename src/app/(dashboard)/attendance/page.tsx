@@ -33,8 +33,8 @@ export default async function AttendancePage() {
         <div className="space-y-6 max-w-6xl mx-auto">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Attendance Tracker</h2>
-                    <p className="text-muted-foreground">Monitor your classes, calculate bunks, and stay safe.</p>
+                    <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Attendance Tracker</h2>
+                    <p className="text-slate-500 dark:text-slate-400">Monitor your classes, calculate bunks, and stay safe.</p>
                 </div>
             </div>
 

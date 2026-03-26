@@ -127,14 +127,14 @@ export function ATSPromoPage() {
 
       {/* ── How It Works ── */}
       <div className="space-y-4">
-        <h2 className="text-xl font-black text-[#1b254b] text-center">How It Works</h2>
+        <h2 className="text-xl font-black text-[#1b254b] dark:text-slate-100 text-center">How It Works</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {STEPS.map(({ step, label }) => (
-            <div key={step} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex flex-col items-center text-center gap-3">
+            <div key={step} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm p-5 flex flex-col items-center text-center gap-3">
               <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#1b254b] to-[#2dd4bf] flex items-center justify-center shadow-md">
                 <span className="text-white font-black text-sm">{step}</span>
               </div>
-              <p className="text-sm font-semibold text-[#1b254b]">{label}</p>
+              <p className="text-sm font-semibold text-[#1b254b] dark:text-slate-100">{label}</p>
             </div>
           ))}
         </div>
@@ -142,13 +142,13 @@ export function ATSPromoPage() {
 
       {/* ── Features Grid ── */}
       <div className="space-y-4">
-        <h2 className="text-xl font-black text-[#1b254b] text-center">Everything You Need to Land the Interview</h2>
+        <h2 className="text-xl font-black text-[#1b254b] dark:text-slate-100 text-center">Everything You Need to Land the Interview</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {FEATURES.map(({ icon, title, desc }) => (
-            <div key={title} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 space-y-2 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+            <div key={title} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm p-5 space-y-2 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
               <span className="text-2xl">{icon}</span>
-              <h3 className="font-bold text-[#1b254b] text-sm">{title}</h3>
-              <p className="text-xs text-slate-500 leading-relaxed">{desc}</p>
+              <h3 className="font-bold text-[#1b254b] dark:text-slate-100 text-sm">{title}</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{desc}</p>
             </div>
           ))}
         </div>

@@ -213,17 +213,17 @@ export function PopularSheetClient({
           Back to Sheets
         </button>
         <span className="text-slate-200">/</span>
-        <span className="text-[#1b254b]">{sheet.name}</span>
+    <span className="text-[#1b254b] dark:text-slate-200">{sheet.name}</span>
       </nav>
 
       {/* Header Section */}
       <div className="flex flex-col md:flex-row gap-10 items-start justify-between">
         <div className="flex-1 space-y-6">
           <div className="space-y-4">
-            <h1 className="text-3xl md:text-4xl font-black text-[#1b254b] tracking-tight leading-tight">
+            <h1 className="text-3xl md:text-4xl font-black text-[#1b254b] dark:text-white tracking-tight leading-tight">
               {sheet.name}
             </h1>
-            <p className="text-[13px] text-slate-500 font-medium leading-relaxed max-w-3xl whitespace-pre-line">
+            <p className="text-[13px] text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-3xl whitespace-pre-line">
               {sheet.description}
             </p>
           </div>
@@ -286,7 +286,7 @@ export function PopularSheetClient({
               />
             );
           })()}
-          <div className="mt-4 text-[13px] font-black text-slate-800 tracking-tight">
+          <div className="mt-4 text-[13px] font-black text-slate-800 dark:text-white tracking-tight">
             Overall Progress
           </div>
         </div>
@@ -300,16 +300,16 @@ export function PopularSheetClient({
           const topicCompletedCount = topicQuestions.filter(q => completed.has(String(q.questionId || q.id || q._id))).length;
 
           return (
-            <div key={topic} className="bg-white rounded-[24px] border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+            <div key={topic} className="bg-white dark:bg-slate-800 rounded-[24px] border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col">
               <ProgressTopBar current={topicCompletedCount} total={topicQuestions.length} />
               <button
                 onClick={() => setExpandedTopics(prev => ({ ...prev, [topic]: !isExpanded }))}
-                className="w-full px-8 py-6 flex items-center justify-between hover:bg-slate-50/50 transition-colors"
+                className="w-full px-8 py-6 flex items-center justify-between hover:bg-slate-50/50 dark:hover:bg-slate-700/50 transition-colors"
               >
                 <div className="flex items-center gap-4">
-                  <h3 className="text-[17px] font-black text-slate-800 tracking-tight uppercase flex items-center gap-3">
+                  <h3 className="text-[17px] font-black text-slate-800 dark:text-white tracking-tight uppercase flex items-center gap-3">
                     {topic === "Uncategorized" ? "All Questions" : topic}
-                    <span className="text-slate-400 font-bold ml-2">{topicCompletedCount} / {topicQuestions.length}</span>
+                    <span className="text-slate-400 dark:text-slate-500 font-bold ml-2">{topicCompletedCount} / {topicQuestions.length}</span>
                   </h3>
                 </div>
                 <ChevronDown className={cn("w-5 h-5 text-slate-300 transition-transform duration-300", !isExpanded && "rotate-180")} />
@@ -328,20 +328,20 @@ export function PopularSheetClient({
                     const subtopicCompletedCount = filteredQs.filter((q: any) => completed.has(String(q.questionId || q.id || q._id))).length;
 
                     return (
-                      <div key={subtopic} className="space-y-0 border border-slate-100 rounded-2xl overflow-hidden mb-6 last:mb-0 flex flex-col">
+                      <div key={subtopic} className="space-y-0 border border-slate-100 dark:border-slate-700 rounded-2xl overflow-hidden mb-6 last:mb-0 flex flex-col">
                         <ProgressTopBar current={subtopicCompletedCount} total={filteredQs.length} className="h-[3px] bg-orange-100/20" />
                         {subtopic !== "General" && (
-                          <div className="px-8 py-3 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
-                            <h4 className="text-[11px] font-black text-slate-400 tracking-widest uppercase">
+                          <div className="px-8 py-3 bg-slate-50/50 dark:bg-slate-700/50 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                            <h4 className="text-[11px] font-black text-slate-400 dark:text-slate-500 tracking-widest uppercase">
                               {subtopic}
                             </h4>
-                            <span className="text-[10px] font-bold text-slate-500">
+                            <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400">
                               {filteredQs.length} questions
                             </span>
                           </div>
                         )}
 
-                        <div className="divide-y divide-slate-100">
+                        <div className="divide-y divide-slate-100 dark:divide-slate-700">
                           {filteredQs.map((q: any) => {
                             const qId = String(q.questionId || q.id || q._id);
                             const isDone = completed.has(qId);
@@ -354,7 +354,7 @@ export function PopularSheetClient({
                                 key={qId}
                                 onClick={() => setSelectedQuestion({ id: qId, data: q })}
                                 className={cn(
-                                  "group/row grid grid-cols-12 gap-4 px-8 py-3 items-center bg-white hover:bg-slate-50/50 transition-all cursor-pointer",
+                                  "group/row grid grid-cols-12 gap-4 px-8 py-3 items-center bg-white dark:bg-slate-800 hover:bg-slate-50/50 dark:hover:bg-slate-700/50 transition-all cursor-pointer",
                                   highlightClass
                                 )}
                               >
@@ -375,8 +375,8 @@ export function PopularSheetClient({
                                     rel="noopener noreferrer"
                                     onClick={(e) => e.stopPropagation()}
                                     className={cn(
-                                      "text-[13px] font-bold truncate hover:text-[#1b254b] transition-colors",
-                                      isDone ? "text-slate-400 opacity-80" : "text-slate-700"
+                                      "text-[13px] font-bold truncate hover:text-[#1b254b] dark:hover:text-[#2dd4bf] transition-colors",
+                                      isDone ? "text-slate-400 dark:text-slate-600 opacity-80" : "text-slate-700 dark:text-white"
                                     )}
                                   >
                                     {q.name}
@@ -467,10 +467,10 @@ export function PopularSheetClient({
           onClick={() => setRevisionModalOpen(null)}
         >
           <div 
-            className="bg-white rounded-2xl w-full max-w-sm p-6 shadow-2xl animate-in zoom-in-95 fade-in duration-200"
+            className="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl animate-in zoom-in-95 fade-in duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-xl font-black text-[#1b254b] mb-1 tracking-tight">Revision Schedule</h3>
+            <h3 className="text-xl font-black text-[#1b254b] dark:text-white mb-1 tracking-tight">Revision Schedule</h3>
             <p className="text-xs text-slate-500 mb-5 font-medium line-clamp-2">{revisionModalOpen.title}</p>
 
             <div className="mt-4 text-left">

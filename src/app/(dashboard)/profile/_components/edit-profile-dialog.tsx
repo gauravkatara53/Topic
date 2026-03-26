@@ -49,7 +49,7 @@ export function EditProfileDialog({
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline" className="gap-2 shrink-0 border-slate-200">
+                <Button variant="outline" className="gap-2 shrink-0 border-slate-200 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">
                     <Edit2 className="h-4 w-4" /> Edit Profile
                 </Button>
             </DialogTrigger>
