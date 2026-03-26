@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Search, Map, Database, LayoutTemplate, BriefcaseBusiness, ListTodo, CheckCircle2, Sparkles, Clock, CalendarDays, Circle, FileText, Save, Palette, ChevronDown, ChevronRight, Users, ArrowRight, Star, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { toggleQuestionCompletion, updateQuestionRevision, updateRevisionStatus, updateFollowedSheetTheme, toggleQuestionStar, updateQuestionHighlight, togglePopularSheetFollow } from "@/actions/dsa-sheets";
+import { toggleQuestionCompletion, updateQuestionRevision, updateRevisionStatus, updateFollowedSheetTheme, toggleQuestionStar, updateQuestionHighlight, togglePopularSheetFollow, updateQuestionNote } from "@/actions/dsa-sheets";
 import { toast } from "sonner";
 import { createCustomSheet } from "@/actions/custom-sheets";
 import { BulkImportModal } from "./bulk-import-modal";
@@ -231,6 +231,7 @@ export function DSASheetsClient({
   followedPopularIds = [],
   userCustomSheets = [],
   userPortfolio = null,
+  initialNotes = [],
   initialTab = "Company Wise"
 }: {
   dbCompanies?: any[],
@@ -245,6 +246,7 @@ export function DSASheetsClient({
   followedPopularIds?: string[],
   userCustomSheets?: any[],
   userPortfolio?: any,
+  initialNotes?: any[],
   initialTab?: string
 }) {
   const router = useRouter();
@@ -259,6 +261,25 @@ export function DSASheetsClient({
   const [followedPopular, setFollowedPopular] = useState<Set<string>>(new Set(followedPopularIds || []));
   const [paletteOpen, setPaletteOpen] = useState<string | null>(null);
   const [revisionModalOpen, setRevisionModalOpen] = useState<{ id: string, title: string, companyId: string } | null>(null);
+
+  const [selectedQuestion, setSelectedQuestion] = useState<{ id: string, data: any } | null>(null);
+  const [localNotes, setLocalNotes] = useState<Record<string, string>>(() => {
+    const acc: Record<string, string> = {};
+    (initialNotes || []).forEach((note: any) => { acc[note.questionId] = note.content; });
+    return acc;
+  });
+
+  const handleSaveNote = async (content: string) => {
+    if (!selectedQuestion) return;
+    const qid = selectedQuestion.id;
+    setLocalNotes(prev => ({ ...prev, [qid]: content }));
+    try {
+      await updateQuestionNote(qid, content);
+      toast.success("Note saved!");
+    } catch (error) {
+      toast.error("Failed to save note.");
+    }
+  };
 
   const onTogglePopularFollow = async (sheetId: string) => {
     if (!userId) {
@@ -742,10 +763,17 @@ export function DSASheetsClient({
                             const assignedCompany = q.companies?.split(',')[0]?.trim() || 'google';
 
                             return (
-                              <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:px-6 sm:py-5 hover:bg-slate-50 transition-colors group">
+                              <div 
+                                key={idx} 
+                                onClick={() => setSelectedQuestion({ id: q.id, data: q })}
+                                className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:px-6 sm:py-5 hover:bg-slate-50 transition-colors group cursor-pointer"
+                              >
                                 <div className="flex-1 min-w-0 pr-4 flex items-start gap-3">
                                   <button
-                                    onClick={() => toggleCompletion(q, assignedCompany)}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      toggleCompletion(q, assignedCompany);
+                                    }}
                                     className="mt-0.5 relative p-1 rounded-full shrink-0 text-slate-300 hover:text-emerald-500 hover:bg-emerald-50 transition-colors"
                                   >
                                     {completed.has(q.id) ? (
@@ -774,13 +802,19 @@ export function DSASheetsClient({
                                         </span>
                                       )}
                                     </div>
-                                    <a href={q.url} target="_blank" rel="noopener noreferrer" className="text-[15px] font-bold text-slate-800 hover:text-indigo-600 transition-colors truncate block">
+                                    <a 
+                                      href={q.url} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer" 
+                                      onClick={(e) => e.stopPropagation()}
+                                      className="text-[15px] font-bold text-slate-800 hover:text-indigo-600 transition-colors truncate block"
+                                    >
                                       {q.title}
                                     </a>
                                   </div>
                                 </div>
 
-                                <div className="mt-4 sm:mt-0 flex shrink-0 items-center justify-end gap-3 pl-9 sm:pl-0">
+                                <div className="mt-4 sm:mt-0 flex shrink-0 items-center justify-end gap-3 pl-9 sm:pl-0" onClick={(e) => e.stopPropagation()}>
                                   <select
                                     value={localRevisions[q.id]?.status || 'Pending'}
                                     onChange={(e) => changeRevisionStatus(q.id, e.target.value)}
@@ -897,10 +931,17 @@ export function DSASheetsClient({
                         const assignedCompany = star.companyId || q.companies?.split(',')[0]?.trim() || 'google';
 
                         return (
-                          <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:px-6 sm:py-5 hover:bg-slate-50 transition-colors group">
+                          <div 
+                            key={idx} 
+                            onClick={() => setSelectedQuestion({ id: q.id, data: q })}
+                            className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:px-6 sm:py-5 hover:bg-slate-50 transition-colors group cursor-pointer"
+                          >
                             <div className="flex-1 min-w-0 pr-4 flex items-start gap-3">
                               <button
-                                onClick={() => toggleCompletion(q, assignedCompany)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleCompletion(q, assignedCompany);
+                                }}
                                 className="mt-0.5 relative p-1 rounded-full shrink-0 text-slate-300 hover:text-emerald-500 hover:bg-emerald-50 transition-colors"
                               >
                                 {completed.has(q.id) ? (
@@ -925,13 +966,19 @@ export function DSASheetsClient({
                                     BOOKMARKED
                                   </span>
                                 </div>
-                                <a href={q.url} target="_blank" rel="noopener noreferrer" className="text-[15px] font-bold text-slate-800 hover:text-indigo-600 transition-colors truncate block">
+                                <a 
+                                  href={q.url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer" 
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="text-[15px] font-bold text-slate-800 hover:text-indigo-600 transition-colors truncate block"
+                                >
                                   {q.title}
                                 </a>
                               </div>
                             </div>
 
-                            <div className="mt-4 sm:mt-0 flex shrink-0 items-center justify-end gap-3 pl-9 sm:pl-0">
+                            <div className="mt-4 sm:mt-0 flex shrink-0 items-center justify-end gap-3 pl-9 sm:pl-0" onClick={(e) => e.stopPropagation()}>
                               <div className="flex items-center gap-1.5 flex-wrap relative group mr-2">
                                 {(q.topics || []).slice(0, 2).map((topic: string) => (
                                   <span key={topic} className="text-[9px] font-bold px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded">
@@ -1069,6 +1116,32 @@ export function DSASheetsClient({
         </div>
       )}
 
+      <QuestionDrawer 
+        isOpen={!!selectedQuestion}
+        onClose={() => setSelectedQuestion(null)}
+        question={selectedQuestion?.data}
+        isCompleted={selectedQuestion ? completed.has(selectedQuestion.id) : false}
+        isStarred={selectedQuestion ? starred.has(selectedQuestion.id) : false}
+        notes={selectedQuestion ? (localNotes[selectedQuestion.id] || "") : ""}
+        onSaveNote={handleSaveNote}
+        onToggleCompletion={() => {
+          if (!selectedQuestion) return;
+          const assignedCompany = selectedQuestion.data.companies?.split(',')[0]?.trim() || 'google';
+          toggleCompletion(selectedQuestion.data, assignedCompany);
+        }}
+        onToggleStar={() => {
+          if (!selectedQuestion) return;
+          const assignedCompany = selectedQuestion.data.companies?.split(',')[0]?.trim() || 'google';
+          toggleStar(selectedQuestion.id, assignedCompany);
+        }}
+        lastRevised={selectedQuestion ? (localRevisions[selectedQuestion.id]?.lastRevised || "") : ""}
+        nextRevision={selectedQuestion ? (localRevisions[selectedQuestion.id]?.nextRevision || "") : ""}
+        onUpdateRevision={(field, val) => selectedQuestion && handleRevisionChange(selectedQuestion.id, field, val)}
+        onSaveRevision={async () => {
+          if (selectedQuestion) await saveRevision(selectedQuestion.id);
+        }}
+        alternateQuestions={[]}
+      />
     </div>
   );
 }

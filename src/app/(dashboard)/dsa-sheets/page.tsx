@@ -49,6 +49,10 @@ export default async function DSASheetsPage() {
     where: { userId }
   }) : Promise.resolve(null);
 
+  const userNotesPromise = userId ? (prisma as any).userQuestionNote.findMany({
+    where: { userId }
+  }) : Promise.resolve([]);
+
   const [
     companies,
     followedSheets,
@@ -58,7 +62,8 @@ export default async function DSASheetsPage() {
     popularSheets,
     followedPopular,
     userCustomSheets,
-    userPortfolio
+    userPortfolio,
+    userNotes
   ] = await Promise.all([
     companiesPromise,
     followedSheetsPromise,
@@ -68,7 +73,8 @@ export default async function DSASheetsPage() {
     popularSheetsPromise,
     followedPopularPromise,
     userCustomSheetsPromise,
-    userPortfolioPromise
+    userPortfolioPromise,
+    userNotesPromise
   ]);
 
   const allIds = [...new Set([...revisionsRaw.map((r: any) => String(r.questionId)), ...starredRaw.map((s: any) => String(s.questionId))])];
@@ -111,6 +117,7 @@ export default async function DSASheetsPage() {
     userPortfolio={userPortfolio}
     statsData={statsData}
     initialCompletedIds={completedQuestions.map((q: any) => q.questionId)}
+    initialNotes={userNotes}
     initialTab="Company Wise"
   />;
 }

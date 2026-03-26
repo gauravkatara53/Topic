@@ -31,10 +31,15 @@ export default async function RevisionsPage() {
   });
   const initialCompletedIds = completed.map((c: any) => c.questionId);
 
+  const userNotes = await (prisma as any).userQuestionNote.findMany({
+    where: { userId }
+  });
+
   return <DSASheetsClient 
     userId={userId} 
     revisionsData={userRevisions}
     initialCompletedIds={initialCompletedIds}
+    initialNotes={userNotes}
     initialTab="Revisions"
   />;
 }
