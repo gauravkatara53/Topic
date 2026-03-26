@@ -663,11 +663,9 @@ export function CompanySheetClient({
                             )}
                           </div>
 
-                          {following && (
-                            <button onClick={() => openRevisionModal(q.id, q.title)} className="text-slate-300 hover:text-[#1b254b] transition-colors flex shrink-0">
-                              <Clock className="w-4 h-4" />
-                            </button>
-                          )}
+                          <button onClick={() => openRevisionModal(q.id, q.title)} className="text-slate-300 hover:text-[#1b254b] transition-colors flex shrink-0">
+                            <Clock className="w-4 h-4" />
+                          </button>
                           <a href={q.url} target="_blank" rel="noopener noreferrer" className="text-slate-300 hover:text-orange-400 transition-colors flex shrink-0">
                             <FileText className="w-4 h-4" />
                           </a>

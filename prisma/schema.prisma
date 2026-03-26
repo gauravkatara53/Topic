@@ -35,6 +35,7 @@ model User {
   highlightedQuestions    UserQuestionHighlight[]
   questionNotes           UserQuestionNote[]
   customSheets            UserCustomSheet[]
+  portfolio               UserPortfolio?
 }
 
 model Announcement {
@@ -265,4 +266,33 @@ model CustomSheetQuestion {
   question PopularQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@map("customsheetquestions")
+}
+
+model UserPortfolio {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Basic Stats
+  totalSolved     Int      @default(0)
+  activeDays      Int      @default(0)
+  globalRank      Int?
+  
+  // Platform Handles
+  github          String?
+  leetcode        String?
+  codeforces      String?
+  codechef        String?
+  geeksforgeeks   String?
+  hackerrank      String?
+  interviewbit    String?
+  atcoder         String?
+  codestudio      String?
+
+  // Cached Aggregated Stats (JSON)
+  statsCache      Json?    // For charts, topic analysis, etc.
+  
+  lastRefreshed   DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }

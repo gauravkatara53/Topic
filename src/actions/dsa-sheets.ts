@@ -15,7 +15,7 @@ export async function toggleFollowSheet(companyId: string, isFollowing: boolean)
   }
 
   if (isFollowing) {
-    await prisma.userFollowedSheet.deleteMany({
+    await (prisma as any).userFollowedSheet.deleteMany({
       where: {
         userId,
         companyId
@@ -23,7 +23,7 @@ export async function toggleFollowSheet(companyId: string, isFollowing: boolean)
     });
   } else {
     // Follow
-    await prisma.userFollowedSheet.upsert({
+    await (prisma as any).userFollowedSheet.upsert({
       where: {
         userId_companyId: {
           userId,
@@ -38,8 +38,7 @@ export async function toggleFollowSheet(companyId: string, isFollowing: boolean)
     });
   }
 
-  revalidatePath('/dsa-sheets');
-  revalidatePath(`/dsa-sheets/${companyId}`);
+  revalidatePath('/dsa-sheets', 'layout');
   return { success: true };
 }
 
@@ -58,7 +57,7 @@ export async function updateQuestionRevision(
     throw new Error("User record not fully initialized");
   }
 
-  await prisma.userQuestionRevision.upsert({
+  await (prisma as any).userQuestionRevision.upsert({
     where: {
       userId_questionId: {
         userId,
@@ -81,6 +80,7 @@ export async function updateQuestionRevision(
     }
   });
 
+  revalidatePath("/dsa-sheets", "layout");
   return { success: true };
 }
 
@@ -93,7 +93,7 @@ export async function toggleQuestionCompletion(
   if (!userId) throw new Error("Unauthorized");
 
   if (isNowCompleted) {
-    await prisma.userCompletedQuestion.upsert({
+    await (prisma as any).userCompletedQuestion.upsert({
       where: {
         userId_questionId: { userId, questionId }
       },
@@ -105,12 +105,12 @@ export async function toggleQuestionCompletion(
       }
     });
   } else {
-    await prisma.userCompletedQuestion.deleteMany({
+    await (prisma as any).userCompletedQuestion.deleteMany({
       where: { userId, questionId }
     });
   }
 
-  revalidatePath("/dsa-sheets");
+  revalidatePath("/dsa-sheets", "layout");
   return { success: true };
 }
 
@@ -118,7 +118,7 @@ export async function updateRevisionStatus(questionId: string, status: string) {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  await prisma.userQuestionRevision.updateMany({
+  await (prisma as any).userQuestionRevision.updateMany({
     where: {
       userId,
       questionId
@@ -126,7 +126,7 @@ export async function updateRevisionStatus(questionId: string, status: string) {
     data: { status }
   });
 
-  revalidatePath("/dsa-sheets");
+  revalidatePath("/dsa-sheets", "layout");
   return { success: true };
 }
 
@@ -139,7 +139,7 @@ export async function toggleQuestionStar(
   if (!userId) throw new Error("Unauthorized");
 
   if (isNowStarred) {
-    await prisma.userStarredQuestion.upsert({
+    await (prisma as any).userStarredQuestion.upsert({
       where: {
         userId_questionId: { userId, questionId }
       },
@@ -151,12 +151,12 @@ export async function toggleQuestionStar(
       }
     });
   } else {
-    await prisma.userStarredQuestion.deleteMany({
+    await (prisma as any).userStarredQuestion.deleteMany({
       where: { userId, questionId }
     });
   }
 
-  revalidatePath("/dsa-sheets");
+  revalidatePath("/dsa-sheets", "layout");
   return { success: true };
 }
 
@@ -164,7 +164,7 @@ export async function updateFollowedSheetTheme(companyId: string, theme: string)
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  await prisma.userFollowedSheet.update({
+  await (prisma as any).userFollowedSheet.update({
     where: {
       userId_companyId: {
         userId,
@@ -176,7 +176,7 @@ export async function updateFollowedSheetTheme(companyId: string, theme: string)
     }
   });
 
-  revalidatePath('/dsa-sheets');
+  revalidatePath('/dsa-sheets', 'layout');
   return { success: true };
 }
 
@@ -184,7 +184,7 @@ export async function updateQuestionHighlight(questionId: string, companyId: str
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  await prisma.userQuestionHighlight.upsert({
+  await (prisma as any).userQuestionHighlight.upsert({
     where: {
       userId_questionId: {
         userId,
@@ -203,31 +203,30 @@ export async function updateQuestionHighlight(questionId: string, companyId: str
     }
   });
 
-  revalidatePath('/dsa-sheets');
-  revalidatePath(`/dsa-sheets/${companyId}`);
+  revalidatePath('/dsa-sheets', 'layout');
   return { success: true };
 }
 export async function togglePopularSheetFollow(popularSheetId: string) {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  const existing = await prisma.userFollowedPopularSheet.findUnique({
+  const existing = await (prisma as any).userFollowedPopularSheet.findUnique({
     where: {
       userId_popularSheetId: { userId, popularSheetId }
     }
   });
 
   if (existing) {
-    await prisma.userFollowedPopularSheet.delete({
+    await (prisma as any).userFollowedPopularSheet.delete({
       where: { id: existing.id }
     });
   } else {
-    await prisma.userFollowedPopularSheet.create({
+    await (prisma as any).userFollowedPopularSheet.create({
       data: { userId, popularSheetId }
     });
   }
 
-  revalidatePath('/dsa-sheets');
+  revalidatePath('/dsa-sheets', 'layout');
   return { success: true };
 }
 
@@ -235,7 +234,7 @@ export async function updateQuestionNote(questionId: string, content: string) {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  await prisma.userQuestionNote.upsert({
+  await (prisma as any).userQuestionNote.upsert({
     where: { userId_questionId: { userId, questionId } },
     update: { content },
     create: { userId, questionId, content }

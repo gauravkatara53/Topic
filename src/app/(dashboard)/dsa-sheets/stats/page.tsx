@@ -1,6 +1,7 @@
 import { DSASheetsClient } from "../_components/dsa-sheets-client";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
+import { hydrateQuestions } from "@/lib/dsa-questions";
 
 export default async function StatsPage() {
   const { userId } = await auth();
@@ -12,45 +13,40 @@ export default async function StatsPage() {
   const now = new Date();
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  const totalCompleted = await prisma.userCompletedQuestion.count({
+  const totalCompleted = await (prisma as any).userCompletedQuestion.count({
     where: { userId }
   });
 
-  const completedToday = await prisma.userCompletedQuestion.count({
+  const completedToday = await (prisma as any).userCompletedQuestion.count({
     where: { userId, createdAt: { gte: startOfToday } }
   });
 
-  const completedRevisions = await prisma.userQuestionRevision.count({
+  const completedRevisions = await (prisma as any).userQuestionRevision.count({
     where: { userId, status: 'Completed' }
   });
   
   const statsData = { totalCompleted, completedToday, completedRevisions };
 
-  const starred = await prisma.userStarredQuestion.findMany({
+  const starred = await (prisma as any).userStarredQuestion.findMany({
     where: { userId },
     orderBy: { createdAt: 'desc' }
   });
 
-  const isObjectId = (id: string) => /^[0-9a-fA-F]{24}$/.test(id);
   let starredData: any[] = [];
   if (starred.length > 0) {
-    const starredIds = starred.map(s => s.questionId).filter(isObjectId);
-    if (starredIds.length > 0) {
-      const starredQs = await prisma.dSASheet.findMany({
-        where: { id: { in: starredIds } }
-      });
-      starredData = starred.map(s => {
-        const matchingQ = starredQs.find(q => q.id === s.questionId);
-        return { ...s, question: matchingQ };
-      }).filter(s => s.question);
-    }
+    const starredIds = starred.map((s: any) => s.questionId);
+    const questionMap = await hydrateQuestions(starredIds);
+    starredData = starred.map((s: any) => {
+      const matchingQ = questionMap.get(s.questionId);
+      return { ...s, question: matchingQ };
+    }).filter((s: any) => s.question);
   }
 
-  const completed = await prisma.userCompletedQuestion.findMany({
+  const completed = await (prisma as any).userCompletedQuestion.findMany({
     where: { userId },
     select: { questionId: true }
   });
-  const initialCompletedIds = completed.map(c => c.questionId);
+  const initialCompletedIds = completed.map((c: any) => c.questionId);
 
   return <DSASheetsClient 
     userId={userId} 

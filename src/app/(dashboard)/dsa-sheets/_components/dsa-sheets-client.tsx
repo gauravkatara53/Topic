@@ -11,10 +11,12 @@ import { createCustomSheet } from "@/actions/custom-sheets";
 import { BulkImportModal } from "./bulk-import-modal";
 import { QuestionDrawer } from "./question-drawer";
 import { RevisionPicker } from "./revision-picker";
+import { CodingPortfolio } from "./coding-portfolio";
+import { PlatformsView } from "./platforms-view";
 import { format } from "date-fns";
 
 const TABS = [
-  "Company Wise", "All", "My Sheets", "Revisions", "My Stats", "Popular", "Complete DSA"
+  "Company Wise", "All", "Popular", "My Sheets", "Revisions", "My Stats", "Portfolio", "Platforms"
 ];
 
 const SHEET_THEMES: Record<string, { bg: string, progressBg: string, progressFill: string, text: string, hover: string, border: string }> = {
@@ -228,6 +230,7 @@ export function DSASheetsClient({
   popularSheets = [],
   followedPopularIds = [],
   userCustomSheets = [],
+  userPortfolio = null,
   initialTab = "Company Wise"
 }: {
   dbCompanies?: any[],
@@ -241,6 +244,7 @@ export function DSASheetsClient({
   popularSheets?: any[],
   followedPopularIds?: string[],
   userCustomSheets?: any[],
+  userPortfolio?: any,
   initialTab?: string
 }) {
   const router = useRouter();
@@ -250,7 +254,7 @@ export function DSASheetsClient({
   const [expandedTopics, setExpandedTopics] = useState<Record<string, boolean>>({});
 
   const [completed, setCompleted] = useState<Set<string>>(new Set(initialCompletedIds || []));
-  const [starred, setStarred] = useState<Set<string>>(new Set((starredData || []).map(s => s.questionId)));
+  const [starred, setStarred] = useState<Set<string>>(new Set((starredData || []).map((s: any) => s.questionId)));
   const [highlights, setHighlights] = useState<Record<string, string>>({});
   const [followedPopular, setFollowedPopular] = useState<Set<string>>(new Set(followedPopularIds || []));
   const [paletteOpen, setPaletteOpen] = useState<string | null>(null);
@@ -400,6 +404,7 @@ export function DSASheetsClient({
         rev.nextRevision ? new Date(rev.nextRevision) : null,
         "Pending"
       );
+      router.refresh();
       setRevisionModalOpen(null);
     } catch (e) {
       alert("Error saving revision.");
@@ -422,6 +427,7 @@ export function DSASheetsClient({
 
     try {
       await toggleQuestionCompletion(q.id, companyId, isNowDone);
+      router.refresh();
     } catch (err) {
       console.error(err);
       setCompleted(prev => {
@@ -710,11 +716,13 @@ export function DSASheetsClient({
                 {(() => {
                   const sortedRevisions = [...revisionsData].sort((a, b) => new Date(a.nextRevision).getTime() - new Date(b.nextRevision).getTime());
                   const todayStr = new Date().toDateString();
-                  const dueToday = sortedRevisions.filter(r => new Date(r.nextRevision).toDateString() === todayStr || new Date(r.nextRevision) < new Date(todayStr));
-                  const upcoming = sortedRevisions.filter(r => new Date(r.nextRevision) > new Date(todayStr) && new Date(r.nextRevision).toDateString() !== todayStr);
+                  const tomorrowStr = new Date(Date.now() + 86400000).toDateString();
+                  
+                  const dueToday = sortedRevisions.filter(r => new Date(r.nextRevision).toDateString() === todayStr);
+                  const dueTomorrow = sortedRevisions.filter(r => new Date(r.nextRevision).toDateString() === tomorrowStr);
+                  const upcoming = sortedRevisions.filter(r => new Date(r.nextRevision) > new Date(tomorrowStr) && new Date(r.nextRevision).toDateString() !== tomorrowStr);
 
-                  const renderList = (title: string, icon: any, list: any[], isOverdueHighlight = false) => {
-                    if (list.length === 0) return null;
+                  const renderList = (title: string, icon: any, list: any[], isOverdueHighlight = false, emptyMsg: string) => {
                     return (
                       <div className="bg-white rounded-[16px] border border-slate-200 overflow-hidden shadow-sm">
                         <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
@@ -724,7 +732,11 @@ export function DSASheetsClient({
                           <span className="text-[12px] font-bold text-slate-500 bg-slate-200/50 px-2 py-0.5 rounded-full">{list.length}</span>
                         </div>
                         <div className="divide-y divide-slate-100">
-                          {list.map((rev, idx) => {
+                          {list.length === 0 ? (
+                            <div className="py-12 text-center text-slate-400 font-bold bg-white italic border-t border-slate-50">
+                              {emptyMsg}
+                            </div>
+                          ) : list.map((rev, idx) => {
                             const q = rev.question;
                             const dateObj = new Date(rev.nextRevision);
                             const assignedCompany = q.companies?.split(',')[0]?.trim() || 'google';
@@ -815,12 +827,13 @@ export function DSASheetsClient({
                     );
                   };
 
-                  return (
-                    <>
-                      {renderList("Due Today", <CalendarDays className="w-5 h-5 text-rose-500" />, dueToday, true)}
-                      {renderList("Upcoming", <CalendarDays className="w-5 h-5 text-indigo-500" />, upcoming, false)}
-                    </>
-                  );
+                    return (
+                      <>
+                        {renderList("Due Today", <CalendarDays className="w-5 h-5 text-rose-500" />, dueToday, true, "No questions marked for today")}
+                        {renderList("Due Tomorrow", <CalendarDays className="w-5 h-5 text-amber-500" />, dueTomorrow, false, "No questions marked for tomorrow")}
+                        {renderList("Upcoming", <CalendarDays className="w-5 h-5 text-indigo-500" />, upcoming, false, "No upcoming revisions scheduled")}
+                      </>
+                    );
                 })()}
               </div>
             )}
@@ -1005,9 +1018,13 @@ export function DSASheetsClient({
               })}
             </div>
           </div>
+        ) : activeTab === "Portfolio" ? (
+          <div className="py-2">
+            <CodingPortfolio initialData={userPortfolio} />
+          </div>
         ) : (
-          <div className="py-20 text-center">
-            <p className="text-slate-500 font-medium">More sheets coming soon to this category!</p>
+          <div className="py-2">
+            <PlatformsView initialData={userPortfolio} />
           </div>
         )}
       </div>
