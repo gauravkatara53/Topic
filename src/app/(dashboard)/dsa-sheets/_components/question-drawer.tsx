@@ -5,6 +5,8 @@ import { X, ChevronRight, ExternalLink, FileText, CheckCircle2, Circle, Save, Bo
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { updateQuestionNote } from "@/actions/dsa-sheets";
+import { RevisionPicker } from "./revision-picker";
+import { format, parseISO, isValid } from "date-fns";
 
 interface QuestionDrawerProps {
   isOpen: boolean;
@@ -18,6 +20,10 @@ interface QuestionDrawerProps {
   onToggleStar: () => void;
   alternateQuestions?: any[];
   popularSheets?: string[];
+  lastRevised?: string;
+  nextRevision?: string;
+  onUpdateRevision?: (field: 'lastRevised' | 'nextRevision', value: string) => void;
+  onSaveRevision?: () => Promise<void>;
 }
 
 export function QuestionDrawer({
@@ -31,11 +37,17 @@ export function QuestionDrawer({
   onToggleCompletion,
   onToggleStar,
   alternateQuestions = [],
-  popularSheets = []
+  popularSheets = [],
+  lastRevised = "",
+  nextRevision = "",
+  onUpdateRevision,
+  onSaveRevision
 }: QuestionDrawerProps) {
   const [activeTab, setActiveTab] = useState<"overview" | "notes">("overview");
   const [localNote, setLocalNote] = useState(initialNotes);
   const [isSaving, setIsSaving] = useState(false);
+  const [isRevisionPickerOpen, setIsRevisionPickerOpen] = useState(false);
+  const [isSavingRevision, setIsSavingRevision] = useState(false);
 
   useEffect(() => {
     setLocalNote(initialNotes);
@@ -53,6 +65,26 @@ export function QuestionDrawer({
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleSaveRevision = async () => {
+    if (!onSaveRevision) return;
+    setIsSavingRevision(true);
+    try {
+      await onSaveRevision();
+      setIsRevisionPickerOpen(false);
+      toast.success("Revision dates updated");
+    } catch (error) {
+      toast.error("Failed to update revision dates");
+    } finally {
+      setIsSavingRevision(false);
+    }
+  };
+
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return "Not scheduled";
+    const date = parseISO(dateStr);
+    return isValid(date) ? format(date, "MMM dd, yyyy") : "Not scheduled";
   };
 
   return (
@@ -233,6 +265,57 @@ export function QuestionDrawer({
                     <span className="text-sm font-medium text-slate-600">Custom Sheets</span>
                     <button className="text-[10px] font-bold text-[#2dd4bf] hover:text-[#25bca8] transition-colors uppercase tracking-tight">Add to Sheet</button>
                   </div>
+                </div>
+              </section>
+
+              {/* Revision History Section */}
+              <section>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Revision Status</h3>
+                  <button 
+                    onClick={() => setIsRevisionPickerOpen(!isRevisionPickerOpen)}
+                    className="text-[10px] font-bold text-[#2dd4bf] hover:text-[#25bca8] transition-colors uppercase tracking-tight flex items-center gap-1.5"
+                  >
+                    <Clock className="w-3 h-3" />
+                    {isRevisionPickerOpen ? "Close Selector" : "Update Schedule"}
+                  </button>
+                </div>
+                <div className="bg-white rounded-xl p-6 border border-slate-100 shadow-sm space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter block">Last Practice</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-[#1b254b]" />
+                        <span className="text-sm font-semibold text-slate-700">{formatDate(lastRevised)}</span>
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter block">Next Revision</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-[#2dd4bf]" />
+                        <span className="text-sm font-semibold text-slate-700">{formatDate(nextRevision)}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {isRevisionPickerOpen && onUpdateRevision && (
+                    <div className="pt-4 border-t border-slate-50 animate-in fade-in slide-in-from-top-2 duration-300">
+                      <RevisionPicker 
+                        lastRevised={lastRevised}
+                        nextRevision={nextRevision}
+                        onChange={onUpdateRevision}
+                      />
+                      <div className="mt-4 flex justify-end">
+                        <button
+                          onClick={handleSaveRevision}
+                          disabled={isSavingRevision}
+                          className="px-6 py-2 bg-[#1b254b] hover:bg-[#111836] text-white text-xs font-bold rounded-lg transition-all shadow-md disabled:opacity-50 flex items-center gap-2"
+                        >
+                          {isSavingRevision ? "Saving..." : <><Save className="w-3.5 h-3.5" /> Save Dates</>}
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </section>
 

@@ -526,6 +526,12 @@ export function CustomSheetClient({
           }}
           onToggleCompletion={() => onToggleComplete(selectedQuestion.id)}
           onToggleStar={() => onToggleStar(selectedQuestion.id)}
+          lastRevised={selectedQuestion ? localRevisions[selectedQuestion.id]?.lastRevised : ""}
+          nextRevision={selectedQuestion ? localRevisions[selectedQuestion.id]?.nextRevision : ""}
+          onUpdateRevision={(field, val) => selectedQuestion && handleRevisionChange(selectedQuestion.id, field, val)}
+          onSaveRevision={async () => {
+            if (selectedQuestion) await saveRevision(selectedQuestion.id);
+          }}
         />
       )}
 

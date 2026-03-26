@@ -764,6 +764,12 @@ export function CompanySheetClient({
         onSaveNote={handleSaveNote}
         onToggleCompletion={() => selectedQuestion && toggleCompletion(selectedQuestion.data)}
         onToggleStar={() => selectedQuestion && toggleStar(selectedQuestion.id)}
+        lastRevised={selectedQuestion ? localRevisions[selectedQuestion.id]?.lastRevised : ""}
+        nextRevision={selectedQuestion ? localRevisions[selectedQuestion.id]?.nextRevision : ""}
+        onUpdateRevision={(field, val) => selectedQuestion && handleRevisionChange(selectedQuestion.id, field, val)}
+        onSaveRevision={async () => {
+          if (selectedQuestion) await saveRevision(selectedQuestion.id);
+        }}
         alternateQuestions={(() => {
           if (!selectedQuestion) return [];
           const qId = selectedQuestion.id;
