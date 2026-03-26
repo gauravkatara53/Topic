@@ -428,7 +428,7 @@ export function CompanySheetClient({
           </div>
           <div className="relative w-28 h-28 flex items-center justify-center bg-slate-50 dark:bg-slate-700 rounded-full">
             <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r={38} fill="none" stroke="#e2e8f0" strokeWidth="8" />
+              <circle cx="50" cy="50" r={38} fill="none" strokeWidth="8" className="stroke-slate-200 dark:stroke-slate-600" />
               {/* Easy - Green */}
               <circle cx="50" cy="50" r={38} fill="none" stroke="#22c55e" strokeWidth="8"
                 strokeDasharray={`${easyDash} ${circ}`} strokeLinecap="butt"
@@ -574,8 +574,8 @@ export function CompanySheetClient({
                         <div className="md:col-span-5 flex-1 min-w-0 pr-2">
                           <div className="flex flex-col xl:flex-row xl:items-center gap-2">
                             <a href={q.url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={cn(
-                              "text-[13px] font-bold truncate block transition-colors hover:underline underline-offset-2 decoration-slate-300",
-                              isDone ? "text-slate-500 dark:text-slate-500 opacity-80" : "text-slate-800 dark:text-white"
+                              "text-sm font-bold truncate leading-tight transition-colors hover:underline underline-offset-2 decoration-slate-300",
+                              isDone ? "text-slate-500 dark:text-slate-500 opacity-70 dark:opacity-100" : "text-slate-800 dark:text-white"
                             )}>
                               {q.title}
                             </a>
@@ -601,12 +601,13 @@ export function CompanySheetClient({
 
                         {/* Topics */}
                         <div className="md:col-span-3 hidden lg:flex items-center gap-1.5 justify-start pl-8 relative group">
-                          {q.topics.slice(0, 2).map((t: string, idx: number) => (
-                            <span key={idx} className="text-[9px] font-bold px-1.5 py-0.5 bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-600 rounded whitespace-nowrap truncate max-w-[80px]">
-                              {t}
-                            </span>
-                          ))}
-                          {q.topics.length > 2 && (
+                          <div className="flex flex-wrap items-center gap-1.5 px-4 justify-center">
+                            {(q.topics || []).slice(0, 3).map((topic: string, i: number) => (
+                              <span key={i} className="px-2 py-0.5 bg-white/5 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 border border-[#1b254b]/10 dark:border-white/10 rounded-md text-[10px] font-bold tracking-tighter whitespace-nowrap uppercase">
+                                {topic}
+                              </span>
+                            ))}
+                          </div>{q.topics.length > 2 && (
                             <span className="text-[9px] font-bold px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded cursor-help">
                               +{q.topics.length - 2}
                             </span>
@@ -626,12 +627,12 @@ export function CompanySheetClient({
                             }}
                             className={cn(
                               "transition-all duration-300 flex shrink-0", 
-                              localNotes[q.id] ? "text-orange-500" : "text-slate-300 hover:text-orange-500"
+                              localNotes[q.id] ? "text-orange-500" : "text-slate-300 dark:text-slate-500 hover:text-orange-500 dark:hover:text-orange-400"
                             )}
                           >
                             <FileText className="w-4 h-4" />
                           </button>
-                          <button onClick={() => toggleStar(q.id)} className={cn("transition-colors flex shrink-0", isStarred ? "text-orange-400" : "text-slate-300 hover:text-orange-400")}>
+                          <button onClick={() => toggleStar(q.id)} className={cn("transition-colors flex shrink-0", isStarred ? "text-orange-400" : "text-slate-300 dark:text-slate-500 hover:text-orange-400 dark:hover:text-orange-300")}>
                             <Star className={cn("w-4 h-4", isStarred && "fill-orange-400")} />
                           </button>
 
@@ -639,15 +640,15 @@ export function CompanySheetClient({
                             <button
                               onClick={() => setHighlightPopoverOpen(highlightPopoverOpen === q.id ? null : q.id)}
                               className={cn(
-                                "transition-colors flex shrink-0 hover:text-slate-900",
-                                curHighlight !== "default" ? "text-slate-900" : "text-slate-300"
+                                "transition-colors flex shrink-0 hover:text-slate-900 dark:hover:text-white",
+                                curHighlight !== "default" ? "text-slate-900 dark:text-white" : "text-slate-300 dark:text-slate-500"
                               )}
                             >
                               <Palette className="w-4 h-4" />
                             </button>
 
                             {highlightPopoverOpen === q.id && (
-                              <div className="absolute right-0 bottom-full mb-2 z-[110] bg-white border border-slate-200 rounded-xl shadow-2xl p-2 flex gap-1.5 animate-in zoom-in-95 fade-in duration-200">
+                              <div className="absolute right-0 bottom-full mb-2 z-[110] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl p-2 flex gap-1.5 animate-in zoom-in-95 fade-in duration-200">
                                 {THEME_OPTIONS.map(opt => (
                                   <button
                                     key={opt.id}
@@ -655,7 +656,7 @@ export function CompanySheetClient({
                                     className={cn(
                                       "w-5 h-5 rounded-full hover:scale-110 transition-transform shadow-inner ring-2 ring-offset-1 outline-none",
                                       opt.bg,
-                                      curHighlight === opt.id ? "ring-slate-400 scale-110" : "ring-transparent"
+                                      curHighlight === opt.id ? "ring-slate-400 dark:ring-slate-300 scale-110" : "ring-transparent"
                                     )}
                                   />
                                 ))}
@@ -663,7 +664,7 @@ export function CompanySheetClient({
                             )}
                           </div>
 
-                          <button onClick={() => openRevisionModal(q.id, q.title)} className="text-slate-300 hover:text-[#1b254b] transition-colors flex shrink-0">
+                          <button onClick={() => openRevisionModal(q.id, q.title)} className="text-slate-300 dark:text-slate-500 hover:text-[#1b254b] dark:hover:text-white transition-colors flex shrink-0">
                             <Clock className="w-4 h-4" />
                           </button>
                           <a href={q.url} target="_blank" rel="noopener noreferrer" className="text-slate-300 hover:text-orange-400 transition-colors flex shrink-0">
@@ -688,10 +689,10 @@ export function CompanySheetClient({
           onClick={() => setRevisionModalOpen(null)}
         >
           <div 
-            className="bg-white rounded-2xl w-full max-w-sm p-6 shadow-2xl animate-in zoom-in-95 fade-in duration-200"
+            className="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl animate-in zoom-in-95 fade-in duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-xl font-black text-slate-800 mb-1 tracking-tight">Revision Schedule</h3>
+            <h3 className="text-xl font-black text-slate-800 dark:text-white mb-1 tracking-tight">Revision Schedule</h3>
             <p className="text-xs text-slate-500 mb-5 font-medium line-clamp-2">{revisionModalOpen.title}</p>
 
             <div className="mt-4 text-left">
@@ -723,7 +724,7 @@ export function CompanySheetClient({
                       setShowRevisionModalPref(!disable);
                       localStorage.setItem("showRevisionOnComplete", disable ? "false" : "true");
                     }}
-                    className="peer appearance-none w-4 h-4 rounded border-2 border-slate-200 checked:bg-[#1b254b] checked:border-[#1b254b] transition-all"
+                    className="peer appearance-none w-4 h-4 rounded border-2 border-slate-200 dark:border-slate-600 checked:bg-[#1b254b] dark:checked:bg-[#2dd4bf] dark:bg-slate-700 transition-all"
                   />
                   <CheckCircle2 className="absolute w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" />
                 </div>
@@ -735,7 +736,7 @@ export function CompanySheetClient({
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setRevisionModalOpen(null)}
-                  className="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+                  className="px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-lg transition-colors"
                 >
                   Cancel
                 </button>
@@ -744,7 +745,7 @@ export function CompanySheetClient({
                     saveRevision(revisionModalOpen.id);
                     setRevisionModalOpen(null);
                   }}
-                  className="px-5 py-2 text-xs font-bold text-white bg-[#1b254b] hover:bg-[#111836] rounded-lg transition-colors flex items-center gap-1.5 shadow-md shadow-[#1b254b]/20"
+                  className="px-5 py-2 text-xs font-bold text-white bg-[#1b254b] hover:bg-[#111836] dark:bg-indigo-600 dark:hover:bg-indigo-500 rounded-lg transition-colors flex items-center gap-1.5 shadow-md shadow-[#1b254b]/20"
                 >
                   <Save className="w-3.5 h-3.5" /> Save
                 </button>

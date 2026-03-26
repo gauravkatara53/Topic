@@ -194,13 +194,13 @@ export function CustomSheetClient({
       <nav className="flex items-center gap-2 text-[13px] font-bold text-slate-400">
         <button 
           onClick={() => router.back()} 
-          className="flex items-center gap-1 hover:text-[#1b254b] transition-colors outline-none"
+          className="flex items-center gap-1 hover:text-[#1b254b] dark:hover:text-white transition-colors outline-none"
         >
           <ChevronLeft className="w-4 h-4" />
           Back to Sheets
         </button>
-        <span className="text-slate-200">/</span>
-        <span className="text-[#1b254b]">{sheet.name}</span>
+        <span className="text-slate-200 dark:text-slate-600">/</span>
+        <span className="text-[#1b254b] dark:text-white">{sheet.name}</span>
       </nav>
 
       {/* Header Section */}
@@ -213,26 +213,26 @@ export function CustomSheetClient({
                   autoFocus
                   value={tempName}
                   onChange={(e) => setTempName(e.target.value)}
-                  className="w-full text-3xl md:text-4xl font-black text-[#1b254b] tracking-tight leading-tight bg-slate-50 border-b-2 border-teal-500 outline-none px-2 py-1 rounded-t-lg"
+                  className="w-full text-3xl md:text-4xl font-black text-[#1b254b] dark:text-white tracking-tight leading-tight bg-slate-50 dark:bg-slate-800/50 border-b-2 border-teal-500 outline-none px-2 py-1 rounded-t-lg"
                   placeholder="Sheet Name"
                 />
                 <textarea
                   value={tempDescription}
                   onChange={(e) => setTempDescription(e.target.value)}
-                  className="w-full text-[13px] text-slate-500 font-medium leading-relaxed bg-slate-50 border-b-2 border-teal-200 outline-none px-2 py-2 rounded-t-lg min-h-[80px]"
+                  className="w-full text-[13px] text-slate-500 dark:text-slate-400 font-medium leading-relaxed bg-slate-50 dark:bg-slate-800/50 border-b-2 border-teal-200 dark:border-teal-800 outline-none px-2 py-2 rounded-t-lg min-h-[80px]"
                   placeholder="Describe your sheet..."
                 />
                 <div className="flex items-center gap-3">
                   <button
                     disabled={isSaving}
                     onClick={handleSaveMetadata}
-                    className="flex items-center gap-2 px-4 py-2 bg-[#1b254b] text-white text-xs font-black uppercase tracking-widest rounded-xl hover:bg-slate-800 transition-all disabled:opacity-50"
+                    className="flex items-center gap-2 px-4 py-2 bg-[#1b254b] text-white text-xs font-black uppercase tracking-widest rounded-xl hover:bg-slate-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 transition-all disabled:opacity-50"
                   >
                     {isSaving ? "Saving..." : <><Save className="w-4 h-4" /> Save Details</>}
                   </button>
                   <button
                     onClick={() => { setIsEditing(false); setTempName(sheet.name); setTempDescription(sheet.description); }}
-                    className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-500 text-xs font-black uppercase tracking-widest rounded-xl hover:bg-slate-200 transition-all"
+                    className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-widest rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
                   >
                     <X className="w-4 h-4" /> Cancel
                   </button>
@@ -241,17 +241,17 @@ export function CustomSheetClient({
             ) : (
               <div className="group relative">
                 <div className="flex items-center gap-3">
-                  <h1 className="text-3xl md:text-4xl font-black text-[#1b254b] tracking-tight leading-tight">
+                  <h1 className="text-3xl md:text-4xl font-black text-[#1b254b] dark:text-white tracking-tight leading-tight">
                     {sheet.name}
                   </h1>
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="opacity-0 group-hover:opacity-100 p-2 text-slate-300 hover:text-teal-500 hover:bg-teal-50 rounded-full transition-all"
+                    className="opacity-0 group-hover:opacity-100 p-2 text-slate-300 hover:text-teal-500 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-full transition-all"
                   >
                     <Edit3 className="w-4 h-4" />
                   </button>
                 </div>
-                <p className="text-[13px] text-slate-500 font-medium leading-relaxed max-w-3xl whitespace-pre-line mt-4">
+                <p className="text-[13px] text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-3xl whitespace-pre-line mt-4">
                   {sheet.description || "The DSA sheet designed to cover almost every concept in Data Structures and Algorithms. Master technical interviews with this comprehensive collection."}
                 </p>
               </div>
@@ -267,10 +267,10 @@ export function CustomSheetClient({
             </button>
 
             <div className="flex items-center gap-2">
-              <button className="p-2 text-slate-400 hover:text-[#1b254b] hover:bg-white rounded-xl border border-transparent hover:border-slate-200 transition-all">
+              <button className="p-2 text-slate-400 hover:text-[#1b254b] dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 rounded-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all">
                 <RotateCcw className="w-4 h-4" />
               </button>
-              <button className="flex items-center gap-2 px-2 py-2 text-slate-400 hover:text-[#1b254b] hover:bg-white rounded-xl border border-transparent hover:border-slate-200 transition-all text-xs font-black uppercase tracking-widest">
+              <button className="flex items-center gap-2 px-2 py-2 text-slate-400 hover:text-[#1b254b] dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 rounded-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all text-xs font-black uppercase tracking-widest">
                 <Share2 className="w-4 h-4" />
                 Share
               </button>
@@ -285,7 +285,7 @@ export function CustomSheetClient({
             size={140}
             strokeWidth={12}
           />
-          <div className="mt-4 text-[13px] font-black text-slate-800 tracking-tight">
+          <div className="mt-4 text-[13px] font-black text-slate-800 dark:text-white tracking-tight">
             Overall Progress
           </div>
         </div>
@@ -294,11 +294,11 @@ export function CustomSheetClient({
       {/* Toolbar / Search */}
       <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="relative w-full max-w-md group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-[#2dd4bf] transition-colors" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 dark:text-slate-500 group-focus-within:text-[#2dd4bf] transition-colors" />
           <input
             type="text"
             placeholder="Find a problem..."
-            className="w-full bg-white border border-slate-200 rounded-xl px-11 py-2.5 text-[13px] font-bold text-slate-600 outline-none focus:border-[#2dd4bf] focus:ring-4 focus:ring-[#2dd4bf]/5 transition-all shadow-sm"
+            className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-11 py-2.5 text-[13px] font-bold text-slate-600 dark:text-slate-300 outline-none focus:border-[#2dd4bf] dark:focus:border-[#2dd4bf] focus:ring-4 focus:ring-[#2dd4bf]/5 transition-all shadow-sm"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -314,27 +314,27 @@ export function CustomSheetClient({
             </button>
 
             {addMenuOpen && (
-              <div className="absolute right-0 mt-3 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 p-3 z-50 animate-in fade-in slide-in-from-top-4 duration-300">
+              <div className="absolute right-0 mt-3 w-56 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 p-3 z-50 animate-in fade-in slide-in-from-top-4 duration-300">
                 <button
                   onClick={() => { setIsEditing(true); setAddMenuOpen(false); }}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-[#1b254b] hover:bg-slate-50 rounded-xl transition-all"
+                  className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-[#1b254b] dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl transition-all"
                 >
                   <Edit3 className="w-4 h-4" /> Edit Sheet Details
                 </button>
                 <button
                   onClick={() => { setImportModalOpen(true); setAddMenuOpen(false); }}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-xl transition-all mt-1"
+                  className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 rounded-xl transition-all mt-1"
                 >
                   <FileSpreadsheet className="w-4 h-4" /> Import Excel/CSV
                 </button>
-                <div className="h-px bg-slate-50 my-2" />
+                <div className="h-px bg-slate-50 dark:bg-slate-700 my-2" />
                 <button
                   onClick={() => {
                     if (confirm("Delete this sheet?")) {
                       deleteCustomSheet(sheet.id).then(() => router.push("/dsa-sheets/my-sheets"));
                     }
                   }}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
+                  className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-rose-500 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl transition-all"
                 >
                   <Trash2 className="w-4 h-4" /> Delete Sheet
                 </button>
@@ -347,9 +347,9 @@ export function CustomSheetClient({
       {/* Questions Section */}
       <div className="space-y-12">
         {totalQuestions === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 bg-white rounded-[24px] border border-slate-200 shadow-sm">
-            <LayoutGrid className="w-12 h-12 text-slate-100 mb-6" />
-            <p className="text-slate-400 font-bold text-[13px]">No questions added yet.</p>
+          <div className="flex flex-col items-center justify-center py-24 bg-white dark:bg-slate-800 rounded-[24px] border border-slate-200 dark:border-slate-700 shadow-sm">
+            <LayoutGrid className="w-12 h-12 text-slate-100 dark:text-slate-700 mb-6" />
+            <p className="text-slate-400 dark:text-slate-500 font-bold text-[13px]">No questions added yet.</p>
           </div>
         ) : (
           Object.entries(groupedData).map(([topic, topicData]: [string, any]) => {
@@ -358,16 +358,16 @@ export function CustomSheetClient({
             const topicCompletedCount = topicQuestions.filter(sq => completed.has(sq.question.id)).length;
 
             return (
-              <div key={topic} className="bg-white rounded-[24px] border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+              <div key={topic} className="bg-white dark:bg-slate-800 rounded-[24px] border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col">
                 <ProgressTopBar current={topicCompletedCount} total={topicQuestions.length} />
                 <button
                   onClick={() => setExpandedTopics(prev => ({ ...prev, [topic]: !isExpanded }))}
-                  className="w-full px-8 py-6 flex items-center justify-between hover:bg-slate-50/50 transition-colors"
+                  className="w-full px-8 py-6 flex items-center justify-between hover:bg-slate-50/50 dark:hover:bg-slate-700/50 transition-colors"
                 >
                   <div className="flex items-center gap-4">
-                    <h3 className="text-[17px] font-black text-slate-800 tracking-tight uppercase flex items-center gap-3">
+                    <h3 className="text-[17px] font-black text-slate-800 dark:text-white tracking-tight uppercase flex items-center gap-3">
                       {topic === "Uncategorized" ? "All Questions" : topic}
-                      <span className="text-slate-400 font-bold ml-2">{topicCompletedCount} / {topicQuestions.length}</span>
+                      <span className="text-slate-400 dark:text-slate-500 font-bold ml-2">{topicCompletedCount} / {topicQuestions.length}</span>
                     </h3>
                   </div>
                   <ChevronDown className={cn("w-5 h-5 text-slate-300 transition-transform duration-300", !isExpanded && "rotate-180")} />
@@ -383,20 +383,20 @@ export function CustomSheetClient({
                       const subtopicCompletedCount = filteredQs.filter((sq: any) => completed.has(sq.question.id)).length;
 
                       return (
-                        <div key={subtopic} className="space-y-0 border border-slate-100 rounded-2xl overflow-hidden mb-6 last:mb-0 flex flex-col">
+                        <div key={subtopic} className="space-y-0 border border-slate-100 dark:border-slate-700 rounded-2xl overflow-hidden mb-6 last:mb-0 flex flex-col">
                           <ProgressTopBar current={subtopicCompletedCount} total={filteredQs.length} className="h-[3px] bg-orange-100/20" />
                           {subtopic !== "General" && (
-                            <div className="px-8 py-3 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
-                              <h4 className="text-[11px] font-black text-slate-400 tracking-widest uppercase">
+                            <div className="px-8 py-3 bg-slate-50/50 dark:bg-slate-700/50 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                              <h4 className="text-[11px] font-black text-slate-400 dark:text-slate-500 tracking-widest uppercase">
                                 {subtopic}
                               </h4>
-                              <span className="text-[10px] font-bold text-slate-500">
+                              <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400">
                                 {filteredQs.length} questions
                               </span>
                             </div>
                           )}
 
-                          <div className="divide-y divide-slate-100">
+                          <div className="divide-y divide-slate-100 dark:divide-slate-700">
                             {filteredQs.map((qLink: any) => {
                               const q = qLink.question;
                               const qId = q.id;
@@ -410,7 +410,7 @@ export function CustomSheetClient({
                                   key={qLink.id}
                                   onClick={() => setSelectedQuestion({ id: qId, data: q })}
                                   className={cn(
-                                    "group/row grid grid-cols-12 gap-4 px-8 py-3 items-center bg-white hover:bg-slate-50/50 transition-all cursor-pointer",
+                                    "group/row grid grid-cols-12 gap-4 px-8 py-3 items-center bg-white dark:bg-slate-800 hover:bg-slate-50/50 dark:hover:bg-slate-700/50 transition-all cursor-pointer",
                                     highlightClass
                                   )}
                                 >
@@ -419,15 +419,15 @@ export function CustomSheetClient({
                                       {isDone ? (
                                         <CheckCircle2 className="w-[22px] h-[22px] text-[#22c55e] stroke-[2px]" />
                                       ) : (
-                                        <Circle className="w-[22px] h-[22px] text-slate-200 group-hover/row:text-slate-300 stroke-[2px] transition-colors" />
+                                        <Circle className="w-[22px] h-[22px] text-slate-200 dark:text-slate-600 group-hover/row:text-slate-300 dark:group-hover/row:text-slate-500 stroke-[2px] transition-colors" />
                                       )}
                                     </button>
                                   </div>
 
                                   <div className="col-span-11 md:col-span-4 flex items-center gap-3 min-w-0">
                                     <span className={cn(
-                                      "text-[13px] font-bold truncate hover:text-[#1b254b] transition-colors",
-                                      isDone ? "text-slate-400 opacity-80" : "text-slate-700"
+                                      "text-sm font-bold ml-1 transition-colors leading-tight",
+                                      isDone ? "text-slate-400 dark:text-slate-500 opacity-70 dark:opacity-100" : "text-slate-700 dark:text-white"
                                     )}>
                                       {q.name}
                                     </span>
@@ -441,23 +441,23 @@ export function CustomSheetClient({
 
                                   <div className="hidden md:flex md:col-span-4 items-center gap-1.5 px-4 justify-center">
                                     {q.topics?.slice(0, 3).map((t: string, i: number) => (
-                                      <span key={i} className="px-2 py-0.5 bg-white/5 text-gray-500 border border-[#1b254b]/10 rounded-md text-[10px] font-bold tracking-tighter whitespace-nowrap">
+                                      <span key={i} className="px-2 py-0.5 bg-white/5 text-slate-500 dark:text-slate-400 border border-[#1b254b]/10 dark:border-white/10 rounded-md text-[10px] font-bold tracking-tighter whitespace-nowrap">
                                         {t}
                                       </span>
                                     ))}
-                                    {q.topics?.length > 3 && <span className="px-1.5 py-0.5 bg-slate-50 text-slate-400 border border-slate-200 rounded-md text-[9px] font-black tracking-tighter shrink-0">+{q.topics.length - 3}</span>}
+                                    {q.topics?.length > 3 && <span className="px-1.5 py-0.5 bg-slate-50 dark:bg-slate-700 text-slate-400 border border-slate-200 dark:border-slate-600 rounded-md text-[9px] font-black tracking-tighter shrink-0">+{q.topics.length - 3}</span>}
                                   </div>
 
                                   <div className="col-span-11 md:col-span-2 flex items-center justify-end gap-1.5 transition-opacity" onClick={(e) => e.stopPropagation()}>
-                                    <button onClick={() => onToggleStar(qId)} className={cn("p-1.5 hover:bg-white rounded-lg transition-all border border-transparent hover:border-slate-100", isStarred ? "text-amber-400" : "text-slate-400 hover:text-amber-400")}>
+                                    <button onClick={() => onToggleStar(qId)} className={cn("p-1.5 hover:bg-white dark:hover:bg-slate-600 rounded-lg transition-all border border-transparent hover:border-slate-100 dark:hover:border-slate-500", isStarred ? "text-amber-400" : "text-slate-400 hover:text-amber-400")}>
                                       <Star className={cn("w-4 h-4", isStarred && "fill-amber-400")} />
                                     </button>
                                     <div className="relative">
-                                      <button onClick={() => setPaletteOpen(paletteOpen === qId ? null : qId)} className="p-1.5 hover:bg-white rounded-lg transition-all border border-transparent hover:border-slate-100 text-slate-400 hover:text-indigo-600">
+                                      <button onClick={() => setPaletteOpen(paletteOpen === qId ? null : qId)} className="p-1.5 hover:bg-white dark:hover:bg-slate-600 rounded-lg transition-all border border-transparent hover:border-slate-100 dark:hover:border-slate-500 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400">
                                         <Palette className="w-4 h-4" />
                                       </button>
                                       {paletteOpen === qId && (
-                                        <div className="absolute right-0 bottom-full mb-3 z-[110] bg-white border border-slate-200 p-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-in zoom-in-95 origin-bottom-right">
+                                        <div className="absolute right-0 bottom-full mb-3 z-[110] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-in zoom-in-95 origin-bottom-right">
                                           {THEME_OPTIONS.map(opt => (
                                             <button
                                               key={opt.id}
@@ -465,7 +465,7 @@ export function CustomSheetClient({
                                               className={cn(
                                                 "w-6 h-6 rounded-full border-2 transition-transform hover:scale-110",
                                                 opt.bg,
-                                                curHighlight === opt.id ? "border-slate-800" : "border-transparent"
+                                                curHighlight === opt.id ? "border-slate-800 dark:border-slate-300" : "border-transparent"
                                               )}
                                             />
                                           ))}
@@ -474,7 +474,7 @@ export function CustomSheetClient({
                                     </div>
                                     <button
                                       onClick={() => openRevisionModal(qId, q.name)}
-                                      className="p-1.5 hover:bg-white rounded-lg transition-all border border-transparent hover:border-slate-100 text-slate-400 hover:text-[#1b254b]"
+                                      className="p-1.5 hover:bg-white dark:hover:bg-slate-600 rounded-lg transition-all border border-transparent hover:border-slate-100 dark:hover:border-slate-500 text-slate-400 hover:text-[#1b254b] dark:hover:text-slate-200"
                                     >
                                       <Clock className="w-4 h-4" />
                                     </button>
@@ -482,7 +482,7 @@ export function CustomSheetClient({
                                       onClick={() => {
                                         if (confirm("Remove from sheet?")) removeQuestionFromCustomSheet(qLink.id);
                                       }}
-                                      className="p-1.5 hover:bg-white rounded-lg transition-all border border-transparent hover:border-slate-100 text-slate-300 hover:text-rose-500"
+                                      className="p-1.5 hover:bg-white dark:hover:bg-slate-600 rounded-lg transition-all border border-transparent hover:border-slate-100 dark:hover:border-slate-500 text-slate-300 dark:text-slate-500 hover:text-rose-500 dark:hover:text-rose-400"
                                     >
                                       <Trash2 className="w-3.5 h-3.5" />
                                     </button>
@@ -541,10 +541,10 @@ export function CustomSheetClient({
           onClick={() => setRevisionModalOpen(null)}
         >
           <div 
-            className="bg-white rounded-2xl w-full max-w-sm p-6 shadow-2xl animate-in zoom-in-95 fade-in duration-200"
+            className="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl animate-in zoom-in-95 fade-in duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-xl font-black text-[#1b254b] mb-1 tracking-tight">Revision Schedule</h3>
+            <h3 className="text-xl font-black text-[#1b254b] dark:text-white mb-1 tracking-tight">Revision Schedule</h3>
             <p className="text-xs text-slate-500 mb-5 font-medium line-clamp-2">{revisionModalOpen.title}</p>
 
             <div className="mt-4 text-left">
@@ -571,7 +571,7 @@ export function CustomSheetClient({
                   type="checkbox"
                   checked={!showRevisionModalPref}
                   onChange={(e) => setShowRevisionModalPref(!e.target.checked)}
-                  className="w-4 h-4 rounded border-2 border-slate-200 checked:bg-[#1b254b] transition-all"
+                  className="w-4 h-4 rounded border-2 border-slate-200 dark:border-slate-600 checked:bg-[#1b254b] dark:checked:bg-[#2dd4bf] dark:bg-slate-700 transition-all"
                 />
                 <span className="text-[10px] font-bold text-slate-400 group-hover:text-slate-500 transition-colors uppercase tracking-widest">
                   Don't show again
@@ -581,7 +581,7 @@ export function CustomSheetClient({
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setRevisionModalOpen(null)}
-                  className="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+                  className="px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-lg transition-colors"
                 >
                   Cancel
                 </button>
@@ -590,7 +590,7 @@ export function CustomSheetClient({
                     saveRevision(revisionModalOpen.id);
                     setRevisionModalOpen(null);
                   }}
-                  className="px-5 py-2 text-xs font-black text-white bg-[#1b254b] hover:bg-slate-800 rounded-lg transition-colors shadow-md shadow-[#1b254b]/20"
+                  className="px-5 py-2 text-xs font-black text-white bg-[#1b254b] hover:bg-slate-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 rounded-lg transition-colors shadow-md shadow-[#1b254b]/20"
                 >
                   Save
                 </button>

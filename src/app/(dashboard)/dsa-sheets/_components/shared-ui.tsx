@@ -11,20 +11,20 @@ export const DIFFICULTY_COLOR: Record<string, string> = {
 
 export const HIGHLIGHT_THEMES: Record<string, string> = {
   default: "",
-  yellow: "bg-yellow-100/80 border-yellow-200",
-  blue: "bg-blue-100/80 border-blue-200",
-  rose: "bg-rose-100/80 border-rose-200",
-  emerald: "bg-emerald-100/80 border-emerald-200",
-  purple: "bg-purple-100/80 border-purple-200",
+  yellow: "bg-yellow-100/80 border-yellow-200 dark:bg-yellow-900/40 dark:border-yellow-800",
+  blue: "bg-blue-100/80 border-blue-200 dark:bg-blue-900/40 dark:border-blue-800",
+  rose: "bg-rose-100/80 border-rose-200 dark:bg-rose-900/40 dark:border-rose-800",
+  emerald: "bg-emerald-100/80 border-emerald-200 dark:bg-emerald-900/40 dark:border-emerald-800",
+  purple: "bg-purple-100/80 border-purple-200 dark:bg-purple-900/40 dark:border-purple-800",
 };
 
 export const THEME_OPTIONS = [
-  { id: "default", bg: "bg-slate-200" },
-  { id: "yellow", bg: "bg-yellow-400" },
-  { id: "blue", bg: "bg-blue-400" },
-  { id: "rose", bg: "bg-rose-400" },
-  { id: "emerald", bg: "bg-emerald-400" },
-  { id: "purple", bg: "bg-purple-400" },
+  { id: "default", bg: "bg-slate-200 dark:bg-slate-600" },
+  { id: "yellow", bg: "bg-yellow-400 dark:bg-yellow-500" },
+  { id: "blue", bg: "bg-blue-400 dark:bg-blue-500" },
+  { id: "rose", bg: "bg-rose-400 dark:bg-rose-500" },
+  { id: "emerald", bg: "bg-emerald-400 dark:bg-emerald-500" },
+  { id: "purple", bg: "bg-purple-400 dark:bg-purple-500" },
 ];
 
 export const CircularProgress = ({
@@ -60,8 +60,8 @@ export const CircularProgress = ({
           cy={size / 2}
           r={radius}
           fill="transparent"
-          stroke="#d7dadeff"
           strokeWidth={strokeWidth}
+          className="stroke-slate-200 dark:stroke-slate-700"
         />
         {segments.map((s, i) => {
           if (s.count === 0 && s.cumulative === 0) return null;
@@ -84,9 +84,9 @@ export const CircularProgress = ({
         })}
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-2xl font-black text-slate-800 leading-none">{totalSolved}</span>
-        <div className="w-8 h-px bg-slate-500 my-1" />
-        <span className="text-[18px] font-black text-slate-800 leading-none">{total}</span>
+        <span className="text-2xl font-black text-slate-800 dark:text-white leading-none">{totalSolved}</span>
+        <div className="w-8 h-px bg-slate-500 dark:bg-slate-400 my-1" />
+        <span className="text-[18px] font-black text-slate-800 dark:text-white leading-none">{total}</span>
       </div>
     </div>
   );

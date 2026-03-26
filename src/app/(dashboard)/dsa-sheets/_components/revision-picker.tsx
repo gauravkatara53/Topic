@@ -66,19 +66,19 @@ export function RevisionPicker({ lastRevised, nextRevision, onChange }: Revision
   const isNextInMonth = nextRevision && nextDate && format(nextDate, 'MMM yyyy') === format(currentMonth, 'MMM yyyy');
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm">
       {/* Header */}
-      <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
-        <h4 className="text-[13px] font-black text-slate-800 tracking-tight flex items-center gap-2">
+      <div className="px-4 py-3 bg-slate-50 dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
+        <h4 className="text-[13px] font-black text-slate-800 dark:text-slate-200 tracking-tight flex items-center gap-2">
           <CalendarIcon className="w-4 h-4 text-indigo-500" />
           {format(currentMonth, 'MMMM yyyy')}
         </h4>
         <div className="flex items-center gap-1">
-          <button onClick={prevMonth} className="p-1.5 hover:bg-white rounded-lg transition-colors border border-transparent hover:border-slate-200">
-            <ChevronLeft className="w-4 h-4 text-slate-500" />
+          <button onClick={prevMonth} className="p-1.5 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-600">
+            <ChevronLeft className="w-4 h-4 text-slate-500 dark:text-slate-400" />
           </button>
-          <button onClick={nextMonth} className="p-1.5 hover:bg-white rounded-lg transition-colors border border-transparent hover:border-slate-200">
-            <ChevronRight className="w-4 h-4 text-slate-500" />
+          <button onClick={nextMonth} className="p-1.5 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-600">
+            <ChevronRight className="w-4 h-4 text-slate-500 dark:text-slate-400" />
           </button>
         </div>
       </div>
@@ -87,7 +87,7 @@ export function RevisionPicker({ lastRevised, nextRevision, onChange }: Revision
       <div className="p-4 relative">
         <div className="grid grid-cols-7 mb-2">
           {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(d => (
-            <div key={d} className="text-[10px] font-black text-slate-400 text-center uppercase tracking-widest">{d}</div>
+            <div key={d} className="text-[10px] font-black text-slate-400 dark:text-slate-500 text-center uppercase tracking-widest">{d}</div>
           ))}
         </div>
 
@@ -119,9 +119,9 @@ export function RevisionPicker({ lastRevised, nextRevision, onChange }: Revision
                   isSelected ? "bg-[#1b254b] text-white shadow-lg shadow-[#1b254b]/20 z-20 rounded-lg" :
                   isNext && !selectingNext ? "bg-[#2dd4bf] text-white shadow-lg shadow-[#2dd4bf]/20 z-20 rounded-lg" :
                   (selectingNext && hoveredDate && isSameDay(day, hoveredDate)) ? "bg-[#2dd4bf]/50 text-white z-20 rounded-lg" :
-                  inRange ? "bg-indigo-50/80 text-indigo-600 z-10" :
-                  "text-slate-600 hover:bg-slate-100 rounded-lg",
-                  isTdy && !isSelected && !isNext && !inRange && "text-indigo-600 ring-1 ring-inset ring-indigo-200 rounded-lg"
+                  inRange ? "bg-indigo-50/80 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 z-10" :
+                  "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg",
+                  isTdy && !isSelected && !isNext && !inRange && "text-indigo-600 dark:text-indigo-400 ring-1 ring-inset ring-indigo-200 dark:ring-indigo-500/50 rounded-lg"
                 )}
               >
                 {day.getDate()}
@@ -143,9 +143,9 @@ export function RevisionPicker({ lastRevised, nextRevision, onChange }: Revision
       </div>
 
       {/* Quick Access */}
-      <div className="px-4 py-3 bg-slate-50 border-t border-slate-100">
+      <div className="px-4 py-3 bg-slate-50 dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700">
         <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-          <div className="flex items-center gap-1.5 shrink-0 mr-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+          <div className="flex items-center gap-1.5 shrink-0 mr-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
             <Zap className="w-3 h-3 text-amber-400 fill-amber-400" />
             Plan:
           </div>
@@ -156,7 +156,7 @@ export function RevisionPicker({ lastRevised, nextRevision, onChange }: Revision
                 const newNext = addDays(lastDate, preset.days);
                 onChange('nextRevision', format(newNext, 'yyyy-MM-dd'));
               }}
-              className="px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-[10px] font-bold text-slate-600 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600 transition-all shrink-0 whitespace-nowrap shadow-sm"
+              className="px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-[10px] font-bold text-slate-600 dark:text-slate-400 hover:border-indigo-300 dark:hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/50 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all shrink-0 whitespace-nowrap shadow-sm"
             >
               {preset.label}
             </button>
@@ -167,12 +167,12 @@ export function RevisionPicker({ lastRevised, nextRevision, onChange }: Revision
       {/* Footer Info */}
       <div className="p-3 flex items-center justify-between text-[11px] font-bold">
         <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#1b254b]" />
-            <span className="text-slate-500">Last Revised</span>
+            <div className="w-2.5 h-2.5 rounded-full bg-[#1b254b] dark:bg-slate-400" />
+            <span className="text-slate-500 dark:text-slate-400">Last Revised</span>
         </div>
         <div className="flex items-center gap-2">
             <div className="w-2.5 h-2.5 rounded-full bg-[#2dd4bf]" />
-            <span className="text-slate-500">Next Revision</span>
+            <span className="text-slate-500 dark:text-slate-400">Next Revision</span>
         </div>
       </div>
     </div>

@@ -375,8 +375,8 @@ export function PopularSheetClient({
                                     rel="noopener noreferrer"
                                     onClick={(e) => e.stopPropagation()}
                                     className={cn(
-                                      "text-[13px] font-bold truncate hover:text-[#1b254b] dark:hover:text-[#2dd4bf] transition-colors",
-                                      isDone ? "text-slate-400 dark:text-slate-600 opacity-80" : "text-slate-700 dark:text-white"
+                                      "text-sm font-bold ml-1 transition-colors leading-tight",
+                                      isDone ? "text-slate-400 dark:text-slate-500 opacity-70 dark:opacity-100" : "text-slate-700 dark:text-white"
                                     )}
                                   >
                                     {q.name}
@@ -404,7 +404,7 @@ export function PopularSheetClient({
                                   </div>
 
                                   {q.topics?.slice(0, 3).map((topic: string, i: number) => (
-                                    <span key={i} className="px-2 py-0.5 bg-white/5 text-gray-500 border border-[#1b254b]/10 rounded-md text-[10px] font-bold tracking-tighter whitespace-nowrap">
+                                    <span key={i} className="px-2 py-0.5 bg-white/5 text-slate-500 dark:text-slate-400 border border-[#1b254b]/10 dark:border-white/10 rounded-md text-[10px] font-bold tracking-tighter whitespace-nowrap">
                                       {topic}
                                     </span>
                                   ))}
@@ -416,15 +416,15 @@ export function PopularSheetClient({
                                 </div>
 
                                 <div className="col-span-11 md:col-span-2 flex items-center justify-end gap-1.5 transition-opacity" onClick={(e) => e.stopPropagation()}>
-                                  <button onClick={() => onToggleStar(qId)} className={cn("p-1.5 hover:bg-white rounded-lg transition-all border border-transparent hover:border-slate-100", isStarred ? "text-amber-400" : "text-slate-400 hover:text-amber-400")}>
+                                  <button onClick={() => onToggleStar(qId)} className={cn("p-1.5 hover:bg-white dark:hover:bg-slate-600 rounded-lg transition-all border border-transparent hover:border-slate-100 dark:hover:border-slate-500", isStarred ? "text-amber-400" : "text-slate-400 hover:text-amber-400")}>
                                     <Star className={cn("w-4 h-4", isStarred && "fill-amber-400")} />
                                   </button>
                                   <div className="relative">
-                                    <button onClick={() => setPaletteOpen(paletteOpen === qId ? null : qId)} className="p-1.5 hover:bg-white rounded-lg transition-all border border-transparent hover:border-slate-100 text-slate-400 hover:text-indigo-600">
+                                    <button onClick={() => setPaletteOpen(paletteOpen === qId ? null : qId)} className="p-1.5 hover:bg-white dark:hover:bg-slate-600 rounded-lg transition-all border border-transparent hover:border-slate-100 dark:hover:border-slate-500 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400">
                                       <Palette className="w-4 h-4" />
                                     </button>
                                     {paletteOpen === qId && (
-                                      <div className="absolute right-0 bottom-full mb-3 z-[110] bg-white border border-slate-200 p-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-in zoom-in-95 origin-bottom-right">
+                                      <div className="absolute right-0 bottom-full mb-3 z-[110] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-in zoom-in-95 origin-bottom-right">
                                         {THEME_OPTIONS.map(opt => (
                                           <button
                                             key={opt.id}
@@ -432,7 +432,7 @@ export function PopularSheetClient({
                                             className={cn(
                                               "w-6 h-6 rounded-full border-2 transition-transform hover:scale-110",
                                               opt.bg,
-                                              curHighlight === opt.id ? "border-slate-800" : "border-transparent"
+                                              curHighlight === opt.id ? "border-slate-800 dark:border-slate-300" : "border-transparent"
                                             )}
                                           />
                                         ))}
@@ -441,7 +441,7 @@ export function PopularSheetClient({
                                   </div>
                                   <button
                                     onClick={() => openRevisionModal(qId, q.name)}
-                                    className="p-1.5 hover:bg-white rounded-lg transition-all border border-transparent hover:border-slate-100 text-slate-400 hover:text-[#1b254b]"
+                                    className="p-1.5 hover:bg-white dark:hover:bg-slate-600 rounded-lg transition-all border border-transparent hover:border-slate-100 dark:hover:border-slate-500 text-slate-400 hover:text-[#1b254b] dark:hover:text-slate-200"
                                   >
                                     <Clock className="w-4 h-4" />
                                   </button>
@@ -502,7 +502,7 @@ export function PopularSheetClient({
                       setShowRevisionModalPref(!disable);
                       localStorage.setItem("showRevisionOnComplete", disable ? "false" : "true");
                     }}
-                    className="peer appearance-none w-4 h-4 rounded border-2 border-slate-200 checked:bg-[#1b254b] checked:border-[#1b254b] transition-all"
+                    className="peer appearance-none w-4 h-4 rounded border-2 border-slate-200 dark:border-slate-600 checked:bg-[#1b254b] dark:checked:bg-[#2dd4bf] dark:bg-slate-700 transition-all"
                   />
                   <CheckCircle2 className="absolute w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" />
                 </div>
@@ -514,7 +514,7 @@ export function PopularSheetClient({
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setRevisionModalOpen(null)}
-                  className="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+                  className="px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-lg transition-colors"
                 >
                   Cancel
                 </button>
@@ -523,7 +523,7 @@ export function PopularSheetClient({
                     saveRevision(revisionModalOpen.id);
                     setRevisionModalOpen(null);
                   }}
-                  className="px-5 py-2 text-xs font-black text-white bg-[#1b254b] hover:bg-[#111836] rounded-lg transition-colors flex items-center gap-1.5 shadow-md shadow-[#1b254b]/20"
+                  className="px-5 py-2 text-xs font-black text-white bg-[#1b254b] hover:bg-[#111836] dark:bg-indigo-600 dark:hover:bg-indigo-500 rounded-lg transition-colors flex items-center gap-1.5 shadow-md shadow-[#1b254b]/20"
                 >
                   <Save className="w-3.5 h-3.5" /> Save
                 </button>
