@@ -13,6 +13,11 @@ interface ATSResult {
   overall_score: number;
   grade: string;
   verdict: string;
+  word_count: number;
+  bullet_point_count: number;
+  quantified_bullets_percent: number;
+  jd_overlap_percent: number;
+  over_optimized_warning: boolean;
   breakdown: {
     ats_parse_rate: ScoreItem;
     contact_details: ScoreItem;
@@ -25,10 +30,20 @@ interface ATSResult {
     communication_keywords: ScoreItem;
     analytical_keywords: ScoreItem;
     spelling_grammar: ScoreItem;
-    jd_tailoring: ScoreItem;
+    resume_density: ScoreItem;
+    formatting_flags: ScoreItem;
+    hard_skills_match: ScoreItem & { matched: string[]; missing: string[] };
+    job_title_relevance: ScoreItem;
+    education_match: ScoreItem;
+    soft_skills_match: ScoreItem;
+    keyword_density: ScoreItem & { missing_domain_terms: string[] };
   };
-  missing_keywords: string[];
   matched_keywords: string[];
+  missing_keywords: string[];
+  passive_language_detected: string[];
+  repeated_verbs: string[];
+  typos_found: string[];
+  bonus_skills: string[];
   top_strengths: string[];
   critical_gaps: string[];
   quick_fixes: string[];
@@ -46,93 +61,108 @@ interface HistoryEntry {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const GEMINI_API_KEYS = (process.env.NEXT_PUBLIC_GEMINI_API_KEY || "")
-  .split(",")
-  .map(k => k.trim())
-  .filter(Boolean);
-const GEMINI_MODEL   = "gemini-2.5-flash";
+const GEMINI_API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY_2 || "";
+
+const OPENAI_API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY || "";
+const GROK_API_KEY   = process.env.NEXT_PUBLIC_GROK_API_KEY || "";
+
+const GEMINI_MODEL   = "gemini-2.5-flash"; // Reverting to the 2.5 series recommended for 2026
 const MAX_HISTORY    = 10;
 
-const SYSTEM_PROMPT = `You are an expert ATS (Applicant Tracking System) evaluator with 10+ years of experience in HR tech and recruitment automation. Your job is to deeply analyze a candidate's resume against a provided Job Description (JD) and return a precise, honest, and actionable ATS compatibility report.
+type ProviderOption = "GEMINI" | "GROK";
 
-EVALUATION CRITERIA (Total = 100 pts. Start at max points per category and deduct based on rules):
-1. ATS Parse Rate (15 pts)
-   - No email found -> deduct -3
-   - No phone number found -> deduct -2
-   - Tab characters > 10 (table structure) -> deduct -5
-   - Box-drawing characters detected -> deduct -5
-2. Contact Details (10 pts)
-   - No email -> deduct -4
-   - No phone -> deduct -3
-   - No LinkedIn URL -> deduct -2
-   - No GitHub / portfolio link -> deduct -1
-3. Sections (10 pts)
-   - Missing Education section -> deduct -2.5
-   - Missing Experience / Internship section -> deduct -2.5
-   - Missing Skills section -> deduct -2.5
-   - Missing Projects section -> deduct -2.5
-   - Has "Hobbies" section -> deduct -1
-   - Has "References" section -> deduct -1
-   - Has "Objective" section -> deduct -1
-4. Dates (5 pts)
-   - No years (20XX) found at all -> deduct -5
-   - Years found but no Month Year format -> deduct -2 (Preferred format: Jun 2024 - Present)
-5. Repetition (8 pts)
-   - Same word (5+ letters) used 4+ times -> flag it
-   - More than 3 such words -> deduct -4
-   - 1-2 repeated words -> deduct -2
-6. Quantifying Impact (12 pts)
-   - Fewer than 3 numbers/% in entire resume -> deduct -6
-   - 3-5 numbers found -> deduct -3
-   - Less than 30% of bullet points contain a number -> deduct -3
-7. Leadership Keywords (8 pts)
-   - 0 leadership verbs found -> deduct -8
-   - Fewer than 3 found -> deduct -3
-   - Target words: led, managed, coordinated, spearheaded, initiated, directed, oversaw, mentored, supervised, launched, drove, owned
-8. Drive / Action Verbs (7 pts)
-   - Fewer than 4 action verbs found -> deduct -4
-   - Target words: built, developed, created, designed, engineered, deployed, shipped, optimized, improved, reduced, increased, automated, integrated, delivered
-9. Communication Keywords (5 pts)
-   - 0 communication verbs found -> deduct -3
-   - Target words: collaborated, communicated, presented, reported, documented, coordinated, liaised, facilitated
-10. Analytical Keywords (5 pts)
-    - 0 analytical verbs found -> deduct -3
-    - Target words: analyzed, researched, evaluated, assessed, identified, measured, diagnosed, investigated, tested, debugged
-11. Spelling & Grammar (8 pts)
-    - Each detected typo -> deduct -2
-    - Mixed verb tenses (past + present in same resume) -> deduct -2
-    - Common typos to flag: managment, achivements, responsibilites, proficent, experianced, enviroment, colaborate
-12. JD Tailoring (7 pts)
-    - No JD provided -> 0 pts, skip
-    - Match < 40% of JD keywords -> deduct -5
-    - Match 40-60% -> deduct -2
-    - Match > 60% -> full 7 pts.
+interface ProviderConfig {
+  name: string;
+  baseUrl: string;
+  model: string;
+  key: string;
+  type: "google" | "openai-compatible";
+}
 
-RESPOND ONLY with this exact JSON (no markdown fences, no extra text):
-{
-  "overall_score": <number out of 100>,
-  "grade": "<A (>=85) / B (>=70) / C (>=55) / D (>=40) / F (<40)>",
-  "verdict": "<one line summary>",
-  "breakdown": {
-    "ats_parse_rate": { "score": <x out of 15>, "comment": "<short insight>" },
-    "contact_details": { "score": <x out of 10>, "comment": "<short insight>" },
-    "sections": { "score": <x out of 10>, "comment": "<short insight>" },
-    "dates": { "score": <x out of 5>, "comment": "<short insight>" },
-    "repetition": { "score": <x out of 8>, "comment": "<short insight>" },
-    "quantifying_impact": { "score": <x out of 12>, "comment": "<short insight>" },
-    "leadership_keywords": { "score": <x out of 8>, "comment": "<short insight>" },
-    "drive_action_verbs": { "score": <x out of 7>, "comment": "<short insight>" },
-    "communication_keywords": { "score": <x out of 5>, "comment": "<short insight>" },
-    "analytical_keywords": { "score": <x out of 5>, "comment": "<short insight>" },
-    "spelling_grammar": { "score": <x out of 8>, "comment": "<short insight>" },
-    "jd_tailoring": { "score": <x out of 7>, "comment": "<short insight>" }
+const PROVIDER_CONFIGS: Record<ProviderOption, ProviderConfig> = {
+  GEMINI: {
+    name: "Gemini",
+    baseUrl: "https://generativelanguage.googleapis.com/v1beta",
+    model: GEMINI_MODEL,
+    key: GEMINI_API_KEY,
+    type: "google"
   },
-  "missing_keywords": ["<keyword1>", "..."],
-  "matched_keywords": ["<keyword1>", "..."],
-  "top_strengths": ["<strength 1>", "<strength 2>", "<strength 3>"],
-  "critical_gaps": ["<gap 1>", "<gap 2>", "<gap 3>"],
-  "quick_fixes": ["<actionable tip 1>", "<actionable tip 2>", "<actionable tip 3>"]
-}`;
+  GROK: {
+    name: "Groq (Llama 3.3)",
+    baseUrl: "https://api.groq.com/openai/v1",
+    model: "llama-3.3-70b-versatile",
+    key: GROK_API_KEY,
+    type: "openai-compatible"
+  }
+};
+
+const SYSTEM_PROMPT = `
+# ATS Evaluation System (114 Points)
+Analyze Resume vs JD. Output JSON only.
+
+## Part A: Quality (85 pts)
+1. Parse (15): Email(-3), Phone(-2), Tables(-5), Boxes(-5), <150 words(-3), Encoding(-3), Symbols(-2), All-caps(-2), Buried Headers(-2).
+2. Contact (10): No email(-4), No phone(-3), No LinkedIn(-2), No Portfolio(-1), Unpro-domain(-1), No country code(-1).
+3. Sections (15): Missing Edu(-3), Exp(-3), Skills(-3), Proj(-3). Hobbies(-1), References(-1), Objective(-1), Uncategorized Skills(-1).
+4. Dates (5): No Year(-5), No Month(-2), Inconsistent(-2), Future dates(-2).
+5. Repetition (8): Word 4x used(-4), Generic verbs(-3).
+6. Impact (12): <3 nums(-6), 3-5 nums(-3), <30% quantified(-3), Vague(-2).
+7. Leadership (8): 0 verbs(-8), <3 verbs(-3). (Target: led, managed, spearheaded...)
+8. Drive (7): <4 action verbs(-4), Passive(-2 each). (Target: built, designed, optimized...)
+9. Comm (5): 0 verbs(-3), <2 found(-1). (Target: collaborated, presented...)
+10. Analytical (5): 0 verbs(-3), <2 found(-1). (Target: analyzed, tested...)
+11. Grammar (8): -2 per typo. Flag Pronouns(I/me/my), long sentences.
+12. Density (5): <300 words(-4), >800 student(-3), <5 bullets(-3).
+13. Format (4): Photo(-2), Multi-column(-2), Custom headers(-2).
+
+## Part B: JD Match (30 pts)
+1. Hard Skills (40% weight): Extract & Compare.
+2. Title (20%): Relevance to JD.
+3. Edu (15%): Match degree requirements.
+4. Soft Skills (15%): Infer from bullets.
+5. Density (10%): Methodologies (Agile, Scrum).
+
+OUTPUT ONLY VALID JSON:
+{
+  "overall_score": <0-100>,
+  "grade": "<A/B/C/D/F>",
+  "verdict": "<one line summary>",
+  "word_count": <number>,
+  "bullet_point_count": <number>,
+  "quantified_bullets_percent": <number>,
+  "jd_overlap_percent": <number>,
+  "over_optimized_warning": <boolean>,
+  "breakdown": {
+    "ats_parse_rate": { "score": <x/15>, "comment": "" },
+    "contact_details": { "score": <x/10>, "comment": "" },
+    "sections": { "score": <x/15>, "comment": "" },
+    "dates": { "score": <x/5>, "comment": "" },
+    "repetition": { "score": <x/8>, "comment": "" },
+    "quantifying_impact": { "score": <x/12>, "comment": "" },
+    "leadership_keywords": { "score": <x/8>, "comment": "" },
+    "drive_action_verbs": { "score": <x/7>, "comment": "" },
+    "communication_keywords": { "score": <x/5>, "comment": "" },
+    "analytical_keywords": { "score": <x/5>, "comment": "" },
+    "spelling_grammar": { "score": <x/8>, "comment": "" },
+    "resume_density": { "score": <x/5>, "comment": "" },
+    "formatting_flags": { "score": <x/4>, "comment": "" },
+    "hard_skills_match": { "score": <x/12>, "comment": "", "matched": [], "missing": [] },
+    "job_title_relevance": { "score": <x/6>, "comment": "" },
+    "education_match": { "score": <x/4>, "comment": "" },
+    "soft_skills_match": { "score": <x/4>, "comment": "" },
+    "keyword_density": { "score": <x/4>, "comment": "", "missing_domain_terms": [] }
+  },
+  "matched_keywords": [],
+  "missing_keywords": [],
+  "passive_language_detected": [],
+  "repeated_verbs": [],
+  "typos_found": [],
+  "bonus_skills": [],
+  "top_strengths": [],
+  "critical_gaps": [],
+  "quick_fixes": []
+}
+`;
 
 const GRADE_CONFIG: Record<string, { color: string; bg: string; label: string }> = {
   A: { color: "#10b981", bg: "#d1fae5", label: "Excellent" },
@@ -145,17 +175,141 @@ const GRADE_CONFIG: Record<string, { color: string; bg: string; label: string }>
 const BREAKDOWN_META = [
   { key: "ats_parse_rate",         label: "ATS Parse Rate",        max: 15, icon: "📄" },
   { key: "contact_details",        label: "Contact Details",       max: 10, icon: "📞" },
-  { key: "sections",               label: "Sections",              max: 10, icon: "📑" },
-  { key: "dates",                  label: "Dates",                 max: 5, icon: "📅" },
-  { key: "repetition",             label: "Repetition",            max: 8, icon: "🔁" },
+  { key: "sections",               label: "Sections",              max: 15, icon: "📑" },
+  { key: "dates",                  label: "Dates",                 max: 5,  icon: "📅" },
+  { key: "repetition",             label: "Repetition",            max: 8,  icon: "🔁" },
   { key: "quantifying_impact",     label: "Quantifying Impact",    max: 12, icon: "📊" },
-  { key: "leadership_keywords",    label: "Leadership Keywords",   max: 8, icon: "👑" },
-  { key: "drive_action_verbs",     label: "Drive / Action Verbs",  max: 7, icon: "⚡" },
-  { key: "communication_keywords", label: "Communication Keywords",max: 5, icon: "💬" },
-  { key: "analytical_keywords",    label: "Analytical Keywords",   max: 5, icon: "🔍" },
-  { key: "spelling_grammar",       label: "Spelling & Grammar",    max: 8, icon: "✍️" },
-  { key: "jd_tailoring",           label: "JD Tailoring",          max: 7, icon: "🎯" },
+  { key: "leadership_keywords",    label: "Leadership Keywords",   max: 8,  icon: "👑" },
+  { key: "drive_action_verbs",     label: "Drive / Action Verbs",  max: 7,  icon: "⚡" },
+  { key: "communication_keywords", label: "Communication Keywords",max: 5,  icon: "💬" },
+  { key: "analytical_keywords",    label: "Analytical Keywords",   max: 5,  icon: "🔍" },
+  { key: "spelling_grammar",       label: "Spelling & Grammar",    max: 8,  icon: "✍️" },
+  { key: "resume_density",         label: "Resume Density",        max: 5,  icon: "📏" },
+  { key: "formatting_flags",       label: "Formatting Red Flags",  max: 4,  icon: "🚩" },
+  { key: "hard_skills_match",      label: "Hard Skills Match",     max: 12, icon: "🛠️" },
+  { key: "job_title_relevance",    label: "Job Title Relevance",   max: 6,  icon: "👔" },
+  { key: "education_match",        label: "Education Match",       max: 4,  icon: "🎓" },
+  { key: "soft_skills_match",      label: "Soft Skills Match",     max: 4,  icon: "👥" },
+  { key: "keyword_density",        label: "Keyword Density",       max: 4,  icon: "📈" },
 ] as const;
+
+const DEFAULT_RESULT: ATSResult = {
+  overall_score: 0,
+  grade: "F",
+  verdict: "Awaiting analysis...",
+  word_count: 0,
+  bullet_point_count: 0,
+  quantified_bullets_percent: 0,
+  jd_overlap_percent: 0,
+  over_optimized_warning: false,
+  breakdown: BREAKDOWN_META.reduce((acc, { key }) => ({
+    ...acc,
+    [key]: { score: 0, comment: "Not evaluated" }
+  }), {} as any),
+  matched_keywords: [],
+  missing_keywords: [],
+  passive_language_detected: [],
+  repeated_verbs: [],
+  typos_found: [],
+  bonus_skills: [],
+  top_strengths: [],
+  critical_gaps: [],
+  quick_fixes: []
+};
+
+// ─── Robust JSON Parser ───────────────────────────────────────────────────────
+
+function safeParseJSON<T>(raw: string): T {
+  let cleaned = raw.trim();
+
+  // 1. Remove markdown code fences if present
+  if (cleaned.includes("```")) {
+    const parts = cleaned.split(/```(?:json)?/);
+    if (parts.length >= 2) {
+      cleaned = parts[1].split("```")[0].trim();
+    }
+  }
+
+  // 2. Identify strictly the JSON boundaries if possible
+  const start = cleaned.indexOf("{");
+  const end = cleaned.lastIndexOf("}");
+  if (start !== -1 && end !== -1) {
+    cleaned = cleaned.slice(start, end + 1);
+  }
+
+  // 3. Structural Repairs
+  // a) Single quotes to double quotes (if wrapping keys/values)
+  // This is a rough fix: 'key' -> "key", 'value' -> "value"
+  cleaned = cleaned.replace(/'([^']+)':/g, '"$1":');
+  cleaned = cleaned.replace(/:\s*'([^']*)'/g, ': "$1"');
+  
+  // b) Strip trailing commas: "key": "val", } -> "key": "val" } and [1, 2, ] -> [1, 2]
+  cleaned = cleaned.replace(/,\s*([}\]])/g, "$1");
+
+  // c) Fix missing commas between properties (e.g., "val" "key": -> "val", "key":)
+  cleaned = cleaned.replace(/"\s+"([^"]+)"\s*:/g, '", "$1":');
+  cleaned = cleaned.replace(/([0-9]|true|false|null)\s+"([^"]+)"\s*:/g, '$1, "$2":');
+
+  // d) Handle common unescaped quotes inside strings (e.g. "it is "good"")
+  // This looks for a quote followed by non-separator characters
+  // cleaned = cleaned.replace(/(?<=: )"(.+)"(?=[,\n}])/g, (match, p1) => `"${p1.replace(/"/g, '\\"')}"`);
+  
+  // e) Handle invisible control characters that break JSON.parse
+  cleaned = cleaned.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/g, "");
+
+  const tryParse = (str: string) => {
+    try {
+      const parsed = JSON.parse(str);
+      // Merge with defaults to prevent missing fields
+      return {
+        ...DEFAULT_RESULT,
+        ...parsed,
+        breakdown: {
+          ...DEFAULT_RESULT.breakdown,
+          ...(parsed.breakdown || {})
+        }
+      } as T;
+    } catch {
+      return null;
+    }
+  };
+
+  const firstTry = tryParse(cleaned);
+  if (firstTry) return firstTry;
+
+  try {
+    // Stage 1: Attempt to fix truncation
+    let repair = cleaned;
+    const stack: ("{" | "[")[] = [];
+    const quotes = { double: false };
+    
+    for (let i = 0; i < repair.length; i++) {
+      const char = repair[i];
+      if (char === '"' && repair[i-1] !== '\\') quotes.double = !quotes.double;
+      if (quotes.double) continue;
+      
+      if (char === "{") stack.push("{");
+      else if (char === "[") stack.push("[");
+      else if (char === "}") stack.pop();
+      else if (char === "]") stack.pop();
+    }
+    
+    if (quotes.double) repair += '"';
+    while (stack.length > 0) {
+      const char = stack.pop();
+      repair += char === "{" ? "}" : "]";
+    }
+
+    const secondTry = tryParse(repair);
+    if (secondTry) return secondTry;
+
+    throw new Error("Invalid format");
+  } catch (err) {
+    console.error("[ATS Checker] JSON Parse failed. Original length:", raw.length, "Cleaned length:", cleaned.length);
+    console.log("[ATS Checker] Failing string:", cleaned);
+    throw err;
+  }
+}
 
 // ─── History helpers ──────────────────────────────────────────────────────────
 
@@ -275,6 +429,21 @@ function KeywordPill({ word, type }: { word: string; type: "match" | "miss" }) {
                       : "bg-red-50 text-red-600 border border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20"}`}>
       {type === "match" ? "✓" : "✗"} {word}
     </span>
+  );
+}
+
+function MetricBadge({ label, value, color }: { label: string; value: string | number; color: string }) {
+  const colors: Record<string, string> = {
+    blue: "bg-blue-100 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400",
+    purple: "bg-purple-100 dark:bg-purple-500/10 text-purple-700 dark:text-purple-400",
+    emerald: "bg-emerald-100 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
+    amber: "bg-amber-100 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400",
+  };
+  return (
+    <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-transparent hover:border-current transition-all ${colors[color] || colors.blue}`}>
+      <span className="text-[10px] uppercase font-black opacity-60 tracking-tighter">{label}</span>
+      <span className="text-xs font-bold">{value}</span>
+    </div>
   );
 }
 
@@ -500,7 +669,9 @@ function HistoryPanel({ entries, onClear }: { entries: HistoryEntry[]; onClear: 
                 </p>
                 <p className="text-xs text-slate-400 dark:text-slate-500 truncate">{entry.jdSnippet}</p>
                 {entry.verdict && (
-                  <p className="text-xs text-slate-500 dark:text-slate-400 italic leading-relaxed line-clamp-2">"{entry.verdict}"</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 italic leading-relaxed line-clamp-2">
+                    &quot;{entry.verdict}&quot;
+                  </p>
                 )}
               </div>
 
@@ -535,13 +706,23 @@ export function ATSCheckerClient({ userId }: { userId: string }) {
   const [error, setError] = useState<string | null>(null);
   const [duplicateWarning, setDuplicateWarning] = useState(false);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [selectedProvider, setSelectedProvider] = useState<ProviderOption>("GEMINI");
+  const [availableProviders, setAvailableProviders] = useState<ProviderOption[]>([]);
 
   // Ref for auto-scroll to results
   const resultsRef = useRef<HTMLDivElement>(null);
 
-  // Load history from localStorage on mount
+  // Load history + Check available providers
   useEffect(() => {
     setHistory(loadHistory(userId));
+    
+    const available = (Object.keys(PROVIDER_CONFIGS) as ProviderOption[]).filter(
+      p => PROVIDER_CONFIGS[p].key !== ""
+    );
+    setAvailableProviders(available);
+    if (available.length > 0 && !available.includes("GEMINI")) {
+      setSelectedProvider(available[0]);
+    }
   }, [userId]);
 
   const canEvaluate = jd.trim() && resumeText.trim() && !extracting && !loading;
@@ -562,14 +743,14 @@ export function ATSCheckerClient({ userId }: { userId: string }) {
   async function evaluate(overrideDuplicate = false) {
     if (!canEvaluate) return;
 
-    if (GEMINI_API_KEYS.length === 0) {
-      setError("Gemini API key is not configured. Please add NEXT_PUBLIC_GEMINI_API_KEY to your .env file.");
+    if (availableProviders.length === 0) {
+      setError("No AI providers are configured. Please check your .env file.");
       return;
     }
 
     const rateCheck = canEvaluateRate(userId);
     if (!rateCheck.allowed) {
-      setError(`Rate limit reached. You can only evaluate 5 resumes per 30 minutes. Please wait ${rateCheck.waitMinutes} minutes.`);
+      setError(`Rate limit reached. Please wait ${rateCheck.waitMinutes} minutes.`);
       return;
     }
 
@@ -581,60 +762,87 @@ export function ATSCheckerClient({ userId }: { userId: string }) {
       }
     }
 
-    setDuplicateWarning(false);
     setLoading(true);
     setError(null);
     setResult(null);
 
-    let startIndex = getActiveKeyIndex();
-    let attempts = 0;
+    // Filter available providers to prioritize the selected one
+    const providersToTry = availableProviders.includes(selectedProvider)
+      ? [selectedProvider, ...availableProviders.filter(p => p !== selectedProvider)]
+      : availableProviders;
+
     let finalError = "Evaluation failed.";
 
-    while (attempts < GEMINI_API_KEYS.length) {
-      const currentIndex = (startIndex + attempts) % GEMINI_API_KEYS.length;
-      const currentKey = GEMINI_API_KEYS[currentIndex];
-
+    for (let i = 0; i < providersToTry.length; i++) {
+      const provider = providersToTry[i];
+      const config = PROVIDER_CONFIGS[provider];
+      
       try {
-        const res = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${currentKey}`,
-          {
+        console.log(`[ATS Checker] Attempting evaluation with ${config.name}...`);
+        let res;
+        
+        if (config.type === "google") {
+          res = await fetch(
+            `${config.baseUrl}/models/${config.model}:generateContent?key=${config.key}`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                contents: [{ parts: [{ text: `${SYSTEM_PROMPT}\n\nJD_TEXT:\n${jd}\n\nRESUME_TEXT:\n${resumeText}` }] }],
+                generationConfig: {
+                  temperature: 0.2,
+                  maxOutputTokens: 8192,
+                  responseMimeType: "application/json",
+                }
+              })
+            }
+          );
+        } else {
+          res = await fetch(`${config.baseUrl}/chat/completions`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${config.key}`
+            },
             body: JSON.stringify({
-              contents: [{ parts: [{ text: `${SYSTEM_PROMPT}\n\nJD_TEXT:\n${jd}\n\nRESUME_TEXT:\n${resumeText}` }] }],
-              generationConfig: {
-                temperature: 0.2,
-                maxOutputTokens: 8192,
-                responseMimeType: "application/json",
-              }
+              model: config.model,
+              messages: [
+                { role: "system", content: SYSTEM_PROMPT },
+                { role: "user", content: `JD_TEXT:\n${jd}\n\nRESUME_TEXT:\n${resumeText}` }
+              ],
+              temperature: 0.2,
+              response_format: { type: "json_object" }
             })
-          }
-        );
+          });
+        }
 
         if (!res.ok) {
-          const isQuotaError = res.status === 429 || res.status === 403;
-          if (isQuotaError && GEMINI_API_KEYS.length > 1) {
-            console.warn(`[ATS Checker] API Key at index ${currentIndex} hit rate limit / quota (${res.status}). Switching to next key...`);
-            attempts++;
+          const isRetryable = res.status === 429 || res.status === 403 || res.status >= 500;
+          if (isRetryable && i < providersToTry.length - 1) {
+            console.warn(`[ATS Checker] ${config.name} failed (${res.status}). Failing over to next provider...`);
             continue;
           }
           const err = await res.json().catch(() => ({}));
           throw new Error(err?.error?.message || `API error ${res.status}`);
         }
 
-        // Success! Track the active key so future requests skip directly to this one
-        setActiveKeyIndex(currentIndex);
-
         const data = await res.json();
-        const parts: any[] = data?.candidates?.[0]?.content?.parts ?? [];
-        const raw: string = parts.filter((p: any) => !p.thought).map((p: any) => p.text ?? "").join("");
+        let raw = "";
 
-        if (!raw.trim()) throw new Error("Empty response from Gemini. Try again.");
+        if (config.type === "google") {
+          const parts: any[] = data?.candidates?.[0]?.content?.parts ?? [];
+          raw = parts.filter((p: any) => !(p as any).thought).map((p: any) => p.text ?? "").join("");
+        } else {
+          raw = data?.choices?.[0]?.message?.content ?? "";
+        }
 
-        const start = raw.indexOf("{");
-        const end   = raw.lastIndexOf("}");
-        if (start === -1 || end === -1) throw new Error("Could not find JSON in response. Try again.");
-        const parsed: ATSResult = JSON.parse(raw.slice(start, end + 1));
+        if (!raw.trim()) throw new Error("Empty response from AI.");
+
+        const parsed = safeParseJSON<ATSResult>(raw);
+        
+        // Normalize 114 points to 100 if LLM didn't already
+        // (Actually the template score is 114, so we expect raw to reflecting that)
+        // We'll trust the AI for now, but UI shows /max anyway.
 
         setResult(parsed);
 
@@ -652,37 +860,26 @@ export function ATSCheckerClient({ userId }: { userId: string }) {
         setHistory(updated);
         saveHistory(userId, updated);
 
-        // ── Auto-scroll to results ──
         setTimeout(() => {
           resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
         }, 150);
 
-        // ── Record Rate Limit Use ──
         recordEvaluation(userId);
-
         setLoading(false);
-        return; // Exit the function entirely on success
+        return; // Success!
 
       } catch (e: any) {
-        const msg = e.message || "";
-        if ((msg.includes("429") || msg.includes("quota")) && GEMINI_API_KEYS.length > 1) {
-          console.warn(`[ATS Checker] Key ${currentIndex} failed with quota string. Switching to next...`);
-          attempts++;
+        console.error(`[ATS Checker] ${config.name} critical error:`, e.message);
+        if (i < providersToTry.length - 1) {
+          console.warn("[ATS Checker] Failing over due to exception...");
           continue;
         }
-        
-        finalError = msg || "Something went wrong. Please try again.";
-        break; // Break the loop on a critical/network error so we don't spam 5 times
+        finalError = e.message || "Something went wrong.";
       }
     }
 
-    // If we exited the loop without returning, it means we failed either due to exhaustion or a critical error
+    setError(finalError);
     setLoading(false);
-    if (attempts >= GEMINI_API_KEYS.length) {
-      setError("All available AI API keys have exhausted their quota. Please try again later.");
-    } else {
-      setError(finalError);
-    }
   }
 
   return (
@@ -701,6 +898,22 @@ export function ATSCheckerClient({ userId }: { userId: string }) {
           <p className="text-white/75 text-sm sm:text-base mt-1">
             Upload your resume PDF + paste the Job Description for an instant AI-powered ATS compatibility report.
           </p>
+          
+          {/* Model Selector */}
+          <div className="mt-5 flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/20 w-fit">
+            <span className="text-[10px] font-bold text-white/60 uppercase tracking-tighter">Selected Model:</span>
+            <select
+              value={selectedProvider}
+              onChange={(e) => setSelectedProvider(e.target.value as ProviderOption)}
+              className="bg-transparent text-sm font-bold text-white outline-none cursor-pointer hover:text-teal-200 transition-colors"
+            >
+              {availableProviders.map(p => (
+                <option key={p} value={p} className="bg-[#1b254b] text-white">
+                  {PROVIDER_CONFIGS[p].name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
@@ -809,22 +1022,43 @@ export function ATSCheckerClient({ userId }: { userId: string }) {
       {result && (
         <div ref={resultsRef} className="space-y-5 scroll-mt-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
+          {/* Over-optimization Warning */}
+          {result.over_optimized_warning && (
+            <div className="bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-2xl p-4 flex items-start gap-3 shadow-sm animate-pulse">
+              <span className="text-xl shrink-0">🚩</span>
+              <div>
+                <p className="text-sm font-bold text-amber-800 dark:text-amber-400">Over-Optimization Warning</p>
+                <p className="text-xs text-amber-700 dark:text-amber-500 opacity-90 mt-0.5">
+                  Your resume matches more than 85% of JD keywords. This might be flagged as "keyword stuffing" by some ATS systems. Consider making your language more natural.
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Hero score */}
           <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm p-6 flex flex-col sm:flex-row items-center gap-6">
-            <ScoreRing score={result.overall_score} />
+            <ScoreRing score={result.overall_score ?? 0} />
             <div className="flex-1 space-y-2 text-center sm:text-left">
-              <h2 className="text-2xl font-black text-[#1b254b] dark:text-slate-100">ATS Score Report</h2>
+              <div className="flex items-center gap-2 justify-center sm:justify-start">
+                <h2 className="text-2xl font-black text-[#1b254b] dark:text-slate-100">ATS Score Report</h2>
+                <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded ${
+                  GRADE_CONFIG[result.grade]?.bg || "bg-slate-100"
+                } ${
+                  GRADE_CONFIG[result.grade]?.color || "text-slate-600"
+                }`}>Grade {result.grade || "F"}</span>
+              </div>
               {fileName && (
                 <p className="text-xs text-slate-400 dark:text-slate-500 flex items-center gap-1 justify-center sm:justify-start">
                   <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
                   {fileName}
                 </p>
               )}
-              <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">{result.verdict}</p>
-              <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
-                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">{result.matched_keywords.length} Matched Keywords</span>
-                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400">{result.missing_keywords.length} Missing Keywords</span>
-                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400">{result.top_strengths.length} Key Strengths</span>
+              <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">{result.verdict || "No verdict."}</p>
+              <div className="flex flex-wrap gap-2 justify-center sm:justify-start mt-3">
+                <MetricBadge label="Words" value={result.word_count ?? 0} color="blue" />
+                <MetricBadge label="Bullets" value={result.bullet_point_count ?? 0} color="purple" />
+                <MetricBadge label="Quantified" value={`${result.quantified_bullets_percent ?? 0}%`} color="emerald" />
+                <MetricBadge label="JD Overlap" value={`${result.jd_overlap_percent ?? 0}%`} color="amber" />
               </div>
             </div>
           </div>
@@ -834,8 +1068,8 @@ export function ATSCheckerClient({ userId }: { userId: string }) {
             <h2 className="font-black text-[#1b254b] dark:text-slate-100 text-lg">📋 Score Breakdown</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
               {BREAKDOWN_META.map(({ key, label, max, icon }) => {
-                const item = result.breakdown[key as keyof typeof result.breakdown];
-                return <BreakdownBar key={key} label={label} score={item.score} max={max} comment={item.comment} icon={icon} />;
+                const item = result.breakdown?.[key as keyof typeof result.breakdown] || { score: 0, comment: "N/A" };
+                return <BreakdownBar key={key} label={label} score={item.score ?? 0} max={max} comment={item.comment || "N/A"} icon={icon} />;
               })}
             </div>
           </div>
@@ -845,16 +1079,16 @@ export function ATSCheckerClient({ userId }: { userId: string }) {
             <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm p-5 space-y-3">
               <h3 className="font-bold text-[#1b254b] dark:text-slate-100">✅ Matched Keywords</h3>
               <div className="flex flex-wrap gap-2">
-                {result.matched_keywords.length > 0
-                  ? result.matched_keywords.map(w => <KeywordPill key={w} word={w} type="match" />)
+                {(result.matched_keywords?.length ?? 0) > 0
+                  ? result.matched_keywords?.map(w => <KeywordPill key={w} word={w} type="match" />)
                   : <p className="text-xs text-slate-400 dark:text-slate-500">None detected</p>}
               </div>
             </div>
             <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm p-5 space-y-3">
               <h3 className="font-bold text-[#1b254b] dark:text-slate-100">❌ Missing Keywords</h3>
               <div className="flex flex-wrap gap-2">
-                {result.missing_keywords.length > 0
-                  ? result.missing_keywords.map(w => <KeywordPill key={w} word={w} type="miss" />)
+                {(result.missing_keywords?.length ?? 0) > 0
+                  ? result.missing_keywords?.map(w => <KeywordPill key={w} word={w} type="miss" />)
                   : <p className="text-xs text-slate-400">None — great coverage!</p>}
               </div>
             </div>
@@ -862,9 +1096,20 @@ export function ATSCheckerClient({ userId }: { userId: string }) {
 
           {/* Strengths / Gaps / Fixes */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <ListSection title="Top Strengths" items={result.top_strengths} icon="💪" color="#10b981" />
-            <ListSection title="Critical Gaps"  items={result.critical_gaps}  icon="🚨" color="#ef4444" />
-            <ListSection title="Quick Fixes"    items={result.quick_fixes}    icon="⚡" color="#2dd4bf" />
+            <ListSection title="Top Strengths" items={result.top_strengths ?? []} icon="💪" color="#10b981" />
+            <ListSection title="Critical Gaps"  items={result.critical_gaps ?? []}  icon="🚨" color="#ef4444" />
+            <ListSection title="Quick Fixes"    items={result.quick_fixes ?? []}    icon="⚡" color="#2dd4bf" />
+          </div>
+
+          {/* Detailed Language Metrics */}
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm p-6 space-y-5">
+            <h2 className="font-black text-[#1b254b] dark:text-slate-100 text-lg">🔍 Deep Content Analysis</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <ListSection title="Passively Phrased" items={result.passive_language_detected ?? []} icon="🛑" color="#94a3b8" />
+              <ListSection title="Repeated Verbs"    items={result.repeated_verbs ?? []}           icon="🔁" color="#f59e0b" />
+              <ListSection title="Typos Flagged"     items={result.typos_found ?? []}              icon="✍️" color="#ef4444" />
+              <ListSection title="Bonus Skills"      items={result.bonus_skills ?? []}             icon="✨" color="#8b5cf6" />
+            </div>
           </div>
 
           {/* New evaluation */}

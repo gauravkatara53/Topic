@@ -18,7 +18,7 @@ export async function scrapeAllPlatforms(handles: {
   atcoder?: string;
 }) {
   const results: Record<string, any> = {};
-  
+
   // Parallel execution for speed
   const [leetcode, github, codeforces] = await Promise.all([
     handles.leetcode ? scrapeLeetCode(handles.leetcode) : null,
@@ -34,7 +34,7 @@ export async function scrapeAllPlatforms(handles: {
   let totalSolved = 0;
   if (leetcode) totalSolved += leetcode.stats.find((s: any) => s.difficulty === "All")?.count || 0;
   if (codeforces) totalSolved += codeforces.totalSolved || 0;
-  
+
   const aggregated: PortfolioStats = {
     totalSolved,
     activeDays: leetcode?.calendar?.totalActiveDays || 0,

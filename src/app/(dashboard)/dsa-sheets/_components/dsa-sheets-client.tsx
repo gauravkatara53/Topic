@@ -742,7 +742,7 @@ export function DSASheetsClient({
                   const sortedRevisions = [...revisionsData].sort((a, b) => new Date(a.nextRevision).getTime() - new Date(b.nextRevision).getTime());
                   const todayStr = new Date().toDateString();
                   const tomorrowStr = new Date(Date.now() + 86400000).toDateString();
-                  
+
                   const dueToday = sortedRevisions.filter(r => new Date(r.nextRevision).toDateString() === todayStr);
                   const dueTomorrow = sortedRevisions.filter(r => new Date(r.nextRevision).toDateString() === tomorrowStr);
                   const upcoming = sortedRevisions.filter(r => new Date(r.nextRevision) > new Date(tomorrowStr) && new Date(r.nextRevision).toDateString() !== tomorrowStr);
@@ -767,8 +767,8 @@ export function DSASheetsClient({
                             const assignedCompany = q.companies?.split(',')[0]?.trim() || 'google';
 
                             return (
-                              <div 
-                                key={idx} 
+                              <div
+                                key={idx}
                                 onClick={() => setSelectedQuestion({ id: q.id, data: q })}
                                 className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:px-6 sm:py-5 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group cursor-pointer"
                               >
@@ -806,10 +806,10 @@ export function DSASheetsClient({
                                         </span>
                                       )}
                                     </div>
-                                    <a 
-                                      href={q.url} 
-                                      target="_blank" 
-                                      rel="noopener noreferrer" 
+                                    <a
+                                      href={q.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
                                       onClick={(e) => e.stopPropagation()}
                                       className="text-[15px] font-bold text-slate-800 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors truncate block"
                                     >
@@ -865,13 +865,13 @@ export function DSASheetsClient({
                     );
                   };
 
-                    return (
-                      <>
-                        {renderList("Due Today", <CalendarDays className="w-5 h-5 text-rose-500" />, dueToday, true, "No questions marked for today")}
-                        {renderList("Due Tomorrow", <CalendarDays className="w-5 h-5 text-amber-500" />, dueTomorrow, false, "No questions marked for tomorrow")}
-                        {renderList("Upcoming", <CalendarDays className="w-5 h-5 text-indigo-500" />, upcoming, false, "No upcoming revisions scheduled")}
-                      </>
-                    );
+                  return (
+                    <>
+                      {renderList("Due Today", <CalendarDays className="w-5 h-5 text-rose-500" />, dueToday, true, "No questions marked for today")}
+                      {renderList("Due Tomorrow", <CalendarDays className="w-5 h-5 text-amber-500" />, dueTomorrow, false, "No questions marked for tomorrow")}
+                      {renderList("Upcoming", <CalendarDays className="w-5 h-5 text-indigo-500" />, upcoming, false, "No upcoming revisions scheduled")}
+                    </>
+                  );
                 })()}
               </div>
             )}
@@ -935,8 +935,8 @@ export function DSASheetsClient({
                         const assignedCompany = star.companyId || q.companies?.split(',')[0]?.trim() || 'google';
 
                         return (
-                          <div 
-                            key={idx} 
+                          <div
+                            key={idx}
                             onClick={() => setSelectedQuestion({ id: q.id, data: q })}
                             className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:px-6 sm:py-5 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group cursor-pointer"
                           >
@@ -970,10 +970,10 @@ export function DSASheetsClient({
                                     BOOKMARKED
                                   </span>
                                 </div>
-                                <a 
-                                  href={q.url} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer" 
+                                <a
+                                  href={q.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
                                   onClick={(e) => e.stopPropagation()}
                                   className="text-[15px] font-bold text-slate-800 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors truncate block"
                                 >
@@ -1120,7 +1120,7 @@ export function DSASheetsClient({
         </div>
       )}
 
-      <QuestionDrawer 
+      <QuestionDrawer
         isOpen={!!selectedQuestion}
         onClose={() => setSelectedQuestion(null)}
         question={selectedQuestion?.data}
