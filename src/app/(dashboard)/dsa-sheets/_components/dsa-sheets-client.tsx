@@ -14,6 +14,7 @@ import { RevisionPicker } from "./revision-picker";
 import { CodingPortfolio } from "./coding-portfolio";
 import { PlatformsView } from "./platforms-view";
 import { format } from "date-fns";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 const TABS = [
   "Company Wise", "All", "Popular", "My Sheets", "Revisions", "My Stats"
@@ -218,6 +219,149 @@ const SheetCard = ({
   );
 };
 
+const HistoricalActivityGrid = ({ 
+  historyStats = {}, 
+  totalSolved = 0, 
+  totalRevised = 0, 
+  currentStreak = 0, 
+  maxStreak = 0 
+}: { 
+  historyStats?: Record<string, { solved: number, revised: number, total: number }>,
+  totalSolved?: number,
+  totalRevised?: number,
+  currentStreak?: number,
+  maxStreak?: number
+}) => {
+  const [hoveredData, setHoveredData] = useState<{ date: Date, solved: number, revised: number } | null>(null);
+  const now = new Date();
+  const daysToShow = 365; // FULL YEAR
+  const dates = [];
+  for (let i = daysToShow - 1; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+    dates.push(d);
+  }
+
+  const weeks: Date[][] = [];
+  let currentWeek: Date[] = [];
+  dates.forEach(date => {
+    if (date.getDay() === 0 && currentWeek.length > 0) {
+      weeks.push(currentWeek);
+      currentWeek = [];
+    }
+    currentWeek.push(date);
+  });
+  if (currentWeek.length > 0) weeks.push(currentWeek);
+
+  const getColor = (count: number) => {
+    if (count === 0) return "bg-slate-100 dark:bg-slate-700/40";
+    if (count <= 2) return "bg-teal-50 dark:bg-teal-900/40";
+    if (count <= 5) return "bg-teal-200 dark:bg-teal-800/60";
+    if (count <= 10) return "bg-teal-400 dark:bg-teal-600/80";
+    return "bg-teal-600 dark:bg-teal-400/90";
+  };
+
+  const monthLabels: { label: string, index: number }[] = [];
+  let lastMonth = -1;
+  weeks.forEach((week, i) => {
+    const month = week[0].getMonth();
+    if (month !== lastMonth) {
+      monthLabels.push({ label: week[0].toLocaleDateString('en-US', { month: 'short' }), index: i });
+      lastMonth = month;
+    }
+  });
+
+  return (
+    <div className="w-full">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-y-3">
+        <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
+          <div className="flex flex-col">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Total Solved</span>
+            <span className="text-xl font-black text-slate-800 dark:text-white leading-none">{totalSolved}</span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Total Revised</span>
+            <span className="text-xl font-black text-slate-800 dark:text-white leading-none">{totalRevised}</span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Max Streak</span>
+            <span className="text-xl font-black text-slate-800 dark:text-white leading-none">{maxStreak} <span className="text-[10px] text-slate-400">Days</span></span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Current Streak</span>
+            <span className="text-xl font-black text-teal-500 leading-none">{currentStreak} <span className="text-[10px] text-teal-500/60">Days</span></span>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-4">
+          {hoveredData ? (
+             <div className="flex items-center gap-3 px-4 py-1.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 rounded-xl animate-in fade-in slide-in-from-right-2 duration-300">
+                <span className="text-[11px] font-black text-slate-400 uppercase tracking-tighter">{hoveredData.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                <div className="h-3 w-[1px] bg-slate-200 dark:bg-slate-700 mx-1" />
+                <div className="flex items-center gap-4">
+                  <span className="text-[11px] font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5"><div className="w-1.5 h-1.5 rounded-full bg-teal-500" /> Solved: {hoveredData.solved}</span>
+                  <span className="text-[11px] font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5"><div className="w-1.5 h-1.5 rounded-full bg-sky-500" /> Revised: {hoveredData.revised}</span>
+                </div>
+             </div>
+          ) : (
+            <div className="bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 px-3 py-1.5 rounded-lg text-[11px] font-bold text-slate-400">
+              Hover for detail • Last 365 Days
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="relative flex flex-col gap-1.5 select-none">
+        <div className="flex gap-1.5 text-[10px] font-black text-slate-400 h-4 relative mb-1">
+          {monthLabels.map(m => (
+            <span key={m.label + m.index} className="absolute overflow-hidden whitespace-nowrap uppercase tracking-tighter" style={{ left: `${m.index * 19.5}px` }}>{m.label}</span>
+          ))}
+        </div>
+        <div className="flex gap-[5.5px] overflow-x-auto pb-4 scrollbar-none justify-between">
+          <div className="flex flex-col gap-[5.5px] pr-2 border-r border-slate-100 dark:border-slate-800 mr-1 text-[8px] font-black text-slate-300 uppercase py-1 text-center">
+            <span>M</span><span className="mt-[7px]">W</span><span className="mt-[8px]">F</span>
+          </div>
+          {weeks.map((week, wIdx) => (
+            <div key={wIdx} className="flex flex-col gap-[5.5px] shrink-0">
+              {wIdx === 0 && Array.from({ length: week[0].getDay() }).map((_, i) => (
+                <div key={`p-${i}`} className="w-3.5 h-3.5 bg-transparent" />
+              ))}
+              {week.map((date, dIdx) => {
+                const key = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+                const dayData = (historyStats as Record<string, { solved: number, revised: number, total: number }>)[key] || { solved: 0, revised: 0, total: 0 };
+                const count = dayData.total;
+                
+                return (
+                  <div
+                    key={dIdx}
+                    onMouseEnter={() => setHoveredData({ date, solved: dayData.solved, revised: dayData.revised })}
+                    onMouseLeave={() => setHoveredData(null)}
+                    className={cn(
+                      "w-3.5 h-3.5 rounded-[3px] transition-all hover:scale-150 relative group cursor-pointer hover:z-[110] outline-none border border-black/[0.03] dark:border-white/[0.05]",
+                      getColor(count),
+                      hoveredData?.date.getTime() === date.getTime() && "ring-2 ring-teal-500 ring-offset-2 dark:ring-offset-slate-800 scale-125 z-[110]"
+                    )}
+                  />
+                );
+              })}
+            </div>
+          ))}
+        </div>
+        <div className="flex items-center gap-3 mt-4 self-end">
+          <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Less</span>
+          <div className="flex gap-1.5">
+            <div className="w-3 h-3 rounded-[2.5px] bg-slate-100 dark:bg-slate-700/40 border border-black/[0.03] dark:border-white/[0.05]" />
+            <div className="w-3 h-3 rounded-[2.5px] bg-teal-50 dark:bg-teal-900/40 border border-black/[0.03] dark:border-white/[0.05]" />
+            <div className="w-3 h-3 rounded-[2.5px] bg-teal-200 dark:bg-teal-800/60 border border-black/[0.03] dark:border-white/[0.05]" />
+            <div className="w-3 h-3 rounded-[2.5px] bg-teal-400 dark:bg-teal-600/80 border border-black/[0.03] dark:border-white/[0.05]" />
+            <div className="w-3 h-3 rounded-[2.5px] bg-teal-600 dark:bg-teal-400/90 border border-black/[0.03] dark:border-white/[0.05]" />
+          </div>
+          <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">More</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export function DSASheetsClient({
   dbCompanies = [],
   followedSheets = [],
@@ -240,7 +384,17 @@ export function DSASheetsClient({
   completedData?: Record<string, number>,
   revisionsData?: any[],
   initialCompletedIds?: string[],
-  statsData?: { totalCompleted: number, completedToday: number, completedRevisions: number },
+  statsData?: { 
+    totalCompleted: number, 
+    completedToday: number, 
+    completedRevisions: number,
+    dailyStats?: { date: string, completed: number, revised: number }[],
+    historyStats?: Record<string, { solved: number, revised: number, total: number }>,
+    totalSolvedAllTime?: number,
+    totalRevisedAllTime?: number,
+    currentStreak?: number,
+    maxStreak?: number
+  },
   starredData?: any[],
   popularSheets?: any[],
   followedPopularIds?: string[],
@@ -909,6 +1063,100 @@ export function DSASheetsClient({
                 <h3 className="text-3xl font-[900] text-slate-800 dark:text-white">{statsData?.completedRevisions || 0}</h3>
               </div>
             </div>
+
+            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm relative">
+              <div className="mb-6">
+                <h3 className="text-xl font-black text-slate-800 dark:text-white tracking-tight">Activity History</h3>
+                <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400">Your coding consistency over the past year</p>
+              </div>
+              <HistoricalActivityGrid 
+                historyStats={statsData?.historyStats} 
+                totalSolved={statsData?.totalSolvedAllTime}
+                totalRevised={statsData?.totalRevisedAllTime}
+                currentStreak={statsData?.currentStreak}
+                maxStreak={statsData?.maxStreak}
+              />
+            </div>
+
+            {statsData?.dailyStats && statsData.dailyStats.length > 0 && (
+              <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm overflow-hidden">
+                <div className="flex items-center justify-between mb-8">
+                  <div>
+                    <h3 className="text-xl font-black text-slate-800 dark:text-white tracking-tight">Daily Activity</h3>
+                    <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400">Your practice & revision trend for the last 7 days</p>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-3 h-3 rounded-full bg-[#2dd4bf]" />
+                      <span className="text-xs font-bold text-slate-600 dark:text-slate-400">Solved</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-3 h-3 rounded-full bg-[#1b254b] dark:bg-[#38bdf8]" />
+                      <span className="text-xs font-bold text-slate-600 dark:text-slate-400">Revised</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="h-[250px] w-full mt-4">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={statsData.dailyStats}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--chart-grid)" />
+                      <XAxis 
+                        dataKey="date" 
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fontSize: 11, fontWeight: 700, fill: 'var(--chart-axis)' }}
+                        dy={10}
+                      />
+                      <YAxis 
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fontSize: 11, fontWeight: 700, fill: 'var(--chart-axis)' }}
+                        allowDecimals={false}
+                      />
+                      <Tooltip 
+                        cursor={{ fill: 'var(--chart-grid)', opacity: 0.4 }}
+                        content={({ active, payload, label }) => {
+                          if (active && payload && payload.length) {
+                            return (
+                              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 rounded-xl shadow-xl">
+                                <p className="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-2">{label}</p>
+                                <div className="space-y-1.5">
+                                  {payload.map((entry: any, index: number) => (
+                                    <div key={index} className="flex items-center justify-between gap-8">
+                                      <div className="flex items-center gap-2">
+                                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.name === 'completed' ? '#2dd4bf' : (entry.name === 'revised' ? (document.documentElement.classList.contains('dark') ? '#38bdf8' : '#1b254b') : entry.color) }} />
+                                        <span className="text-[13px] font-bold text-slate-600 dark:text-slate-300 capitalize">{entry.name}</span>
+                                      </div>
+                                      <span className="text-[13px] font-black text-slate-800 dark:text-white">{entry.value}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            );
+                          }
+                          return null;
+                        }}
+                      />
+                      <Bar 
+                        name="completed" 
+                        dataKey="completed" 
+                        fill="var(--chart-solved)" 
+                        radius={[4, 4, 0, 0]} 
+                        barSize={32}
+                      />
+                      <Bar 
+                        name="revised" 
+                        dataKey="revised" 
+                        fill="var(--chart-revised)" 
+                        radius={[4, 4, 0, 0]} 
+                        barSize={32}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            )}
 
             <div className="mt-8">
               <div className="mb-6 border-b border-slate-200 dark:border-slate-700 pb-4 flex items-center gap-3">

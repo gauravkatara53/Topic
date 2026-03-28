@@ -118,12 +118,17 @@ export async function updateRevisionStatus(questionId: string, status: string) {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
+  const data: any = { status };
+  if (status === 'Completed') {
+    data.lastRevised = new Date();
+  }
+
   await (prisma as any).userQuestionRevision.updateMany({
     where: {
       userId,
       questionId
     },
-    data: { status }
+    data
   });
 
   revalidatePath("/dsa-sheets", "layout");
