@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   ChevronLeft, ChevronDown, ChevronRight, CheckCircle2, Circle,
-  Star, Share2, Search, Clock, Save, Palette, RotateCcw, FileText, Bookmark, ExternalLink, Target, Filter, ArrowUpDown
+  Star, Share2, Search, Clock, Save, Palette, RotateCcw, FileText, Bookmark, ExternalLink, Target, Filter, ArrowUpDown, Settings, Loader2, X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -16,6 +16,7 @@ import {
   updateQuestionRevision,
   updateQuestionNote
 } from "@/actions/dsa-sheets";
+import { updatePopularSheet } from "@/actions/admin-sheets";
 import {
   DIFFICULTY_COLOR,
   HIGHLIGHT_THEMES,
@@ -31,6 +32,7 @@ import { RevisionPicker } from "../../../_components/revision-picker";
 export function PopularSheetClient({
   sheet,
   userId,
+  isAdmin = false,
   isFollowing,
   initialCompletedIds = [],
   initialStarredIds = [],
@@ -40,6 +42,7 @@ export function PopularSheetClient({
 }: {
   sheet: any,
   userId: string | null,
+  isAdmin?: boolean,
   isFollowing: boolean,
   initialCompletedIds?: string[],
   initialStarredIds?: string[],
@@ -65,6 +68,12 @@ export function PopularSheetClient({
   const [paletteOpen, setPaletteOpen] = useState<string | null>(null);
   const [revisionModalOpen, setRevisionModalOpen] = useState<{ id: string, title: string } | null>(null);
   const [showRevisionModalPref, setShowRevisionModalPref] = useState(true);
+
+  // Admin Editing State
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editName, setEditName] = useState(sheet.name);
+  const [editDescription, setEditDescription] = useState(sheet.description || "");
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     const pref = localStorage.getItem("showRevisionOnComplete");
@@ -122,8 +131,8 @@ export function PopularSheetClient({
 
     // Auto-open revision modal if completing for the first time and preference is enabled
     if (!isDone && showRevisionModalPref && following) {
-      const sq = sheet.questions.find((s: any) => String(s.question.id || s.question._id || s.question.questionId) === qId);
-      if (sq) openRevisionModal(qId, sq.question.name);
+      const sq = (sheet.questions || []).find((s: any) => s.question && String(s.question.id || s.question._id || s.question.questionId) === qId);
+      if (sq?.question) openRevisionModal(qId, sq.question.name);
     }
   };
 
@@ -184,20 +193,39 @@ export function PopularSheetClient({
     }
   };
 
+  const handleUpdateSheet = async () => {
+    setIsUpdating(true);
+    try {
+      await updatePopularSheet(sheet.id, editName, editDescription);
+      toast.success("Sheet updated successfully!");
+      setIsEditModalOpen(false);
+      router.refresh();
+    } catch (error) {
+      toast.error("Failed to update sheet");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   // Grouping logic (Topic -> Subtopic -> Questions)
-  const groupedData = sheet.questions.reduce((acc: any, sq: any) => {
+  const groupedData = (sheet.questions || []).reduce((acc: any, sq: any) => {
+    if (!sq.question) return acc;
     const topic = sq.topic || "Uncategorized";
     const subtopic = sq.subTopic || "General";
     if (!acc[topic]) acc[topic] = { subtopics: {} };
     if (!acc[topic].subtopics[subtopic]) acc[topic].subtopics[subtopic] = [];
-    acc[topic].subtopics[subtopic].push(sq.question);
+    // Store question metadata along with the unique sheet-relation ID
+    acc[topic].subtopics[subtopic].push({
+      ...sq.question,
+      relationId: sq.id // Use this as the unique React key
+    });
     return acc;
   }, {});
 
   const totalQuestions = sheet.questions.length;
   const solvedCount = completed.size; // This matches global, but for this sheet it might be different if we filter
   // Actually, we should filter solvedCount to only questions in THIS sheet
-  const sheetQuestionIds = new Set(sheet.questions.map((sq: any) => String(sq.question.id || sq.question._id || sq.question.questionId)));
+  const sheetQuestionIds = new Set((sheet.questions || []).filter((sq: any) => sq.question).map((sq: any) => String(sq.question.id || sq.question._id || sq.question.questionId)));
   const sheetSolvedCount = Array.from(completed).filter(id => sheetQuestionIds.has(String(id))).length;
   const progressPercent = totalQuestions > 0 ? (sheetSolvedCount / totalQuestions) * 100 : 0;
 
@@ -220,9 +248,20 @@ export function PopularSheetClient({
       <div className="flex flex-col md:flex-row gap-10 items-start justify-between">
         <div className="flex-1 space-y-6">
           <div className="space-y-4">
-            <h1 className="text-3xl md:text-4xl font-black text-[#1b254b] dark:text-white tracking-tight leading-tight">
-              {sheet.name}
-            </h1>
+            <div className="flex items-center gap-4">
+              <h1 className="text-3xl md:text-4xl font-black text-[#1b254b] dark:text-white tracking-tight leading-tight">
+                {sheet.name}
+              </h1>
+              {isAdmin && (
+                <button 
+                  onClick={() => setIsEditModalOpen(true)}
+                  className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition-all text-slate-400 hover:text-[#1b254b] dark:hover:text-white"
+                  title="Edit Sheet Metadata"
+                >
+                  <Settings className="w-5 h-5" />
+                </button>
+              )}
+            </div>
             <p className="text-[13px] text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-3xl whitespace-pre-line">
               {sheet.description}
             </p>
@@ -291,6 +330,38 @@ export function PopularSheetClient({
           </div>
         </div>
       </div>
+      
+      {/* Search and Filters */}
+      <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white dark:bg-slate-800 p-6 rounded-[24px] border border-slate-200 dark:border-slate-700 shadow-sm">
+        <div className="relative flex-1 w-full">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <input 
+            type="text" 
+            placeholder="Search problems by name..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 rounded-2xl text-[14px] font-bold focus:bg-white dark:focus:bg-slate-800 focus:border-[#2dd4bf] outline-none transition-all dark:text-white"
+          />
+        </div>
+        
+        <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="relative w-full md:w-48">
+            <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <select 
+              value={diffFilter}
+              onChange={(e) => setDiffFilter(e.target.value)}
+              className="w-full pl-11 pr-10 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 rounded-2xl text-[13px] font-black appearance-none cursor-pointer outline-none focus:border-[#2dd4bf] dark:text-white"
+            >
+              <option>All Difficulties</option>
+              <option>Basic</option>
+              <option>Easy</option>
+              <option>Medium</option>
+              <option>Hard</option>
+            </select>
+            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+          </div>
+        </div>
+      </div>
 
       {/* Questions Section */}
       <div className="space-y-12">
@@ -344,6 +415,7 @@ export function PopularSheetClient({
                         <div className="divide-y divide-slate-100 dark:divide-slate-700">
                           {filteredQs.map((q: any) => {
                             const qId = String(q.id || q._id || q.questionId);
+                            const relationKey = q.relationId || qId;
                             const isDone = completed.has(qId);
                             const isStarred = starred.has(qId);
                             const curHighlight = highlights[qId] || "default";
@@ -351,7 +423,7 @@ export function PopularSheetClient({
 
                             return (
                               <div
-                                key={qId}
+                                key={relationKey}
                                 onClick={() => setSelectedQuestion({ id: qId, data: q })}
                                 className={cn(
                                   "group/row grid grid-cols-12 gap-4 px-8 py-3 items-center bg-white dark:bg-slate-800 hover:bg-slate-50/50 dark:hover:bg-slate-700/50 transition-all cursor-pointer",
@@ -565,6 +637,71 @@ export function PopularSheetClient({
             .slice(0, 5);
         })()}
       />
+
+      {/* Admin Edit Modal */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md">
+          <div className="bg-white dark:bg-slate-800 rounded-[32px] w-full max-w-xl p-8 shadow-2xl animate-in zoom-in-95 fade-in duration-300 border border-slate-200 dark:border-slate-700">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <h2 className="text-2xl font-black text-[#1b254b] dark:text-white tracking-tight">Edit Sheet Metadata</h2>
+                <p className="text-sm text-slate-400 font-bold mt-1">Update the core details of this popular sheet</p>
+              </div>
+              <button 
+                onClick={() => setIsEditModalOpen(false)}
+                className="p-2.5 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-2xl transition-all text-slate-400"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              <div className="space-y-2.5">
+                <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Sheet Name</label>
+                <input 
+                  type="text"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  placeholder="Sheet Name (e.g., Striver SDE Sheet)"
+                  className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 rounded-2xl text-[14px] font-bold focus:bg-white dark:focus:bg-slate-800 focus:border-[#2dd4bf] outline-none transition-all dark:text-white"
+                />
+              </div>
+
+              <div className="space-y-2.5">
+                <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Description</label>
+                <textarea 
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                  placeholder="Briefly describe what this sheet covers..."
+                  rows={4}
+                  className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 rounded-2xl text-[14px] font-bold focus:bg-white dark:focus:bg-slate-800 focus:border-[#2dd4bf] outline-none transition-all dark:text-white resize-none"
+                />
+              </div>
+
+              <div className="flex items-center gap-4 pt-4">
+                <button
+                  onClick={() => setIsEditModalOpen(false)}
+                  className="flex-1 px-6 py-4 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 font-black rounded-2xl transition-all text-[14px] active:scale-95"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleUpdateSheet}
+                  disabled={isUpdating || !editName.trim()}
+                  className="flex-[2] flex items-center justify-center gap-2.5 px-6 py-4 bg-[#1b254b] hover:bg-slate-800 text-white font-black rounded-2xl transition-all shadow-xl shadow-[#1b254b]/20 text-[14px] active:scale-95 disabled:opacity-50 disabled:scale-100"
+                >
+                  {isUpdating ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <Save className="w-5 h-5" />
+                  )}
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -9,6 +9,7 @@ import { toggleQuestionCompletion, updateQuestionRevision, updateRevisionStatus,
 import { toast } from "sonner";
 import { createCustomSheet } from "@/actions/custom-sheets";
 import { BulkImportModal } from "./bulk-import-modal";
+import { AdminPopularSheetModal } from "./admin-popular-sheet-modal";
 import { QuestionDrawer } from "./question-drawer";
 import { RevisionPicker } from "./revision-picker";
 import { CodingPortfolio } from "./coding-portfolio";
@@ -376,7 +377,8 @@ export function DSASheetsClient({
   userCustomSheets = [],
   userPortfolio = null,
   initialNotes = [],
-  initialTab = "Company Wise"
+  initialTab = "Company Wise",
+  isAdmin = false
 }: {
   dbCompanies?: any[],
   followedSheets?: any[],
@@ -401,11 +403,13 @@ export function DSASheetsClient({
   userCustomSheets?: any[],
   userPortfolio?: any,
   initialNotes?: any[],
-  initialTab?: string
+  initialTab?: string,
+  isAdmin?: boolean
 }) {
   const router = useRouter();
   const pathname = usePathname();
   const activeTab = initialTab || "Company Wise";
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [expandedTopics, setExpandedTopics] = useState<Record<string, boolean>>({});
 
@@ -775,7 +779,7 @@ export function DSASheetsClient({
                   {/* Followed Popular Sheets */}
                   {popularSheets.filter(ps => followedPopular.has(ps.id)).map(sheet => {
                     const totalQuestions = (sheet.questions || []).length;
-                    const solvedCount = (sheet.questions || []).filter((sq: any) => completed.has(sq.question.id)).length;
+                    const solvedCount = (sheet.questions || []).filter((sq: any) => sq.question && completed.has(sq.question.id)).length;
                     const progress = totalQuestions > 0 ? (solvedCount / totalQuestions) * 100 : 0;
 
                     return (
@@ -833,7 +837,7 @@ export function DSASheetsClient({
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {customSheets.map(sheet => {
                     const total = (sheet.questions || []).length;
-                    const solved = (sheet.questions || []).filter((q: any) => completed.has(q.question.id)).length;
+                    const solved = (sheet.questions || []).filter((q: any) => q.question && completed.has(q.question.id)).length;
                     const progress = total > 0 ? (solved / total) * 100 : 0;
 
                     return (
@@ -1261,10 +1265,25 @@ export function DSASheetsClient({
           </div>
         ) : activeTab === "Popular" ? (
           <div className="space-y-6 animate-in fade-in duration-300">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <h2 className="text-2xl font-black text-[#1b254b] dark:text-white tracking-tight">Popular Sheets</h2>
+                <p className="text-sm text-slate-400 font-bold mt-1">Explore structured paths curated by the community</p>
+              </div>
+              {isAdmin && (
+                <button
+                  onClick={() => setIsAdminModalOpen(true)}
+                  className="flex items-center gap-2.5 px-6 py-3 bg-[#1b254b] hover:bg-slate-800 text-white font-black rounded-2xl transition-all shadow-xl shadow-[#1b254b]/20 text-[13px] active:scale-95 group"
+                >
+                  <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
+                  Create Popular Sheet
+                </button>
+              )}
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in zoom-in-95 duration-500">
               {popularSheets.map(sheet => {
                 const totalQuestions = sheet.questions.length;
-                const solvedCount = sheet.questions.filter((sq: any) => completed.has(sq.question.id || sq.question._id)).length;
+                const solvedCount = sheet.questions.filter((sq: any) => sq.question && completed.has(sq.question.id || sq.question._id)).length;
                 const progress = totalQuestions > 0 ? (solvedCount / totalQuestions) * 100 : 0;
 
                 return (
@@ -1394,6 +1413,13 @@ export function DSASheetsClient({
         }}
         alternateQuestions={[]}
       />
+
+      {isAdminModalOpen && (
+        <AdminPopularSheetModal 
+          isOpen={isAdminModalOpen}
+          onClose={() => setIsAdminModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

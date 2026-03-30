@@ -41,7 +41,8 @@ export default async function CustomSheetPage({ params }: Props) {
   if (!sheet || sheet.userId !== userId) notFound();
 
   // Optimize: Only fetch progress data for questions in this custom sheet
-  const sheetQuestionIds = sheet.questions.map((sq: any) => sq.questionId);
+  const sheetQuestions = (sheet.questions || []).filter((sq: any) => sq.question);
+  const sheetQuestionIds = sheetQuestions.map((sq: any) => sq.questionId);
 
   const [completed, starred, highlights, revisions, notes] = await Promise.all([
     prisma.userCompletedQuestion.findMany({ 
@@ -69,9 +70,14 @@ export default async function CustomSheetPage({ params }: Props) {
   const userNotes = notes.map(n => ({ questionId: n.questionId, content: n.content }));
   const userRevisions = revisions;
 
+  const filteredSheet = {
+    ...sheet,
+    questions: (sheet.questions || []).filter((sq: any) => sq.question)
+  };
+
   return (
     <CustomSheetClient 
-      sheet={sheet as any}
+      sheet={filteredSheet as any}
       userId={userId}
       initialCompletedIds={userCompletedIds}
       initialStarredIds={userStarredIds}

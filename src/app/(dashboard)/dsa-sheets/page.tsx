@@ -1,6 +1,6 @@
 import { DSASheetsClient } from "./_components/dsa-sheets-client";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { hydrateQuestions } from "@/lib/dsa-questions";
 import { Metadata } from "next";
 
@@ -11,6 +11,9 @@ export const metadata: Metadata = {
 
 export default async function DSASheetsPage() {
   const { userId } = await auth();
+  const user = await currentUser();
+  const userEmail = user?.emailAddresses[0]?.emailAddress;
+  const isAdmin = userEmail === "gauravkatara53@gmail.com";
 
   const companiesPromise = (prisma as any).dSASheetCompany.findMany({
     orderBy: { count: 'desc' }
@@ -59,9 +62,9 @@ export default async function DSASheetsPage() {
     completedQuestions,
     revisionsRaw,
     starredRaw,
-    popularSheets,
+    popularSheetsRaw,
     followedPopular,
-    userCustomSheets,
+    userCustomSheetsRaw,
     userPortfolio,
     userNotes
   ] = await Promise.all([
@@ -76,6 +79,17 @@ export default async function DSASheetsPage() {
     userPortfolioPromise,
     userNotesPromise
   ]);
+
+  // Filter orphaned questions
+  const popularSheets = popularSheetsRaw.map((s: any) => ({
+    ...s,
+    questions: (s.questions || []).filter((q: any) => q.question)
+  }));
+
+  const userCustomSheets = userCustomSheetsRaw.map((s: any) => ({
+    ...s,
+    questions: (s.questions || []).filter((q: any) => q.question)
+  }));
 
   const allIds = [...new Set([...revisionsRaw.map((r: any) => String(r.questionId)), ...starredRaw.map((s: any) => String(s.questionId))])];
   const questionMap = await hydrateQuestions(allIds);
@@ -107,6 +121,7 @@ export default async function DSASheetsPage() {
   return <DSASheetsClient 
     dbCompanies={companies} 
     userId={userId} 
+    isAdmin={isAdmin}
     followedSheets={followedSheets}
     completedData={completedData}
     revisionsData={revisions}

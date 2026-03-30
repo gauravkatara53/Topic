@@ -81,12 +81,12 @@ export function CustomSheetClient({
   const [isSaving, setIsSaving] = useState(false);
 
   const totalQuestions = sheet.questions.length;
-  const solvedCount = sheet.questions.filter((q: any) => completed.has(q.question.id)).length;
+  const solvedCount = sheet.questions.filter((q: any) => q.question && completed.has(q.question.id)).length;
   const progressPercent = totalQuestions > 0 ? (solvedCount / totalQuestions) * 100 : 0;
 
   const difficultyCounts = sheet.questions.reduce((acc: any, qLink: any) => {
     const q = qLink.question;
-    if (!completed.has(q.id)) return acc;
+    if (!q || !completed.has(q.id)) return acc;
     const diff = q.difficulty || "Medium";
     acc[diff] = (acc[diff] || 0) + 1;
     return acc;
@@ -132,7 +132,7 @@ export function CustomSheetClient({
     await toggleQuestionCompletion(qid, sheet.id, !isDone);
 
     if (!isDone && showRevisionModalPref) {
-      const q = sheet.questions.find((sq: any) => sq.question.id === qid)?.question;
+      const q = sheet.questions.find((sq: any) => sq.question?.id === qid)?.question;
       if (q) openRevisionModal(qid, q.name);
     }
   };
@@ -377,7 +377,7 @@ export function CustomSheetClient({
                   <div className="px-8 pb-8 space-y-10">
                     {Object.entries(topicData.subtopics).map(([subtopic, questions]: [string, any]) => {
                       const filteredQs = questions.filter((sq: any) =>
-                        (sq.question.name || "").toLowerCase().includes(searchQuery.toLowerCase())
+                        sq.question && (sq.question.name || "").toLowerCase().includes(searchQuery.toLowerCase())
                       );
                       if (filteredQs.length === 0 && searchQuery) return null;
                       const subtopicCompletedCount = filteredQs.filter((sq: any) => completed.has(sq.question.id)).length;

@@ -225,7 +225,7 @@ model PopularSheetQuestion {
   resource   String? @default("")
 
   sheet    PopularSheet    @relation(fields: [sheetId], references: [id], onDelete: Cascade)
-  question PopularQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  question PopularQuestion? @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@map("sheetquestions")
 }
@@ -263,7 +263,7 @@ model CustomSheetQuestion {
   subTopic   String?
   
   sheet    UserCustomSheet @relation(fields: [sheetId], references: [id], onDelete: Cascade)
-  question PopularQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  question PopularQuestion? @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@map("customsheetquestions")
 }

@@ -24,7 +24,7 @@ export default async function MySheetsPage() {
   });
   const followedPopularIds = followedPopular.map((f: any) => f.popularSheetId);
  
-  const userCustomSheets = await (prisma as any).userCustomSheet.findMany({
+  const userCustomSheetsRaw = await (prisma as any).userCustomSheet.findMany({
     where: { userId },
     include: {
       questions: {
@@ -35,9 +35,14 @@ export default async function MySheetsPage() {
     }
   });
 
+  const userCustomSheets = userCustomSheetsRaw.map((sheet: any) => ({
+    ...sheet,
+    questions: (sheet.questions || []).filter((sq: any) => sq.question)
+  }));
+
 
   // Fetch ONLY followed Popular Sheets for rendering in My Sheets tab
-  const popularSheets = followedPopularIds.length > 0 ? await (prisma as any).popularSheet.findMany({
+  const popularSheetsRaw = followedPopularIds.length > 0 ? await (prisma as any).popularSheet.findMany({
     where: { id: { in: followedPopularIds } },
     include: {
       questions: {
@@ -47,6 +52,11 @@ export default async function MySheetsPage() {
       }
     }
   }) : [];
+
+  const popularSheets = popularSheetsRaw.map((sheet: any) => ({
+    ...sheet,
+    questions: (sheet.questions || []).filter((sq: any) => sq.question)
+  }));
 
   // Calculate some progress data
   let userCompletedCountByCompany: Record<string, number> = {};

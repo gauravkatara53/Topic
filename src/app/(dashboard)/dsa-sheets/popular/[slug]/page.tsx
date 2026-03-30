@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { PopularSheetClient } from "./_components/popular-sheet-client";
 import { notFound } from "next/navigation";
 
@@ -24,6 +24,8 @@ export default async function PopularSheetPage({ params }: Props) {
   const resolvedParams = await params;
   const { slug } = resolvedParams;
   const { userId } = await auth();
+  const user = await currentUser();
+  const isAdmin = user?.emailAddresses[0]?.emailAddress === "gauravkatara53@gmail.com";
 
   const sheet = await prisma.popularSheet.findUnique({
     where: { slug },
@@ -57,7 +59,8 @@ export default async function PopularSheetPage({ params }: Props) {
     isFollowing = !!followRecord;
 
     // Optimize: Only fetch progress data for questions IN THIS SHEET
-    const sheetQuestionIds = sheet.questions.map((sq: any) => sq.question.id);
+    const sheetQuestions = (sheet.questions || []).filter((sq: any) => sq.question);
+    const sheetQuestionIds = sheetQuestions.map((sq: any) => sq.question.id);
 
     const [completed, starred, highlights, revisions, notes] = await Promise.all([
       prisma.userCompletedQuestion.findMany({ 
@@ -86,10 +89,16 @@ export default async function PopularSheetPage({ params }: Props) {
     userNotes = notes.map(n => ({ questionId: n.questionId, content: n.content }));
   }
 
+  const filteredSheet = {
+    ...sheet,
+    questions: (sheet.questions || []).filter((sq: any) => sq.question)
+  };
+
   return (
     <PopularSheetClient 
-      sheet={sheet as any}
+      sheet={filteredSheet as any}
       userId={userId}
+      isAdmin={isAdmin}
       isFollowing={isFollowing}
       initialCompletedIds={userCompletedIds}
       initialStarredIds={userStarredIds}
