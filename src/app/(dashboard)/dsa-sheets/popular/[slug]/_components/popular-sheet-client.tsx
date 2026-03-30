@@ -122,7 +122,7 @@ export function PopularSheetClient({
 
     // Auto-open revision modal if completing for the first time and preference is enabled
     if (!isDone && showRevisionModalPref && following) {
-      const sq = sheet.questions.find((s: any) => String(s.question.questionId || s.question.id || s.question._id) === qId);
+      const sq = sheet.questions.find((s: any) => String(s.question.id || s.question._id || s.question.questionId) === qId);
       if (sq) openRevisionModal(qId, sq.question.name);
     }
   };
@@ -197,7 +197,7 @@ export function PopularSheetClient({
   const totalQuestions = sheet.questions.length;
   const solvedCount = completed.size; // This matches global, but for this sheet it might be different if we filter
   // Actually, we should filter solvedCount to only questions in THIS sheet
-  const sheetQuestionIds = new Set(sheet.questions.map((sq: any) => String(sq.question.questionId || sq.question.id || sq.question._id)));
+  const sheetQuestionIds = new Set(sheet.questions.map((sq: any) => String(sq.question.id || sq.question._id || sq.question.questionId)));
   const sheetSolvedCount = Array.from(completed).filter(id => sheetQuestionIds.has(String(id))).length;
   const progressPercent = totalQuestions > 0 ? (sheetSolvedCount / totalQuestions) * 100 : 0;
 
@@ -268,7 +268,7 @@ export function PopularSheetClient({
             const counts = { Basic: 0, Easy: 0, Medium: 0, Hard: 0 };
             Object.values(groupedData).forEach((topicData: any) => {
               Object.values(topicData.subtopics).flat().forEach((q: any) => {
-                const qId = String(q.questionId || q.id || q._id);
+                const qId = String(q.id || q._id || q.questionId);
                 if (completed.has(qId)) {
                   const diff = (q.difficulty || "Basic").charAt(0).toUpperCase() + (q.difficulty || "Basic").slice(1).toLowerCase();
                   if (diff in counts) {
@@ -297,7 +297,7 @@ export function PopularSheetClient({
         {Object.entries(groupedData).map(([topic, topicData]: [string, any]) => {
           const isExpanded = expandedTopics[topic] !== false;
           const topicQuestions = Object.values(topicData.subtopics).flat() as any[];
-          const topicCompletedCount = topicQuestions.filter(q => completed.has(String(q.questionId || q.id || q._id))).length;
+          const topicCompletedCount = topicQuestions.filter(q => completed.has(String(q.id || q._id || q.questionId))).length;
 
           return (
             <div key={topic} className="bg-white dark:bg-slate-800 rounded-[24px] border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col">
@@ -325,7 +325,7 @@ export function PopularSheetClient({
                     });
 
                     if (filteredQs.length === 0 && searchQuery) return null;
-                    const subtopicCompletedCount = filteredQs.filter((q: any) => completed.has(String(q.questionId || q.id || q._id))).length;
+                    const subtopicCompletedCount = filteredQs.filter((q: any) => completed.has(String(q.id || q._id || q.questionId))).length;
 
                     return (
                       <div key={subtopic} className="space-y-0 border border-slate-100 dark:border-slate-700 rounded-2xl overflow-hidden mb-6 last:mb-0 flex flex-col">
@@ -343,7 +343,7 @@ export function PopularSheetClient({
 
                         <div className="divide-y divide-slate-100 dark:divide-slate-700">
                           {filteredQs.map((q: any) => {
-                            const qId = String(q.questionId || q.id || q._id);
+                            const qId = String(q.id || q._id || q.questionId);
                             const isDone = completed.has(qId);
                             const isStarred = starred.has(qId);
                             const curHighlight = highlights[qId] || "default";
@@ -558,7 +558,7 @@ export function PopularSheetClient({
           const allQs = sheet?.questions || [];
           return allQs
             .filter((q: any) => {
-              const curQId = String(q.questionId || q.id || q._id);
+              const curQId = String(q.id || q._id || q.questionId);
               return curQId !== qId && q.topic === topic && q.subtopic === subtopic;
             })
             .map((q: any) => ({ ...q, name: q.name || q.title }))
