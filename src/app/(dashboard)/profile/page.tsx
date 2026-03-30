@@ -26,17 +26,20 @@ export default async function ProfilePage() {
         return <ProfilePromo />;
     }
 
-    // Fetch comprehensive user data and stats
+    // Sync user if not exists and fetch comprehensive data
     const [userDb, attendance, uploadedFiles] = await Promise.all([
-        prisma.user.findUnique({ where: { id: userId } }),
+        prisma.user.upsert({
+            where: { id: userId },
+            update: {},
+            create: {
+                id: userId,
+                name: user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : "Student",
+                email: user.emailAddresses[0]?.emailAddress || "",
+            }
+        }),
         prisma.attendanceRecord.findMany({ where: { userId } }),
         prisma.file.count({ where: { uploaderId: userId } }),
     ]);
-
-    if (!userDb) {
-        // Fallback or create if they somehow reached here without a DB record
-        redirect("/");
-    }
 
     const name = `${user.firstName || ""} ${user.lastName || ""}`.trim() || userDb.name || "Student";
     const userInitials = name?.split(" ").map((n: string) => n[0]).join("").toUpperCase() || "ST";
