@@ -623,7 +623,7 @@ export function DSASheetsClient({
       const today = new Date().toISOString().split("T")[0];
       setLocalRevisions(prev => ({
         ...prev,
-        [q.id]: { ...(prev[q.id] || { lastRevised: "", nextRevision: "" }), lastRevised: today }
+        [q.id]: { ...(prev[q.id] || { lastRevised: "", nextRevision: "" }) }
       }));
       setRevisionModalOpen({ id: q.id, title: q.title, companyId });
     }

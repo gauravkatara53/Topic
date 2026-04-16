@@ -16,14 +16,10 @@ export function RevisionPicker({ lastRevised, nextRevision, onChange }: Revision
   const [selectingNext, setSelectingNext] = useState(false);
   const [hoveredDate, setHoveredDate] = useState<Date | null>(null);
   
-  // Default lastRevised to today if empty
+  // Default nextRevision to +3 days if empty and lastRevised exists
   useEffect(() => {
-    if (!lastRevised) {
-      const today = format(new Date(), 'yyyy-MM-dd');
-      onChange('lastRevised', today);
-      if (!nextRevision) {
-        onChange('nextRevision', format(addDays(new Date(), 3), 'yyyy-MM-dd'));
-      }
+    if (lastRevised && !nextRevision) {
+      onChange('nextRevision', format(addDays(parseISO(lastRevised), 3), 'yyyy-MM-dd'));
     }
   }, [lastRevised, nextRevision, onChange]);
 

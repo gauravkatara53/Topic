@@ -40,7 +40,7 @@ export default async function StatsPage() {
   });
 
   const recentRevisions = await (prisma as any).userQuestionRevision.findMany({
-    where: { userId, lastRevised: { gte: startDateHistory } },
+    where: { userId, status: 'Completed', lastRevised: { gte: startDateHistory } },
     select: { lastRevised: true }
   });
 
