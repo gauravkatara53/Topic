@@ -296,3 +296,93 @@ model UserPortfolio {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
+
+// ─── Placement Tracker ────────────────────────────────────────────────────────
+
+model PlacementApplication {
+  id                   String                  @id @default(auto()) @map("_id") @db.ObjectId
+  userId               String
+
+  // Basic Details
+  companyName          String
+  role                 String
+  type                 String                  @default("OFF_CAMPUS") // ON_CAMPUS | OFF_CAMPUS
+  internshipOrFullTime String                  @default("FULL_TIME")  // INTERNSHIP | FULL_TIME
+  packageOrStipend     Float?
+  location             String?
+  jobLink              String?
+  applicationDate      DateTime                @default(now())
+  deadlineDate         DateTime?
+
+  // On-Campus Extra
+  placementDriveName   String?
+  eligibilityCriteria  String?
+  cgpaRequirement      Float?
+
+  // Referral
+  referralTaken        Boolean                 @default(false)
+  referralPersonName   String?
+  referralPersonLinkedIn String?
+  referralSource       String?
+
+  // Email
+  emailUsed            String?
+
+  // Status (latest)
+  currentStatus        String                  @default("Applied")
+
+  // Additional
+  resumeVersion        String?
+  coverLetterUsed      Boolean                 @default(false)
+  skillsRequired       String[]
+  interviewExperience  String?
+  hrContact            String?
+  salaryOffered        Float?
+  offerDeadline        DateTime?
+  joiningDate          DateTime?
+  notes                String?
+  tags                 String[]
+  resumeUrl            String?
+
+  statusHistory        PlacementStatusUpdate[]
+  reminders            PlacementReminder[]
+
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
+
+  @@index([userId])
+  @@index([userId, currentStatus])
+  @@index([userId, companyName])
+  @@map("placement_applications")
+}
+
+model PlacementStatusUpdate {
+  id            String               @id @default(auto()) @map("_id") @db.ObjectId
+  applicationId String               @db.ObjectId
+  application   PlacementApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  status        String
+  date          DateTime             @default(now())
+  notes         String?
+  link          String?
+  createdAt     DateTime             @default(now())
+
+  @@index([applicationId])
+  @@map("placement_status_updates")
+}
+
+model PlacementReminder {
+  id            String                @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String
+  applicationId String?               @db.ObjectId
+  application   PlacementApplication? @relation(fields: [applicationId], references: [id], onDelete: SetNull)
+  title         String
+  dueDate       DateTime
+  completed     Boolean               @default(false)
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+
+  @@index([userId])
+  @@index([userId, completed])
+  @@map("placement_reminders")
+}
+

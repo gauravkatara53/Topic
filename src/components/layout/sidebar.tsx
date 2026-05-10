@@ -16,7 +16,8 @@ import {
     User,
     Trophy,
     FileSearch,
-    Code2
+    Code2,
+    Briefcase
 } from "lucide-react";
 
 const routes = [
@@ -59,6 +60,11 @@ const routes = [
         label: "DSA Sheets",
         icon: Code2,
         href: "/dsa-sheets",
+    },
+    {
+        label: "Placement Tracker",
+        icon: Briefcase,
+        href: "/placement",
     },
     {
         label: "Profile",
