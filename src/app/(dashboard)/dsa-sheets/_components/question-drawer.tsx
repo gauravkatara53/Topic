@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { X, ChevronRight, ExternalLink, FileText, CheckCircle2, Circle, Save, BookOpen, Tags, Star, Clock, Layout, MessageSquare } from "lucide-react";
+import { X, ChevronRight, ExternalLink, FileText, CheckCircle2, Circle, Save, BookOpen, Tags, Star, Clock, Layout, MessageSquare, History } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { updateQuestionNote } from "@/actions/dsa-sheets";
 import { RevisionPicker } from "./revision-picker";
+import { RevisionTimeline, type RevisionHistoryEntry } from "./revision-timeline";
 import { format, parseISO, isValid } from "date-fns";
 
 interface QuestionDrawerProps {
@@ -24,6 +25,8 @@ interface QuestionDrawerProps {
   nextRevision?: string;
   onUpdateRevision?: (field: 'lastRevised' | 'nextRevision', value: string) => void;
   onSaveRevision?: () => Promise<void>;
+  revisionHistory?: RevisionHistoryEntry[];
+  isLoadingHistory?: boolean;
 }
 
 export function QuestionDrawer({
@@ -41,9 +44,11 @@ export function QuestionDrawer({
   lastRevised = "",
   nextRevision = "",
   onUpdateRevision,
-  onSaveRevision
+  onSaveRevision,
+  revisionHistory = [],
+  isLoadingHistory = false
 }: QuestionDrawerProps) {
-  const [activeTab, setActiveTab] = useState<"overview" | "notes">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "notes" | "history">("overview");
   const [localNote, setLocalNote] = useState(initialNotes);
   const [isSaving, setIsSaving] = useState(false);
   const [isRevisionPickerOpen, setIsRevisionPickerOpen] = useState(false);
@@ -192,6 +197,28 @@ export function QuestionDrawer({
               )}
             >
               Overview
+            </button>
+            <button 
+              onClick={() => setActiveTab("history")}
+              className={cn(
+                "pb-3 text-sm font-semibold transition-all border-b-2 relative flex items-center gap-1.5",
+                activeTab === "history" 
+                  ? "text-[#2dd4bf] border-[#2dd4bf]" 
+                  : "text-slate-400 border-transparent hover:text-slate-600 dark:hover:text-slate-300"
+              )}
+            >
+              <History className="w-3.5 h-3.5" />
+              History
+              {revisionHistory.length > 0 && (
+                <span className={cn(
+                  "text-[9px] font-black px-1.5 py-0.5 rounded-full leading-none",
+                  activeTab === "history"
+                    ? "bg-[#2dd4bf]/20 text-[#2dd4bf]"
+                    : "bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500"
+                )}>
+                  {revisionHistory.length}
+                </span>
+              )}
             </button>
             <button 
               onClick={() => setActiveTab("notes")}
@@ -344,6 +371,15 @@ export function QuestionDrawer({
                   </div>
                 </section>
               )}
+            </div>
+          ) : activeTab === "history" ? (
+            <div className="animate-in fade-in slide-in-from-right-2 duration-300">
+              <RevisionTimeline
+                history={revisionHistory}
+                nextRevision={nextRevision}
+                lastRevised={lastRevised}
+                isLoading={isLoadingHistory}
+              />
             </div>
           ) : (
             <div className="h-full flex flex-col space-y-6 animate-in fade-in slide-in-from-right-2 duration-300">

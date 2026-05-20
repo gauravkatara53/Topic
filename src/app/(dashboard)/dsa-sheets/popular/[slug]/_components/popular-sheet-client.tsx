@@ -14,7 +14,8 @@ import {
   toggleQuestionStar,
   updateQuestionHighlight,
   updateQuestionRevision,
-  updateQuestionNote
+  updateQuestionNote,
+  getRevisionHistory
 } from "@/actions/dsa-sheets";
 import { updatePopularSheet } from "@/actions/admin-sheets";
 import {
@@ -61,6 +62,30 @@ export function PopularSheetClient({
   });
   const [selectedQuestion, setSelectedQuestion] = useState<{ id: string, data: any } | null>(null);
   const [tempNote, setTempNote] = useState("");
+
+  // Lazy-load revision history when a question is selected
+  const [revisionHistory, setRevisionHistory] = useState<any[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+
+  useEffect(() => {
+    if (!selectedQuestion) {
+      setRevisionHistory([]);
+      return;
+    }
+    let cancelled = false;
+    setIsLoadingHistory(true);
+    getRevisionHistory(selectedQuestion.id)
+      .then((data) => {
+        if (!cancelled) setRevisionHistory(data || []);
+      })
+      .catch(() => {
+        if (!cancelled) setRevisionHistory([]);
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoadingHistory(false);
+      });
+    return () => { cancelled = true; };
+  }, [selectedQuestion?.id]);
   const [searchQuery, setSearchQuery] = useState("");
   const [diffFilter, setDiffFilter] = useState("All Difficulties");
   const [topicFilter, setTopicFilter] = useState("All Topics");
@@ -636,6 +661,8 @@ export function PopularSheetClient({
             .map((q: any) => ({ ...q, name: q.name || q.title }))
             .slice(0, 5);
         })()}
+        revisionHistory={revisionHistory}
+        isLoadingHistory={isLoadingHistory}
       />
 
       {/* Admin Edit Modal */}

@@ -57,28 +57,61 @@ export async function updateQuestionRevision(
     throw new Error("User record not fully initialized");
   }
 
-  await (prisma as any).userQuestionRevision.upsert({
+  // 1. Get existing record for history tracking
+  const existing = await (prisma as any).userQuestionRevision.findUnique({
     where: {
-      userId_questionId: {
-        userId,
-        questionId
-      }
-    },
-    create: {
-      userId,
-      questionId,
-      companyId,
-      lastRevised,
-      nextRevision,
-      status
-    },
-    update: {
-      companyId,
-      lastRevised,
-      nextRevision,
-      status
+      userId_questionId: { userId, questionId }
     }
   });
+
+  // 2. Calculate revision number and days gap
+  const historyCount = await (prisma as any).revisionHistory.count({
+    where: { userId, questionId }
+  });
+  const revisionNumber = historyCount + 1;
+
+  const daysGap = existing?.lastRevised && lastRevised
+    ? Math.floor((lastRevised.getTime() - new Date(existing.lastRevised).getTime()) / 86400000)
+    : null;
+
+  // 3. Transaction: insert history + upsert current state
+  // IMPORTANT: This function handles SCHEDULING, not completion.
+  // History entries from scheduling are "Scheduled" — only updateRevisionStatus()
+  // creates "Completed" events, which are the sole source for analytics/stats.
+  await (prisma as any).$transaction([
+    (prisma as any).revisionHistory.create({
+      data: {
+        userId,
+        questionId,
+        companyId,
+        revisionNumber,
+        revisedAt: lastRevised || new Date(),
+        nextRevisionDate: nextRevision,
+        previousNextDate: existing?.nextRevision || null,
+        status: "Scheduled",
+        daysGap,
+      }
+    }),
+    (prisma as any).userQuestionRevision.upsert({
+      where: {
+        userId_questionId: { userId, questionId }
+      },
+      create: {
+        userId,
+        questionId,
+        companyId,
+        lastRevised,
+        nextRevision,
+        status
+      },
+      update: {
+        companyId,
+        lastRevised,
+        nextRevision,
+        status
+      }
+    })
+  ]);
 
   revalidatePath("/dsa-sheets", "layout");
   return { success: true };
@@ -118,21 +151,60 @@ export async function updateRevisionStatus(questionId: string, status: string) {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  const data: any = { status };
   if (status === 'Completed') {
-    data.lastRevised = new Date();
-  }
+    // Get existing record for history tracking
+    const existing = await (prisma as any).userQuestionRevision.findUnique({
+      where: { userId_questionId: { userId, questionId } }
+    });
 
-  await (prisma as any).userQuestionRevision.updateMany({
-    where: {
-      userId,
-      questionId
-    },
-    data
-  });
+    const historyCount = await (prisma as any).revisionHistory.count({
+      where: { userId, questionId }
+    });
+
+    const now = new Date();
+
+    await (prisma as any).$transaction([
+      (prisma as any).revisionHistory.create({
+        data: {
+          userId,
+          questionId,
+          companyId: existing?.companyId || null,
+          revisionNumber: historyCount + 1,
+          revisedAt: now,
+          nextRevisionDate: existing?.nextRevision || null,
+          previousNextDate: existing?.nextRevision || null,
+          status: "Completed",
+          daysGap: existing?.lastRevised
+            ? Math.floor((now.getTime() - new Date(existing.lastRevised).getTime()) / 86400000)
+            : null,
+        }
+      }),
+      (prisma as any).userQuestionRevision.updateMany({
+        where: { userId, questionId },
+        data: { status, lastRevised: now }
+      })
+    ]);
+  } else {
+    await (prisma as any).userQuestionRevision.updateMany({
+      where: { userId, questionId },
+      data: { status }
+    });
+  }
 
   revalidatePath("/dsa-sheets", "layout");
   return { success: true };
+}
+
+export async function getRevisionHistory(questionId: string) {
+  const { userId } = await auth();
+  if (!userId) return [];
+
+  const history = await (prisma as any).revisionHistory.findMany({
+    where: { userId, questionId },
+    orderBy: { revisedAt: 'desc' }
+  });
+
+  return history;
 }
 
 export async function toggleQuestionStar(

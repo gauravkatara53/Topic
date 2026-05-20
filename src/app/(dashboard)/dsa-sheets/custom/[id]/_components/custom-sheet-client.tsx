@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   ChevronLeft, ChevronDown, CheckCircle2, Circle,
@@ -26,7 +26,8 @@ import {
   toggleQuestionStar,
   updateQuestionHighlight,
   updateQuestionRevision,
-  updateQuestionNote
+  updateQuestionNote,
+  getRevisionHistory
 } from "@/actions/dsa-sheets";
 
 export function CustomSheetClient({
@@ -67,6 +68,30 @@ export function CustomSheetClient({
 
   const [selectedQuestion, setSelectedQuestion] = useState<{ id: string, data: any } | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Lazy-load revision history when a question is selected
+  const [revisionHistory, setRevisionHistory] = useState<any[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+
+  useEffect(() => {
+    if (!selectedQuestion) {
+      setRevisionHistory([]);
+      return;
+    }
+    let cancelled = false;
+    setIsLoadingHistory(true);
+    getRevisionHistory(selectedQuestion.id)
+      .then((data) => {
+        if (!cancelled) setRevisionHistory(data || []);
+      })
+      .catch(() => {
+        if (!cancelled) setRevisionHistory([]);
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoadingHistory(false);
+      });
+    return () => { cancelled = true; };
+  }, [selectedQuestion?.id]);
   const [expandedTopics, setExpandedTopics] = useState<Record<string, boolean>>({});
   const [paletteOpen, setPaletteOpen] = useState<string | null>(null);
   const [revisionModalOpen, setRevisionModalOpen] = useState<{ id: string, title: string } | null>(null);
@@ -532,6 +557,8 @@ export function CustomSheetClient({
           onSaveRevision={async () => {
             if (selectedQuestion) await saveRevision(selectedQuestion.id);
           }}
+          revisionHistory={revisionHistory}
+          isLoadingHistory={isLoadingHistory}
         />
       )}
 

@@ -21,7 +21,13 @@ export default async function StatsPage() {
     where: { userId, createdAt: { gte: startOfToday } }
   });
 
-  const completedRevisions = await (prisma as any).userQuestionRevision.count({
+  // ── EVENT-BASED ANALYTICS ──────────────────────────────────────────
+  // Use immutable RevisionHistory for all historical stats.
+  // UserQuestionRevision is only for current-state (upcoming revisions).
+  // This ensures completed revision events NEVER disappear from stats
+  // when a user schedules a future revision.
+
+  const completedRevisions = await (prisma as any).revisionHistory.count({
     where: { userId, status: 'Completed' }
   });
 
@@ -39,9 +45,10 @@ export default async function StatsPage() {
     select: { createdAt: true }
   });
 
-  const recentRevisions = await (prisma as any).userQuestionRevision.findMany({
-    where: { userId, status: 'Completed', lastRevised: { gte: startDateHistory } },
-    select: { lastRevised: true }
+  // Use immutable RevisionHistory events instead of mutable UserQuestionRevision
+  const recentRevisions = await (prisma as any).revisionHistory.findMany({
+    where: { userId, status: 'Completed', revisedAt: { gte: startDateHistory } },
+    select: { revisedAt: true }
   });
 
   const dailyStats = last7Days.map(date => {
@@ -55,8 +62,8 @@ export default async function StatsPage() {
     }).length;
 
     const revisedCount = recentRevisions.filter((r: any) => {
-      if (!r.lastRevised) return false;
-      const d = new Date(r.lastRevised);
+      if (!r.revisedAt) return false;
+      const d = new Date(r.revisedAt);
       return d.getDate() === day && d.getMonth() === month && d.getFullYear() === year;
     }).length;
 
@@ -80,8 +87,8 @@ export default async function StatsPage() {
     totalSolvedAllTime++;
   });
   recentRevisions.forEach((r: any) => {
-    if (!r.lastRevised) return;
-    const d = new Date(r.lastRevised);
+    if (!r.revisedAt) return;
+    const d = new Date(r.revisedAt);
     const key = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
     if (!historyStats[key]) historyStats[key] = { solved: 0, revised: 0, total: 0 };
     historyStats[key].revised++;

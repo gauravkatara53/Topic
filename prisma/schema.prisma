@@ -36,6 +36,7 @@ model User {
   questionNotes           UserQuestionNote[]
   customSheets            UserCustomSheet[]
   portfolio               UserPortfolio?
+  revisionHistories       RevisionHistory[]
 }
 
 model Announcement {
@@ -295,6 +296,28 @@ model UserPortfolio {
   lastRefreshed   DateTime @default(now())
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+}
+
+// ─── Revision History (Immutable Audit Log) ───────────────────────────────────
+
+model RevisionHistory {
+  id               String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId           String
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId       String
+  companyId        String?
+  revisionNumber   Int       // Sequential: 1, 2, 3...
+  revisedAt        DateTime  // When this revision was performed
+  nextRevisionDate DateTime? // The next revision date set at this point
+  previousNextDate DateTime? // What the old nextRevision was (for audit)
+  status           String    @default("Completed") // Completed, Skipped
+  notes            String?   // Optional revision notes
+  daysGap          Int?      // Days since previous revision
+  createdAt        DateTime  @default(now())
+
+  @@index([userId, questionId])
+  @@index([userId, questionId, revisedAt])
+  @@map("revision_history")
 }
 
 // ─── Placement Tracker ────────────────────────────────────────────────────────

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Palette, ChevronLeft, ChevronDown, ChevronRight, CheckCircle2, Circle, Star, ExternalLink, Share2, Target, Bookmark, RotateCcw, FileText, Search, Filter, ArrowUpDown, Clock, Save } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { toggleFollowSheet, updateQuestionRevision, toggleQuestionCompletion, toggleQuestionStar, updateQuestionHighlight, updateQuestionNote } from "@/actions/dsa-sheets";
+import { toggleFollowSheet, updateQuestionRevision, toggleQuestionCompletion, toggleQuestionStar, updateQuestionHighlight, updateQuestionNote, getRevisionHistory } from "@/actions/dsa-sheets";
 import { toast } from "sonner";
 import { QuestionDrawer } from "../../_components/question-drawer";
 import { RevisionPicker } from "../../_components/revision-picker";
@@ -95,6 +95,30 @@ export function CompanySheetClient({
   });
   const [selectedQuestion, setSelectedQuestion] = useState<{ id: string, data: any } | null>(null);
   const [tempNote, setTempNote] = useState("");
+
+  // Lazy-load revision history when a question is selected
+  const [revisionHistory, setRevisionHistory] = useState<any[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+
+  useEffect(() => {
+    if (!selectedQuestion) {
+      setRevisionHistory([]);
+      return;
+    }
+    let cancelled = false;
+    setIsLoadingHistory(true);
+    getRevisionHistory(selectedQuestion.id)
+      .then((data) => {
+        if (!cancelled) setRevisionHistory(data || []);
+      })
+      .catch(() => {
+        if (!cancelled) setRevisionHistory([]);
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoadingHistory(false);
+      });
+    return () => { cancelled = true; };
+  }, [selectedQuestion?.id]);
   const niceName = companyId.charAt(0).toUpperCase() + companyId.slice(1);
   const realTitle = `${niceName} Master DSA Sheet`;
 
@@ -783,6 +807,8 @@ export function CompanySheetClient({
             .map((q: any) => ({ ...q, name: q.title }))
             .slice(0, 5);
         })()}
+        revisionHistory={revisionHistory}
+        isLoadingHistory={isLoadingHistory}
       />
     </div>
   );

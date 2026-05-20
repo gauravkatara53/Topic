@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Search, Map, Database, LayoutTemplate, BriefcaseBusiness, ListTodo, CheckCircle2, Sparkles, Clock, CalendarDays, Circle, FileText, Save, Palette, ChevronDown, ChevronRight, Users, ArrowRight, Star, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { toggleQuestionCompletion, updateQuestionRevision, updateRevisionStatus, updateFollowedSheetTheme, toggleQuestionStar, updateQuestionHighlight, togglePopularSheetFollow, updateQuestionNote } from "@/actions/dsa-sheets";
+import { toggleQuestionCompletion, updateQuestionRevision, updateRevisionStatus, updateFollowedSheetTheme, toggleQuestionStar, updateQuestionHighlight, togglePopularSheetFollow, updateQuestionNote, getRevisionHistory } from "@/actions/dsa-sheets";
 import { toast } from "sonner";
 import { createCustomSheet } from "@/actions/custom-sheets";
 import { BulkImportModal } from "./bulk-import-modal";
@@ -426,6 +426,30 @@ export function DSASheetsClient({
     (initialNotes || []).forEach((note: any) => { acc[note.questionId] = note.content; });
     return acc;
   });
+
+  // Lazy-load revision history when a question is selected
+  const [revisionHistory, setRevisionHistory] = useState<any[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+
+  useEffect(() => {
+    if (!selectedQuestion) {
+      setRevisionHistory([]);
+      return;
+    }
+    let cancelled = false;
+    setIsLoadingHistory(true);
+    getRevisionHistory(selectedQuestion.id)
+      .then((data) => {
+        if (!cancelled) setRevisionHistory(data || []);
+      })
+      .catch(() => {
+        if (!cancelled) setRevisionHistory([]);
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoadingHistory(false);
+      });
+    return () => { cancelled = true; };
+  }, [selectedQuestion?.id]);
 
   const handleSaveNote = async (content: string) => {
     if (!selectedQuestion) return;
@@ -1412,6 +1436,8 @@ export function DSASheetsClient({
           if (selectedQuestion) await saveRevision(selectedQuestion.id);
         }}
         alternateQuestions={[]}
+        revisionHistory={revisionHistory}
+        isLoadingHistory={isLoadingHistory}
       />
 
       {isAdminModalOpen && (
