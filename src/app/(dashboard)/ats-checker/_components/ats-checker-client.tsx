@@ -61,12 +61,13 @@ interface HistoryEntry {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const GEMINI_API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY_2 || "";
+import { runDeterministicAnalysis } from "@/lib/ats/engine";
 
+const GEMINI_API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY_2 || "";
 const OPENAI_API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY || "";
 const GROK_API_KEY   = process.env.NEXT_PUBLIC_GROK_API_KEY || "";
 
-const GEMINI_MODEL   = "gemini-2.5-flash"; // Reverting to the 2.5 series recommended for 2026
+const GEMINI_MODEL   = "gemini-2.5-flash";
 const MAX_HISTORY    = 10;
 
 type ProviderOption = "GEMINI" | "GROK";
@@ -97,70 +98,23 @@ const PROVIDER_CONFIGS: Record<ProviderOption, ProviderConfig> = {
 };
 
 const SYSTEM_PROMPT = `
-# ATS Evaluation System (114 Points)
-Analyze Resume vs JD. Output JSON only.
+# ATS Evaluation System
+You are an expert ATS (Applicant Tracking System) parser. We have already computed the deterministic hard-skill and formatting metrics locally.
+We need you to evaluate the complex qualitative metrics and generate constructive feedback.
 
-## Part A: Quality (85 pts)
-1. Parse (15): Email(-3), Phone(-2), Tables(-5), Boxes(-5), <150 words(-3), Encoding(-3), Symbols(-2), All-caps(-2), Buried Headers(-2).
-2. Contact (10): No email(-4), No phone(-3), No LinkedIn(-2), No Portfolio(-1), Unpro-domain(-1), No country code(-1).
-3. Sections (15): Missing Edu(-3), Exp(-3), Skills(-3), Proj(-3). Hobbies(-1), References(-1), Objective(-1), Uncategorized Skills(-1).
-4. Dates (5): No Year(-5), No Month(-2), Inconsistent(-2), Future dates(-2).
-5. Repetition (8): Word 4x used(-4), Generic verbs(-3).
-6. Impact (12): <3 nums(-6), 3-5 nums(-3), <30% quantified(-3), Vague(-2).
-7. Leadership (8): 0 verbs(-8), <3 verbs(-3). (Target: led, managed, spearheaded...)
-8. Drive (7): <4 action verbs(-4), Passive(-2 each). (Target: built, designed, optimized...)
-9. Comm (5): 0 verbs(-3), <2 found(-1). (Target: collaborated, presented...)
-10. Analytical (5): 0 verbs(-3), <2 found(-1). (Target: analyzed, tested...)
-11. Grammar (8): -2 per typo. Flag Pronouns(I/me/my), long sentences.
-12. Density (5): <300 words(-4), >800 student(-3), <5 bullets(-3).
-13. Format (4): Photo(-2), Multi-column(-2), Custom headers(-2).
-
-## Part B: JD Match (30 pts)
-1. Hard Skills (40% weight): Extract & Compare.
-2. Title (20%): Relevance to JD.
-3. Edu (15%): Match degree requirements.
-4. Soft Skills (15%): Infer from bullets.
-5. Density (10%): Methodologies (Agile, Scrum).
+## Task
+Read the JD and the Resume. Generate JSON evaluating the job title relevance, education match, and soft skills match. Then write the overall verdict, top strengths, critical gaps, and quick fixes.
 
 OUTPUT ONLY VALID JSON:
 {
-  "overall_score": 0,
-  "grade": "A",
-  "verdict": "One line summary",
-  "word_count": 0,
-  "bullet_point_count": 0,
-  "quantified_bullets_percent": 0,
-  "jd_overlap_percent": 0,
-  "over_optimized_warning": false,
-  "breakdown": {
-    "ats_parse_rate": { "score": 0, "comment": "Score out of 15" },
-    "contact_details": { "score": 0, "comment": "Score out of 10" },
-    "sections": { "score": 0, "comment": "Score out of 15" },
-    "dates": { "score": 0, "comment": "Score out of 5" },
-    "repetition": { "score": 0, "comment": "Score out of 8" },
-    "quantifying_impact": { "score": 0, "comment": "Score out of 12" },
-    "leadership_keywords": { "score": 0, "comment": "Score out of 8" },
-    "drive_action_verbs": { "score": 0, "comment": "Score out of 7" },
-    "communication_keywords": { "score": 0, "comment": "Score out of 5" },
-    "analytical_keywords": { "score": 0, "comment": "Score out of 5" },
-    "spelling_grammar": { "score": 0, "comment": "Score out of 8" },
-    "resume_density": { "score": 0, "comment": "Score out of 5" },
-    "formatting_flags": { "score": 0, "comment": "Score out of 4" },
-    "hard_skills_match": { "score": 0, "comment": "Score out of 12", "matched": [], "missing": [] },
-    "job_title_relevance": { "score": 0, "comment": "Score out of 6" },
-    "education_match": { "score": 0, "comment": "Score out of 4" },
-    "soft_skills_match": { "score": 0, "comment": "Score out of 4" },
-    "keyword_density": { "score": 0, "comment": "Score out of 4", "missing_domain_terms": [] }
-  },
-  "matched_keywords": [],
-  "missing_keywords": [],
-  "passive_language_detected": [],
-  "repeated_verbs": [],
-  "typos_found": [],
-  "bonus_skills": [],
-  "top_strengths": [],
-  "critical_gaps": [],
-  "quick_fixes": []
+  "job_title_relevance": { "score": 6, "comment": "Score out of 6" },
+  "education_match": { "score": 4, "comment": "Score out of 4" },
+  "soft_skills_match": { "score": 4, "comment": "Score out of 4" },
+  "bonus_skills": ["List any cool/bonus skills they have"],
+  "top_strengths": ["Strength 1", "Strength 2"],
+  "critical_gaps": ["Gap 1", "Gap 2"],
+  "quick_fixes": ["Fix 1", "Fix 2"],
+  "verdict": "One short summary sentence of their alignment"
 }
 `;
 
@@ -839,13 +793,51 @@ export function ATSCheckerClient({ userId }: { userId: string }) {
 
         if (!raw.trim()) throw new Error("Empty response from AI.");
 
-        const parsed = safeParseJSON<ATSResult>(raw);
+        // ── Merge Local Deterministic Analysis with LLM Analysis ──
+        const localMetrics = runDeterministicAnalysis(resumeText, jd);
         
-        // Normalize 114 points to 100 if LLM didn't already
-        // (Actually the template score is 114, so we expect raw to reflecting that)
-        // We'll trust the AI for now, but UI shows /max anyway.
+        const llmParsed = safeParseJSON<any>(raw);
+        
+        const totalRawScore = localMetrics.total_deterministic_score + 
+          (llmParsed?.job_title_relevance?.score ?? 0) + 
+          (llmParsed?.education_match?.score ?? 0) + 
+          (llmParsed?.soft_skills_match?.score ?? 0);
+          
+        const normalizedScore = Math.min(100, Math.round((totalRawScore / 137) * 100));
+        let computedGrade = "F";
+        if (normalizedScore >= 85) computedGrade = "A";
+        else if (normalizedScore >= 70) computedGrade = "B";
+        else if (normalizedScore >= 55) computedGrade = "C";
+        else if (normalizedScore >= 40) computedGrade = "D";
 
-        setResult(parsed);
+        const mergedResult: ATSResult = {
+          ...DEFAULT_RESULT,
+          overall_score: normalizedScore,
+          grade: computedGrade,
+          verdict: llmParsed?.verdict || "Analysis completed.",
+          word_count: localMetrics.word_count,
+          bullet_point_count: localMetrics.bullet_point_count,
+          quantified_bullets_percent: localMetrics.quantified_bullets_percent,
+          jd_overlap_percent: localMetrics.jd_overlap_percent,
+          over_optimized_warning: localMetrics.jd_overlap_percent > 85,
+          breakdown: {
+            ...localMetrics,
+            job_title_relevance: llmParsed?.job_title_relevance || { score: 0, comment: "Not evaluated" },
+            education_match: llmParsed?.education_match || { score: 0, comment: "Not evaluated" },
+            soft_skills_match: llmParsed?.soft_skills_match || { score: 0, comment: "Not evaluated" }
+          } as any,
+          matched_keywords: localMetrics.matched_keywords,
+          missing_keywords: localMetrics.missing_keywords,
+          passive_language_detected: localMetrics.passive_language_detected,
+          repeated_verbs: localMetrics.repeated_verbs,
+          typos_found: localMetrics.typos_found,
+          bonus_skills: llmParsed?.bonus_skills || [],
+          top_strengths: llmParsed?.top_strengths || ["Well-structured text blocks."],
+          critical_gaps: llmParsed?.critical_gaps || [],
+          quick_fixes: llmParsed?.quick_fixes || []
+        };
+
+        setResult(mergedResult);
 
         // ── Save to history ──
         const entry: HistoryEntry = {
@@ -853,9 +845,9 @@ export function ATSCheckerClient({ userId }: { userId: string }) {
           date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
           fileName: fileName || "Resume.pdf",
           jdSnippet: jd.trim().slice(0, 65) + (jd.trim().length > 65 ? "…" : ""),
-          score: parsed.overall_score,
-          grade: parsed.grade,
-          verdict: parsed.verdict,
+          score: mergedResult.overall_score,
+          grade: mergedResult.grade,
+          verdict: mergedResult.verdict,
         };
         const updated = [entry, ...history].slice(0, MAX_HISTORY);
         setHistory(updated);
