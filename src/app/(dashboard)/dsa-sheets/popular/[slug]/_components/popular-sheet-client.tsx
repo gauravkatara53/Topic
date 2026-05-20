@@ -7,7 +7,7 @@ import {
   ChevronLeft, ChevronDown, ChevronRight, CheckCircle2, Circle,
   Star, Share2, Search, Clock, Save, Palette, RotateCcw, FileText, Bookmark, ExternalLink, Target, Filter, ArrowUpDown, Settings, Loader2, X
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, safeFormatDate, normalizeDate, safeSplit } from "@/lib/utils";
 import {
   togglePopularSheetFollow,
   toggleQuestionCompletion,
@@ -576,13 +576,13 @@ export function PopularSheetClient({
                     const rev = localRevisions[revisionModalOpen.id];
                     if (!rev?.lastRevised) return "";
                     const d = new Date(rev.lastRevised);
-                    return isNaN(d.getTime()) ? "" : d.toISOString().split('T')[0];
+                    return safeFormatDate(d, 'yyyy-MM-dd', "");
                   })()}
                   nextRevision={(() => {
                     const rev = localRevisions[revisionModalOpen.id];
                     if (!rev?.nextRevision) return "";
                     const d = new Date(rev.nextRevision);
-                    return isNaN(d.getTime()) ? "" : d.toISOString().split('T')[0];
+                    return safeFormatDate(d, 'yyyy-MM-dd', "");
                   })()}
                   onChange={(field, val) => handleRevisionChange(revisionModalOpen.id, field, val)}
                />

@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import { X, ChevronRight, ExternalLink, FileText, CheckCircle2, Circle, Save, BookOpen, Tags, Star, Clock, Layout, MessageSquare, History } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, normalizeDate } from "@/lib/utils";
 import { toast } from "sonner";
 import { updateQuestionNote } from "@/actions/dsa-sheets";
 import { RevisionPicker } from "./revision-picker";
 import { RevisionTimeline, type RevisionHistoryEntry } from "./revision-timeline";
-import { format, parseISO, isValid } from "date-fns";
+import { format } from "date-fns";
 
 interface QuestionDrawerProps {
   isOpen: boolean;
@@ -86,10 +86,10 @@ export function QuestionDrawer({
     }
   };
 
-  const formatDate = (dateStr: string) => {
-    if (!dateStr) return "Not scheduled";
-    const date = parseISO(dateStr);
-    return isValid(date) ? format(date, "MMM dd, yyyy") : "Not scheduled";
+  const formatDate = (value: unknown) => {
+    const date = normalizeDate(value);
+    if (!date) return "Not scheduled";
+    return format(date, "MMM dd, yyyy");
   };
 
   return (

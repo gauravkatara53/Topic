@@ -13,8 +13,8 @@ import {
   Zap,
   RotateCcw,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { formatDistanceToNow, format, isAfter, isBefore, parseISO, differenceInDays } from "date-fns";
+import { cn, normalizeDate } from "@/lib/utils";
+import { formatDistanceToNow, format, isAfter, isBefore, differenceInDays } from "date-fns";
 
 export interface RevisionHistoryEntry {
   id: string;
@@ -30,10 +30,12 @@ export interface RevisionHistoryEntry {
 
 interface RevisionTimelineProps {
   history: RevisionHistoryEntry[];
-  nextRevision?: string;
-  lastRevised?: string;
+  nextRevision?: string | Date;
+  lastRevised?: string | Date;
   isLoading?: boolean;
 }
+
+// ── Utilities ─────────────────────────────────────────────
 
 // ── Summary Cards ─────────────────────────────────────────
 
@@ -44,12 +46,13 @@ function SummaryCards({
   revisionStreak,
 }: {
   totalRevisions: number;
-  lastRevisedDate: string | null;
-  nextScheduledDate: string | null;
+  lastRevisedDate: unknown;
+  nextScheduledDate: unknown;
   revisionStreak: number;
 }) {
   const now = new Date();
-  const nextDate = nextScheduledDate ? new Date(nextScheduledDate) : null;
+  const nextDate = normalizeDate(nextScheduledDate);
+  const lastRevDate = normalizeDate(lastRevisedDate);
   const isOverdue = nextDate ? isBefore(nextDate, now) : false;
 
   return (
@@ -80,8 +83,8 @@ function SummaryCards({
           </span>
         </div>
         <span className="text-sm font-bold text-emerald-700 dark:text-emerald-300 leading-tight">
-          {lastRevisedDate
-            ? formatDistanceToNow(new Date(lastRevisedDate), { addSuffix: true })
+          {lastRevDate
+            ? formatDistanceToNow(lastRevDate, { addSuffix: true })
             : "Never"}
         </span>
       </div>
@@ -173,10 +176,8 @@ function TimelineEntry({
   isFirstSolve: boolean;
 }) {
   const now = new Date();
-  const revisedDate = new Date(entry.revisedAt);
-  const nextDate = entry.nextRevisionDate
-    ? new Date(entry.nextRevisionDate)
-    : null;
+  const revisedDate = normalizeDate(entry.revisedAt) || new Date();
+  const nextDate = normalizeDate(entry.nextRevisionDate);
 
   // Determine status badge
   const getStatusInfo = () => {
@@ -372,10 +373,11 @@ export function RevisionTimeline({
   if (!history || history.length === 0) return <EmptyTimeline />;
 
   // Sort by revisedAt descending (most recent first)
-  const sorted = [...history].sort(
-    (a, b) =>
-      new Date(b.revisedAt).getTime() - new Date(a.revisedAt).getTime()
-  );
+  const sorted = [...history].sort((a, b) => {
+    const aTime = normalizeDate(a.revisedAt)?.getTime() || 0;
+    const bTime = normalizeDate(b.revisedAt)?.getTime() || 0;
+    return bTime - aTime;
+  });
 
   const displayItems = isExpanded
     ? sorted
@@ -384,7 +386,7 @@ export function RevisionTimeline({
   // Calculate summary stats
   const totalRevisions = history.length;
   const lastRevisedDate =
-    lastRevised || (sorted[0] ? String(sorted[0].revisedAt) : null);
+    lastRevised || (sorted[0] ? sorted[0].revisedAt : null);
 
   // Calculate revision streak (consecutive on-time completions)
   const onTimeRevisions = [...sorted]
@@ -393,12 +395,14 @@ export function RevisionTimeline({
       if (idx === 0) return 1;
       // A revision is "on-time" if it was completed before/on the previousNextDate
       if (entry.previousNextDate) {
-        const prevNext = new Date(entry.previousNextDate);
-        const revised = new Date(entry.revisedAt);
-        if (revised <= prevNext || differenceInDays(revised, prevNext) <= 1) {
-          return streak + 1;
+        const prevNext = normalizeDate(entry.previousNextDate);
+        const revised = normalizeDate(entry.revisedAt);
+        if (prevNext && revised) {
+          if (revised <= prevNext || differenceInDays(revised, prevNext) <= 1) {
+            return streak + 1;
+          }
+          return 0; // streak broken
         }
-        return 0; // streak broken
       }
       return streak;
     }, 0);

@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { format, addDays, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isToday, startOfDay, parseISO } from "date-fns";
+import { format, addDays, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isToday, startOfDay } from "date-fns";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Zap } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, normalizeDate } from "@/lib/utils";
 
 interface RevisionPickerProps {
-  lastRevised: string;
-  nextRevision: string;
+  lastRevised: unknown;
+  nextRevision: unknown;
   onChange: (field: 'lastRevised' | 'nextRevision', value: string) => void;
 }
 
@@ -18,13 +18,22 @@ export function RevisionPicker({ lastRevised, nextRevision, onChange }: Revision
   
   // Default nextRevision to +3 days if empty and lastRevised exists
   useEffect(() => {
-    if (lastRevised && !nextRevision) {
-      onChange('nextRevision', format(addDays(parseISO(lastRevised), 3), 'yyyy-MM-dd'));
+    const parsedLast = normalizeDate(lastRevised);
+    const parsedNext = normalizeDate(nextRevision);
+    if (parsedLast && !parsedNext) {
+      onChange('nextRevision', format(addDays(parsedLast, 3), 'yyyy-MM-dd'));
     }
   }, [lastRevised, nextRevision, onChange]);
 
-  const lastDate = useMemo(() => lastRevised ? startOfDay(parseISO(lastRevised)) : startOfDay(new Date()), [lastRevised]);
-  const nextDate = useMemo(() => nextRevision ? startOfDay(parseISO(nextRevision)) : null, [nextRevision]);
+  const lastDate = useMemo(() => {
+    const parsed = normalizeDate(lastRevised);
+    return parsed ? startOfDay(parsed) : startOfDay(new Date());
+  }, [lastRevised]);
+
+  const nextDate = useMemo(() => {
+    const parsed = normalizeDate(nextRevision);
+    return parsed ? startOfDay(parsed) : null;
+  }, [nextRevision]);
 
   const days = useMemo(() => {
     const start = startOfMonth(currentMonth);
@@ -58,8 +67,8 @@ export function RevisionPicker({ lastRevised, nextRevision, onChange }: Revision
     }
   };
 
-  const isLastInMonth = lastRevised && format(lastDate, 'MMM yyyy') === format(currentMonth, 'MMM yyyy');
-  const isNextInMonth = nextRevision && nextDate && format(nextDate, 'MMM yyyy') === format(currentMonth, 'MMM yyyy');
+  const isLastInMonth = !!lastRevised && format(lastDate, 'MMM yyyy') === format(currentMonth, 'MMM yyyy');
+  const isNextInMonth = !!nextRevision && nextDate && format(nextDate, 'MMM yyyy') === format(currentMonth, 'MMM yyyy');
 
   return (
     <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm">

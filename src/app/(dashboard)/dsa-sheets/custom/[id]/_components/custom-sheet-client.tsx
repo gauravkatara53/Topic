@@ -7,7 +7,7 @@ import {
   Star, Share2, Search, Clock, Save, Palette, RotateCcw,
   Plus, FileSpreadsheet, Trash2, LayoutGrid, Bookmark, Edit3, X
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, safeFormatDate, normalizeDate, safeSplit } from "@/lib/utils";
 import {
   DIFFICULTY_COLOR,
   HIGHLIGHT_THEMES,
@@ -580,13 +580,13 @@ export function CustomSheetClient({
                     const rev = localRevisions[revisionModalOpen.id];
                     if (!rev?.lastRevised) return "";
                     const d = new Date(rev.lastRevised);
-                    return isNaN(d.getTime()) ? "" : d.toISOString().split('T')[0];
+                    return safeFormatDate(d, 'yyyy-MM-dd', "");
                   })()}
                   nextRevision={(() => {
                     const rev = localRevisions[revisionModalOpen.id];
                     if (!rev?.nextRevision) return "";
                     const d = new Date(rev.nextRevision);
-                    return isNaN(d.getTime()) ? "" : d.toISOString().split('T')[0];
+                    return safeFormatDate(d, 'yyyy-MM-dd', "");
                   })()}
                   onChange={(field, val) => handleRevisionChange(revisionModalOpen.id, field, val)}
                />

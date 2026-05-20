@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Palette, ChevronLeft, ChevronDown, ChevronRight, CheckCircle2, Circle, Star, ExternalLink, Share2, Target, Bookmark, RotateCcw, FileText, Search, Filter, ArrowUpDown, Clock, Save } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, safeSplit, safeFormatDate, normalizeDate } from "@/lib/utils";
 import { toggleFollowSheet, updateQuestionRevision, toggleQuestionCompletion, toggleQuestionStar, updateQuestionHighlight, updateQuestionNote, getRevisionHistory } from "@/actions/dsa-sheets";
 import { toast } from "sonner";
 import { QuestionDrawer } from "../../_components/question-drawer";
@@ -146,7 +146,7 @@ export function CompanySheetClient({
           difficulty: q.difficulty || "Medium",
           acceptance: q.acceptance ? `${q.acceptance}%` : "N/A",
           frequency: q.frequency ? `${q.frequency}%` : "N/A",
-          topics: q.tags ? String(q.tags).split(',').map((t: string) => t.trim()) : [],
+          topics: q.tags ? safeSplit(q.tags).map((t: string) => t.trim()) : [],
           timeframe: extractTimeframe(q.companies_with_timeframe, companyId)
         }))
       }
@@ -224,8 +224,8 @@ export function CompanySheetClient({
     const acc: Record<string, any> = {};
     (dbRevisions || []).forEach(rev => {
       acc[rev.questionId] = {
-        lastRevised: rev.lastRevised ? new Date(rev.lastRevised).toISOString().split('T')[0] : "",
-        nextRevision: rev.nextRevision ? new Date(rev.nextRevision).toISOString().split('T')[0] : ""
+        lastRevised: safeFormatDate(rev.lastRevised, 'yyyy-MM-dd', ""),
+        nextRevision: safeFormatDate(rev.nextRevision, 'yyyy-MM-dd', "")
       };
     });
     return acc;
@@ -556,7 +556,7 @@ export function CompanySheetClient({
                 data-state={isExpanded ? "open" : "closed"}
               >
                 <div className="flex items-end gap-3 px-2">
-                  <h2 className="text-[15px] font-bold text-slate-800 dark:text-white">{cat.title.split('/')[0].trim()}</h2>
+                  <h2 className="text-[15px] font-bold text-slate-800 dark:text-white">{safeSplit(cat.title, '/')[0]?.trim()}</h2>
                   <span className="text-[13px] font-bold text-slate-600 dark:text-slate-400 leading-none translate-y-[-2px]">
                     {catCompleted} / {cat.questions.length}
                   </span>
@@ -725,13 +725,13 @@ export function CompanySheetClient({
                     const rev = localRevisions[revisionModalOpen.id];
                     if (!rev?.lastRevised) return "";
                     const d = new Date(rev.lastRevised);
-                    return isNaN(d.getTime()) ? "" : d.toISOString().split('T')[0];
+                    return safeFormatDate(d, 'yyyy-MM-dd', "");
                   })()}
                   nextRevision={(() => {
                     const rev = localRevisions[revisionModalOpen.id];
                     if (!rev?.nextRevision) return "";
                     const d = new Date(rev.nextRevision);
-                    return isNaN(d.getTime()) ? "" : d.toISOString().split('T')[0];
+                    return safeFormatDate(d, 'yyyy-MM-dd', "");
                   })()}
                   onChange={(field, val) => handleRevisionChange(revisionModalOpen.id, field, val)}
                />

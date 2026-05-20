@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Search, Map, Database, LayoutTemplate, BriefcaseBusiness, ListTodo, CheckCircle2, Sparkles, Clock, CalendarDays, Circle, FileText, Save, Palette, ChevronDown, ChevronRight, Users, ArrowRight, Star, Plus } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, safeSplit, safeFormatDate, normalizeDate } from "@/lib/utils";
 import { toggleQuestionCompletion, updateQuestionRevision, updateRevisionStatus, updateFollowedSheetTheme, toggleQuestionStar, updateQuestionHighlight, togglePopularSheetFollow, updateQuestionNote, getRevisionHistory } from "@/actions/dsa-sheets";
 import { toast } from "sonner";
 import { createCustomSheet } from "@/actions/custom-sheets";
@@ -562,8 +562,8 @@ export function DSASheetsClient({
     const acc: Record<string, any> = {};
     (revisionsData || []).forEach(rev => {
       acc[rev.questionId] = {
-        lastRevised: rev.lastRevised ? new Date(rev.lastRevised).toISOString().split('T')[0] : "",
-        nextRevision: rev.nextRevision ? new Date(rev.nextRevision).toISOString().split('T')[0] : "",
+        lastRevised: safeFormatDate(rev.lastRevised, 'yyyy-MM-dd', ""),
+        nextRevision: safeFormatDate(rev.nextRevision, 'yyyy-MM-dd', ""),
         status: rev.status || 'Pending'
       };
     });
@@ -946,7 +946,7 @@ export function DSASheetsClient({
                           ) : list.map((rev, idx) => {
                             const q = rev.question;
                             const dateObj = new Date(rev.nextRevision);
-                            const assignedCompany = q.companies?.split(',')[0]?.trim() || 'google';
+                            const assignedCompany = safeSplit(q.companies)[0]?.trim() || 'google';
 
                             return (
                               <div
@@ -1208,7 +1208,7 @@ export function DSASheetsClient({
                     <div className="divide-y divide-slate-100 dark:divide-slate-700">
                       {starredData.map((star, idx) => {
                         const q = star.question;
-                        const assignedCompany = star.companyId || q.companies?.split(',')[0]?.trim() || 'google';
+                        const assignedCompany = star.companyId || safeSplit(q.companies)[0]?.trim() || 'google';
 
                         return (
                           <div
@@ -1421,12 +1421,12 @@ export function DSASheetsClient({
         onSaveNote={handleSaveNote}
         onToggleCompletion={() => {
           if (!selectedQuestion) return;
-          const assignedCompany = selectedQuestion.data.companies?.split(',')[0]?.trim() || 'google';
+          const assignedCompany = safeSplit(selectedQuestion.data.companies)[0]?.trim() || 'google';
           toggleCompletion(selectedQuestion.data, assignedCompany);
         }}
         onToggleStar={() => {
           if (!selectedQuestion) return;
-          const assignedCompany = selectedQuestion.data.companies?.split(',')[0]?.trim() || 'google';
+          const assignedCompany = safeSplit(selectedQuestion.data.companies)[0]?.trim() || 'google';
           toggleStar(selectedQuestion.id, assignedCompany);
         }}
         lastRevised={selectedQuestion ? (localRevisions[selectedQuestion.id]?.lastRevised || "") : ""}
