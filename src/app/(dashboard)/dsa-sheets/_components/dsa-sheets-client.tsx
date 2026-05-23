@@ -1117,41 +1117,41 @@ export function DSASheetsClient({
                         
                         {/* Horizontal timeline cards */}
                         <div className="flex items-center gap-2.5 overflow-x-auto pb-2 scrollbar-thin select-none">
-                          {calendarDays.map((day, idx) => {
-                            const isSelected = selectedRevisionDate === day.dateStr;
-                            return (
-                              <button
-                                key={idx}
-                                onClick={() => {
-                                  if (isSelected) setSelectedRevisionDate(null);
-                                  else setSelectedRevisionDate(day.dateStr);
-                                }}
-                                className={cn(
-                                  "w-[66px] h-[88px] rounded-xl flex flex-col items-center justify-between py-2.5 border select-none transition-all cursor-pointer shrink-0",
-                                  isSelected
-                                    ? "bg-gradient-to-br from-[#2dd4bf] to-[#12b39d] text-white shadow-lg border-transparent scale-105"
-                                    : "bg-slate-50 dark:bg-slate-900 border-slate-100/50 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-200 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
-                                )}
-                              >
-                                <span className="text-[8.5px] uppercase font-bold tracking-wider opacity-70">
-                                  {day.dayName}
-                                </span>
-                                <span className="text-[19px] font-black leading-none">
-                                  {day.dayNum}
-                                </span>
-                                <span className={cn(
-                                  "text-[8.5px] font-black px-1.5 py-0.5 rounded-full scale-90",
-                                  day.count > 0
-                                    ? isSelected
-                                      ? "bg-white text-teal-600 shadow-sm"
-                                      : "bg-[#2dd4bf] text-white shadow-[0_0_8px_rgba(45,212,191,0.3)]"
-                                    : "text-slate-400 dark:text-slate-500 font-normal"
-                                )}>
-                                  {day.count}
-                                </span>
-                              </button>
-                            );
-                          })}
+                           {calendarDays.map((day, idx) => {
+                             const isSelected = selectedRevisionDate === day.dateStr;
+                             return (
+                               <button
+                                 key={idx}
+                                 onClick={() => {
+                                   if (isSelected) setSelectedRevisionDate(null);
+                                   else setSelectedRevisionDate(day.dateStr);
+                                 }}
+                                 className={cn(
+                                   "w-[70px] h-[96px] rounded-xl flex flex-col items-center justify-between py-3 border select-none transition-all cursor-pointer shrink-0",
+                                   isSelected
+                                     ? "bg-gradient-to-br from-[#2dd4bf] to-[#12b39d] text-white shadow-lg border-transparent scale-105 animate-in zoom-in-95 duration-150"
+                                     : "bg-slate-50 dark:bg-slate-900 border-slate-100/50 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-200 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
+                                 )}
+                               >
+                                 <span className="text-[9px] uppercase font-extrabold tracking-widest text-slate-400 dark:text-slate-500">
+                                   {day.dayName}
+                                 </span>
+                                 <span className="text-[22px] font-black leading-none my-1">
+                                   {day.dayNum}
+                                 </span>
+                                 <span className={cn(
+                                   "w-[22px] h-[22px] rounded-full flex items-center justify-center text-[10px] sm:text-[11px] font-black leading-none",
+                                   day.count > 0
+                                     ? isSelected
+                                       ? "bg-white text-teal-600 shadow-sm"
+                                       : "bg-[#2dd4bf] text-[#0b0f19] shadow-[0_0_10px_rgba(45,212,191,0.35)]"
+                                     : "bg-slate-100 dark:bg-slate-950 text-slate-400 dark:text-slate-600 border border-slate-200/40 dark:border-slate-800/80"
+                                 )}>
+                                   {day.count}
+                                 </span>
+                               </button>
+                             );
+                           })}
                         </div>
                       </div>
 
