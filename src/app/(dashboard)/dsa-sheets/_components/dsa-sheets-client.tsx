@@ -430,6 +430,7 @@ export function DSASheetsClient({
   // Lazy-load revision history when a question is selected
   const [revisionHistory, setRevisionHistory] = useState<any[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [selectedRevisionDate, setSelectedRevisionDate] = useState<string | null>(null);
 
   useEffect(() => {
     if (!selectedQuestion) {
@@ -925,6 +926,52 @@ export function DSASheetsClient({
                   const todayStr = new Date().toDateString();
                   const tomorrowStr = new Date(Date.now() + 86400000).toDateString();
 
+                  // Calendar Timeline Logic
+                  const today = new Date();
+                  const counts: Record<string, number> = {};
+                  (revisionsData || []).forEach((rev: any) => {
+                    if (!rev.nextRevision) return;
+                    const dateStr = new Date(rev.nextRevision).toISOString().split("T")[0];
+                    counts[dateStr] = (counts[dateStr] || 0) + 1;
+                  });
+
+                  // Dynamically determine range: from today up to the maximum nextRevision date
+                  let maxDays = 180; // Default minimum of 180 days (6 months) to allow full 6-month scroll
+                  const todayMidnight = new Date(today);
+                  todayMidnight.setHours(0, 0, 0, 0);
+
+                  (revisionsData || []).forEach((rev: any) => {
+                    if (!rev.nextRevision) return;
+                    const revDate = new Date(rev.nextRevision);
+                    const diffTime = revDate.getTime() - todayMidnight.getTime();
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    if (diffDays > maxDays && diffDays <= 240) { // Cap at 8 months for safety
+                      maxDays = diffDays;
+                    }
+                  });
+
+                  // Add a small buffer of 3 days so the calendar doesn't end abruptly
+                  const totalDaysToRender = Math.min(maxDays + 3, 240);
+
+                  const calendarDays = [];
+                  for (let i = 0; i < totalDaysToRender; i++) {
+                    const d = new Date(today);
+                    d.setDate(today.getDate() + i);
+                    const dateStr = d.toISOString().split("T")[0];
+                    calendarDays.push({
+                      date: d,
+                      dateStr,
+                      dayName: d.toLocaleDateString("en-US", { weekday: "short" }),
+                      dayNum: d.getDate(),
+                      monthName: d.toLocaleDateString("en-US", { month: "short" }),
+                      count: counts[dateStr] || 0,
+                    });
+                  }
+
+                  const filteredRevisions = selectedRevisionDate
+                    ? sortedRevisions.filter(r => new Date(r.nextRevision).toISOString().split("T")[0] === selectedRevisionDate)
+                    : sortedRevisions;
+
                   const dueToday = sortedRevisions.filter(r => new Date(r.nextRevision).toDateString() === todayStr);
                   const dueTomorrow = sortedRevisions.filter(r => new Date(r.nextRevision).toDateString() === tomorrowStr);
                   const upcoming = sortedRevisions.filter(r => new Date(r.nextRevision) > new Date(tomorrowStr) && new Date(r.nextRevision).toDateString() !== tomorrowStr);
@@ -1048,11 +1095,85 @@ export function DSASheetsClient({
                   };
 
                   return (
-                    <>
-                      {renderList("Due Today", <CalendarDays className="w-5 h-5 text-rose-500" />, dueToday, true, "No questions marked for today")}
-                      {renderList("Due Tomorrow", <CalendarDays className="w-5 h-5 text-amber-500" />, dueTomorrow, false, "No questions marked for tomorrow")}
-                      {renderList("Upcoming", <CalendarDays className="w-5 h-5 text-indigo-500" />, upcoming, false, "No upcoming revisions scheduled")}
-                    </>
+                    <div className="flex flex-col gap-6">
+                      {/* Revision Calendarstrip */}
+                      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm space-y-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <CalendarDays className="w-4 h-4 text-[#2dd4bf]" />
+                            <h3 className="text-xs font-extrabold text-slate-800 dark:text-white uppercase tracking-wider">
+                              Revision Schedule Overview
+                            </h3>
+                          </div>
+                          {selectedRevisionDate && (
+                            <button
+                              onClick={() => setSelectedRevisionDate(null)}
+                              className="text-[10px] font-black text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 flex items-center gap-1 bg-slate-100 dark:bg-slate-900 px-3 py-1 rounded-lg border border-slate-200/50 dark:border-slate-800 transition-all cursor-pointer select-none animate-in fade-in duration-200"
+                            >
+                              Show All Revisions
+                            </button>
+                          )}
+                        </div>
+                        
+                        {/* Horizontal timeline cards */}
+                        <div className="flex items-center gap-2.5 overflow-x-auto pb-2 scrollbar-thin select-none">
+                          {calendarDays.map((day, idx) => {
+                            const isSelected = selectedRevisionDate === day.dateStr;
+                            return (
+                              <button
+                                key={idx}
+                                onClick={() => {
+                                  if (isSelected) setSelectedRevisionDate(null);
+                                  else setSelectedRevisionDate(day.dateStr);
+                                }}
+                                className={cn(
+                                  "w-[66px] h-[88px] rounded-xl flex flex-col items-center justify-between py-2.5 border select-none transition-all cursor-pointer shrink-0",
+                                  isSelected
+                                    ? "bg-gradient-to-br from-[#2dd4bf] to-[#12b39d] text-white shadow-lg border-transparent scale-105"
+                                    : "bg-slate-50 dark:bg-slate-900 border-slate-100/50 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-200 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
+                                )}
+                              >
+                                <span className="text-[8.5px] uppercase font-bold tracking-wider opacity-70">
+                                  {day.dayName}
+                                </span>
+                                <span className="text-[19px] font-black leading-none">
+                                  {day.dayNum}
+                                </span>
+                                <span className={cn(
+                                  "text-[8.5px] font-black px-1.5 py-0.5 rounded-full scale-90",
+                                  day.count > 0
+                                    ? isSelected
+                                      ? "bg-white text-teal-600 shadow-sm"
+                                      : "bg-[#2dd4bf] text-white shadow-[0_0_8px_rgba(45,212,191,0.3)]"
+                                    : "text-slate-400 dark:text-slate-500 font-normal"
+                                )}>
+                                  {day.count}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Filter lists */}
+                      {selectedRevisionDate ? (
+                        <div className="space-y-4">
+                          {renderList(
+                            `Revisions due on ${new Date(selectedRevisionDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`,
+                            <CalendarDays className="w-5 h-5 text-[#2dd4bf]" />,
+                            filteredRevisions,
+                            new Date(selectedRevisionDate).toDateString() === todayStr,
+                            "No questions marked for revision on this date"
+                          )}
+                        </div>
+                      ) : (
+                        <>
+                          {renderList("Due Today", <CalendarDays className="w-5 h-5 text-rose-500" />, dueToday, true, "No questions marked for today")}
+                          {renderList("Due Tomorrow", <CalendarDays className="w-5 h-5 text-amber-500" />, dueTomorrow, false, "No questions marked for tomorrow")}
+                          {renderList("Upcoming", <CalendarDays className="w-5 h-5 text-indigo-500" />, upcoming, false, "No upcoming revisions scheduled")}
+                        </>
+                      )}
+                    </div>
                   );
                 })()}
               </div>

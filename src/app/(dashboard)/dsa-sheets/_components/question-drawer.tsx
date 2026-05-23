@@ -4,10 +4,11 @@ import React, { useState, useEffect } from "react";
 import { X, ChevronRight, ExternalLink, FileText, CheckCircle2, Circle, Save, BookOpen, Tags, Star, Clock, Layout, MessageSquare, History } from "lucide-react";
 import { cn, normalizeDate } from "@/lib/utils";
 import { toast } from "sonner";
-import { updateQuestionNote } from "@/actions/dsa-sheets";
+import { updateQuestionNote, getRevisionsForDate } from "@/actions/dsa-sheets";
 import { RevisionPicker } from "./revision-picker";
 import { RevisionTimeline, type RevisionHistoryEntry } from "./revision-timeline";
 import { format } from "date-fns";
+import { DevWorkspaceEditor } from "./dev-workspace-editor";
 
 interface QuestionDrawerProps {
   isOpen: boolean;
@@ -53,10 +54,32 @@ export function QuestionDrawer({
   const [isSaving, setIsSaving] = useState(false);
   const [isRevisionPickerOpen, setIsRevisionPickerOpen] = useState(false);
   const [isSavingRevision, setIsSavingRevision] = useState(false);
+  const [sameDayRevisions, setSameDayRevisions] = useState<any[]>([]);
+  const [isLoadingRevisions, setIsLoadingRevisions] = useState(false);
+  const [showSameDayRevisions, setShowSameDayRevisions] = useState(false);
 
   useEffect(() => {
     setLocalNote(initialNotes);
   }, [initialNotes, question?.id]);
+
+  useEffect(() => {
+    if (!nextRevision) {
+      setSameDayRevisions([]);
+      return;
+    }
+    const fetchRevisions = async () => {
+      setIsLoadingRevisions(true);
+      try {
+        const data = await getRevisionsForDate(nextRevision);
+        setSameDayRevisions(data);
+      } catch (err) {
+        console.error("Failed to fetch revisions for date:", err);
+      } finally {
+        setIsLoadingRevisions(false);
+      }
+    };
+    fetchRevisions();
+  }, [nextRevision]);
 
   if (!question) return null;
 
@@ -133,13 +156,15 @@ export function QuestionDrawer({
             >
               <Star className={cn("w-5 h-5", isStarred && "fill-amber-500 dark:fill-amber-400")} />
             </button>
-            <button 
-              onClick={handleSave}
-              disabled={isSaving}
-              className="px-5 py-2 bg-[#2dd4bf] hover:bg-[#25bca8] text-white text-sm font-semibold rounded-lg transition-all shadow-sm disabled:opacity-50 flex items-center gap-2"
-            >
-              {isSaving ? "Saving..." : <><Save className="w-4 h-4" /> Save</>}
-            </button>
+            {activeTab !== "notes" && (
+              <button 
+                onClick={handleSave}
+                disabled={isSaving}
+                className="px-5 py-2 bg-[#2dd4bf] hover:bg-[#25bca8] text-white text-sm font-semibold rounded-lg transition-all shadow-sm disabled:opacity-50 flex items-center gap-2"
+              >
+                {isSaving ? "Saving..." : <><Save className="w-4 h-4" /> Save</>}
+              </button>
+            )}
           </div>
         </div>
 
@@ -325,6 +350,55 @@ export function QuestionDrawer({
                     </div>
                   </div>
 
+                  {nextRevision && (
+                    <div className="pt-4 border-t border-slate-100 dark:border-slate-800/60 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <BookOpen className="w-3.5 h-3.5 text-[#2dd4bf]" />
+                          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                            Revisions on this date
+                          </span>
+                        </div>
+                        {isLoadingRevisions ? (
+                          <div className="w-3 h-3 rounded-full border border-t-transparent border-[#2dd4bf] animate-spin" />
+                        ) : (
+                          <button
+                            onClick={() => setShowSameDayRevisions(!showSameDayRevisions)}
+                            className="text-[10px] font-bold text-[#2dd4bf] hover:text-[#25bca8] transition-colors uppercase tracking-tight flex items-center gap-1 cursor-pointer select-none"
+                          >
+                            {sameDayRevisions.length} {sameDayRevisions.length === 1 ? "question" : "questions"}{" "}
+                            {sameDayRevisions.length > 0 && (
+                              <span className="text-[9px] font-semibold text-slate-400">({showSameDayRevisions ? "Hide" : "Show All"})</span>
+                            )}
+                          </button>
+                        )}
+                      </div>
+                      
+                      {showSameDayRevisions && sameDayRevisions.length > 0 && (
+                        <div className="max-h-[160px] overflow-y-auto custom-scrollbar border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 rounded-lg p-3 space-y-2 animate-in fade-in duration-200">
+                          {sameDayRevisions.map((rev, idx) => (
+                            <div key={rev.id || idx} className="flex items-center justify-between text-xs py-1.5 first:pt-0 last:pb-0 border-b last:border-0 border-slate-100/50 dark:border-slate-800/50">
+                              <span className={cn(
+                                "font-medium text-slate-700 dark:text-slate-300 truncate pr-2 max-w-[280px]",
+                                rev.questionId === question.id && "text-[#2dd4bf] font-bold"
+                              )}>
+                                {rev.question?.title || rev.question?.name || "Untitled Question"}
+                              </span>
+                              <span className={cn(
+                                "text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-md scale-90 origin-right",
+                                rev.question?.difficulty === "Easy" ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" :
+                                rev.question?.difficulty === "Medium" ? "bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400" :
+                                "bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400"
+                              )}>
+                                {rev.question?.difficulty || "Medium"}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {isRevisionPickerOpen && onUpdateRevision && (
                     <div className="pt-4 border-t border-slate-50 dark:border-slate-700/50 animate-in fade-in slide-in-from-top-2 duration-300">
                       <RevisionPicker 
@@ -382,28 +456,12 @@ export function QuestionDrawer({
               />
             </div>
           ) : (
-            <div className="h-full flex flex-col space-y-6 animate-in fade-in slide-in-from-right-2 duration-300">
-                <div className="flex-1 flex flex-col bg-slate-50/50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 rounded-xl overflow-hidden focus-within:border-[#2dd4bf]/30 transition-all">
-                  <textarea 
-                    value={localNote}
-                    onChange={(e) => setLocalNote(e.target.value)}
-                    placeholder="Capture your thoughts or optimized approaches here..."
-                    className="w-full flex-1 p-6 bg-transparent text-sm font-medium text-slate-600 dark:text-slate-300 outline-none resize-none leading-relaxed placeholder:text-slate-400 dark:placeholder:text-slate-500 min-h-[450px]"
-                  />
-                  <div className="p-3 bg-white/50 dark:bg-slate-800/50 border-t border-slate-100/50 dark:border-slate-700/50 flex justify-end">
-                    <span className="text-[10px] font-semibold text-slate-300 dark:text-slate-500 uppercase tracking-widest">{localNote.length} characters</span>
-                  </div>
-                </div>
-              <div className="mt-auto pt-4 flex items-center justify-between">
-                <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500 italic">Your notes are private and encrypted.</p>
-                <button 
-                  onClick={handleSave}
-                  disabled={isSaving}
-                  className="px-8 py-2.5 bg-[#1b254b] hover:bg-[#111836] dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white text-sm font-semibold rounded-lg transition-all shadow-lg shadow-[#1b254b]/10 flex items-center gap-2"
-                >
-                  <Save className="w-4 h-4" /> Save solution
-                </button>
-              </div>
+            <div className="h-full flex flex-col space-y-4 animate-in fade-in slide-in-from-right-2 duration-300">
+              <DevWorkspaceEditor
+                initialNotes={initialNotes}
+                onSaveNote={onSaveNote}
+                questionId={question.id}
+              />
             </div>
           )}
         </div>

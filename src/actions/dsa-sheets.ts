@@ -3,6 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { hydrateQuestions } from "@/lib/dsa-questions";
 
 export async function toggleFollowSheet(companyId: string, isFollowing: boolean) {
   const { userId } = await auth();
@@ -318,4 +319,44 @@ export async function updateQuestionNote(questionId: string, content: string) {
   });
 
   return { success: true };
+}
+
+export async function getRevisionsForDate(dateString: string) {
+  const { userId } = await auth();
+  if (!userId) throw new Error("Unauthorized");
+
+  const targetDate = new Date(dateString);
+  if (isNaN(targetDate.getTime())) return [];
+
+  const startOfDay = new Date(targetDate);
+  startOfDay.setHours(0, 0, 0, 0);
+
+  const endOfDay = new Date(targetDate);
+  endOfDay.setHours(23, 59, 59, 999);
+
+  const revisions = await (prisma as any).userQuestionRevision.findMany({
+    where: {
+      userId,
+      nextRevision: {
+        gte: startOfDay,
+        lte: endOfDay
+      }
+    }
+  });
+
+  if (revisions.length === 0) return [];
+
+  const qIds = revisions.map((r: any) => r.questionId);
+  const questionMap = await hydrateQuestions(qIds);
+
+  return revisions.map((r: any) => {
+    const matchingQ = questionMap.get(r.questionId);
+    return {
+      id: r.id,
+      questionId: r.questionId,
+      status: r.status,
+      nextRevision: r.nextRevision,
+      question: matchingQ || { title: "Unknown Question", difficulty: "Medium", id: r.questionId }
+    };
+  }).filter((r: any) => r.question);
 }

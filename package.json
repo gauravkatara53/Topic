@@ -13,6 +13,7 @@
     "@aws-sdk/client-s3": "^3.1010.0",
     "@clerk/nextjs": "^6.39.0",
     "@fontsource/inter": "^5.2.8",
+    "@monaco-editor/react": "^4.7.0",
     "@opennextjs/cloudflare": "^1.17.1",
     "@prisma/client": "^5.22.0",
     "@sparticuz/chromium-min": "^143.0.4",
