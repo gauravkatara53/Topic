@@ -2,6 +2,25 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 
+// Polyfill ReadableStream async iterator for Safari/WebKit support (needed by pdfjs-dist)
+if (typeof window !== "undefined") {
+  if (typeof ReadableStream !== "undefined" && !(ReadableStream.prototype as any)[Symbol.asyncIterator]) {
+    (ReadableStream.prototype as any)[Symbol.asyncIterator] = async function* (this: any) {
+      const reader = this.getReader();
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) return;
+          yield value;
+        }
+      } finally {
+        reader.releaseLock();
+      }
+    };
+  }
+}
+
+
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 interface ScoreItem {
