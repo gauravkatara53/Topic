@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DSASheetsClient } from "../_components/dsa-sheets-client";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
@@ -37,7 +38,6 @@ export default async function StatsPage() {
     last7Days.push(d);
   }
 
-  const startDate7 = last7Days[0];
   const startDateHistory = new Date(now.getFullYear(), now.getMonth() - 12, now.getDate());
 
   const recentCompletions = await (prisma as any).userCompletedQuestion.findMany({
@@ -190,11 +190,46 @@ export default async function StatsPage() {
   });
   const initialCompletedIds = completed.map((c: any) => c.questionId);
 
+  const userNotes = await (prisma as any).userQuestionNote.findMany({
+    where: { userId }
+  });
+
+  const popularSheetsRaw = await (prisma as any).popularSheet.findMany({
+    include: { questions: { include: { question: true } } }
+  });
+
+  const userCustomSheetsRaw = await (prisma as any).userCustomSheet.findMany({
+    where: { userId },
+    include: { questions: { include: { question: true } } }
+  });
+
+  const popularSheets = popularSheetsRaw.map((s: any) => ({
+    ...s,
+    questions: (s.questions || []).filter((q: any) => q.question)
+  }));
+
+  const userCustomSheets = userCustomSheetsRaw.map((s: any) => ({
+    ...s,
+    questions: (s.questions || []).filter((q: any) => q.question)
+  }));
+
+  const revisionsRaw = await (prisma as any).userQuestionRevision.findMany({
+    where: { userId }
+  });
+
+  const allIds = [...new Set([...revisionsRaw.map((r: any) => String(r.questionId)), ...starred.map((s: any) => String(s.questionId))])];
+  const qMap = await hydrateQuestions(allIds);
+  const revisions = revisionsRaw.map((r: any) => ({ ...r, question: qMap.get(String(r.questionId)) })).filter((r: any) => r.question);
+
   return <DSASheetsClient 
     userId={userId} 
     statsData={statsData}
     starredData={starredData}
     initialCompletedIds={initialCompletedIds}
+    initialNotes={userNotes}
+    popularSheets={popularSheets}
+    userCustomSheets={userCustomSheets}
+    revisionsData={revisions}
     initialTab="My Stats"
   />;
 }

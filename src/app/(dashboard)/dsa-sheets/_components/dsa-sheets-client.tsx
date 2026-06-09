@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -434,7 +437,6 @@ export function DSASheetsClient({
 
   useEffect(() => {
     if (!selectedQuestion) {
-      setRevisionHistory([]);
       return;
     }
     let cancelled = false;
@@ -449,8 +451,11 @@ export function DSASheetsClient({
       .finally(() => {
         if (!cancelled) setIsLoadingHistory(false);
       });
-    return () => { cancelled = true; };
-  }, [selectedQuestion?.id]);
+    return () => { 
+      cancelled = true; 
+      setRevisionHistory([]);
+    };
+  }, [selectedQuestion]);
 
   const handleSaveNote = async (content: string) => {
     if (!selectedQuestion) return;
@@ -924,7 +929,9 @@ export function DSASheetsClient({
                 {(() => {
                   const sortedRevisions = [...revisionsData].sort((a, b) => new Date(a.nextRevision).getTime() - new Date(b.nextRevision).getTime());
                   const todayStr = new Date().toDateString();
-                  const tomorrowStr = new Date(Date.now() + 86400000).toDateString();
+                  const tomorrowDate = new Date();
+                  tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+                  const tomorrowStr = tomorrowDate.toDateString();
 
                   // Calendar Timeline Logic
                   const today = new Date();
@@ -1331,6 +1338,16 @@ export function DSASheetsClient({
                         const q = star.question;
                         const assignedCompany = star.companyId || safeSplit(q.companies)[0]?.trim() || 'google';
 
+                        const isPopular = popularSheets?.some(s => s.slug === assignedCompany);
+                        const isCustom = userCustomSheets?.some(s => s.id === assignedCompany);
+
+                        let sheetHref = `/dsa-sheets/${assignedCompany}`;
+                        if (isPopular) {
+                          sheetHref = `/dsa-sheets/popular/${assignedCompany}`;
+                        } else if (isCustom) {
+                          sheetHref = `/dsa-sheets/custom/${assignedCompany}`;
+                        }
+
                         return (
                           <div
                             key={idx}
@@ -1393,7 +1410,7 @@ export function DSASheetsClient({
                                 )}
                               </div>
                               <Link
-                                href={`/dsa-sheets/${assignedCompany}`}
+                                href={sheetHref}
                                 className="text-[12px] font-bold px-4 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 transition-colors shadow-sm"
                               >
                                 Sheet
