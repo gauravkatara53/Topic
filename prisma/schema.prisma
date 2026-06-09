@@ -408,4 +408,3 @@ model PlacementReminder {
   @@index([userId, completed])
   @@map("placement_reminders")
 }
-

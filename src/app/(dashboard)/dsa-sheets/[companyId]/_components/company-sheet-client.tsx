@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Palette, ChevronLeft, ChevronDown, ChevronRight, CheckCircle2, Circle, Star, ExternalLink, Share2, Target, Bookmark, RotateCcw, FileText, Search, Filter, ArrowUpDown, Clock, Save } from "lucide-react";
+import { Palette, ChevronLeft, ChevronDown, ChevronRight, CheckCircle2, Circle, Star, ExternalLink, Share2, Target, Bookmark, RotateCcw, FileText, Search, Filter, ArrowUpDown, Clock, Save, Pen } from "lucide-react";
 import { cn, safeSplit, safeFormatDate, normalizeDate } from "@/lib/utils";
 import { toggleFollowSheet, updateQuestionRevision, toggleQuestionCompletion, toggleQuestionStar, updateQuestionHighlight, updateQuestionNote, getRevisionHistory } from "@/actions/dsa-sheets";
 import { toast } from "sonner";
 import { QuestionDrawer } from "../../_components/question-drawer";
 import { RevisionPicker } from "../../_components/revision-picker";
+import { AdminQuestionEditModal } from "../../_components/admin-question-edit-modal";
 
 // Dummy Data
 const SHEET_DATA = {
@@ -76,7 +77,8 @@ export function CompanySheetClient({
   dbRevisions = [],
   initialStarredIds = [],
   initialHighlights = [],
-  initialNotes = []
+  initialNotes = [],
+  isAdmin = false
 }: {
   companyId: string,
   dbQuestions: any[],
@@ -86,8 +88,10 @@ export function CompanySheetClient({
   dbRevisions?: any[],
   initialStarredIds?: string[],
   initialHighlights?: { questionId: string, colorTheme: string }[],
-  initialNotes?: { questionId: string, content: string }[]
+  initialNotes?: { questionId: string, content: string }[],
+  isAdmin?: boolean
 }) {
+  const [localDbQuestions, setLocalDbQuestions] = useState(dbQuestions || []);
   const [localNotes, setLocalNotes] = useState<Record<string, string>>(() => {
     const acc: Record<string, string> = {};
     (initialNotes || []).forEach(note => { acc[note.questionId] = note.content; });
@@ -139,7 +143,7 @@ export function CompanySheetClient({
       {
         id: "all",
         title: "All Questions",
-        questions: (dbQuestions || []).map((q) => ({
+        questions: (localDbQuestions || []).map((q: any) => ({
           id: q.id,
           url: q.url || "#",
           title: String(q.title || `Problem ${q.questionId}`),
@@ -168,6 +172,7 @@ export function CompanySheetClient({
 
   const [following, setFollowing] = useState(isFollowing);
   const [revisionModalOpen, setRevisionModalOpen] = useState<{ id: string, title: string } | null>(null);
+  const [adminEditModalOpen, setAdminEditModalOpen] = useState<{ id: string, data: any } | null>(null);
   const [showRevisionModalPref, setShowRevisionModalPref] = useState(true);
 
   useEffect(() => {
@@ -595,11 +600,11 @@ export function CompanySheetClient({
                         </div>
 
                         {/* Title & Timeframe */}
-                        <div className="md:col-span-5 flex-1 min-w-0 pr-2">
+                        <div className="col-span-11 md:col-span-4 flex-1 min-w-0 pr-2">
                           <div className="flex flex-col xl:flex-row xl:items-center gap-2">
                             <a href={q.url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={cn(
                               "text-sm font-bold truncate leading-tight transition-colors hover:underline underline-offset-2 decoration-slate-300",
-                              isDone ? "text-slate-500 dark:text-slate-500 opacity-70 dark:opacity-100" : "text-slate-800 dark:text-white"
+                              "text-slate-800 dark:text-white"
                             )}>
                               {q.title}
                             </a>
@@ -613,7 +618,7 @@ export function CompanySheetClient({
                         </div>
 
                         {/* Difficulty */}
-                        <div className="md:col-span-2 flex justify-center items-center text-[10px] font-black tracking-wide uppercase mt-2 md:mt-0">
+                        <div className="hidden md:flex md:col-span-1 justify-center items-center text-[10px] font-black tracking-wide uppercase mt-2 md:mt-0">
                           <span className={cn(
                             q.difficulty === "Easy" ? "text-emerald-500" :
                               q.difficulty === "Medium" ? "text-orange-400" :
@@ -624,7 +629,7 @@ export function CompanySheetClient({
                         </div>
 
                         {/* Topics */}
-                        <div className="md:col-span-3 hidden lg:flex items-center gap-1.5 justify-start pl-8 relative group">
+                        <div className="hidden lg:flex lg:col-span-4 items-center gap-1.5 justify-start pl-8 relative group">
                           <div className="flex flex-wrap items-center gap-1.5 px-4 justify-center">
                             {(q.topics || []).slice(0, 3).map((topic: string, i: number) => (
                               <span key={i} className="px-2 py-0.5 bg-white/5 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 border border-[#1b254b]/10 dark:border-white/10 rounded-md text-[10px] font-bold tracking-tighter whitespace-nowrap uppercase">
@@ -644,7 +649,15 @@ export function CompanySheetClient({
                             </div>
                           )}
                         </div>                        {/* Actions */}
-                        <div className="md:col-span-1 flex items-center justify-end gap-3 shrink-0 mt-3 md:mt-0" onClick={(e) => e.stopPropagation()}>
+                        <div className="col-span-11 md:col-span-2 flex items-center justify-end gap-1.5 shrink-0 mt-3 md:mt-0" onClick={(e) => e.stopPropagation()}>
+                          {isAdmin && (
+                            <button
+                              onClick={() => setAdminEditModalOpen({ id: q.id, data: q })}
+                              className="text-slate-300 dark:text-slate-500 hover:text-indigo-500 transition-colors flex shrink-0"
+                            >
+                              <Pen className="w-4 h-4" />
+                            </button>
+                          )}
                           <button 
                             onClick={() => {
                               setSelectedQuestion({ id: q.id, data: q });
@@ -810,6 +823,18 @@ export function CompanySheetClient({
         revisionHistory={revisionHistory}
         isLoadingHistory={isLoadingHistory}
       />
+      
+      {adminEditModalOpen && (
+        <AdminQuestionEditModal
+          isOpen={!!adminEditModalOpen}
+          onClose={() => setAdminEditModalOpen(null)}
+          question={localDbQuestions.find((q: any) => q.id === adminEditModalOpen.id) || adminEditModalOpen.data}
+          type="DSASheet"
+          onSaveSuccess={(updated) => {
+            setLocalDbQuestions(prev => prev.map((q: any) => q.id === updated.id ? updated : q));
+          }}
+        />
+      )}
     </div>
   );
 }

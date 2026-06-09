@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { CompanySheetClient } from "./_components/company-sheet-client";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 type Props = {
   params: Promise<{ companyId: string }>;
@@ -80,6 +80,10 @@ export default async function CompanySheetPage({ params }: Props) {
     userRevisions = revisions;
   }
 
+  const userObj = await currentUser();
+  const userEmail = userObj?.emailAddresses?.[0]?.emailAddress;
+  const isAdmin = userEmail === "gauravkatara53@gmail.com";
+
   return <CompanySheetClient 
     companyId={companyId} 
     dbQuestions={questions} 
@@ -90,5 +94,6 @@ export default async function CompanySheetPage({ params }: Props) {
     initialStarredIds={userStarredIds}
     initialHighlights={userHighlights}
     initialNotes={userNotes}
+    isAdmin={isAdmin}
   />;
 }

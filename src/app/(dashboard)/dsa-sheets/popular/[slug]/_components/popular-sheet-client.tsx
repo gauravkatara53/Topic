@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   ChevronLeft, ChevronDown, ChevronRight, CheckCircle2, Circle,
-  Star, Share2, Search, Clock, Save, Palette, RotateCcw, FileText, Bookmark, ExternalLink, Target, Filter, ArrowUpDown, Settings, Loader2, X
+  Star, Share2, Search, Clock, Save, Palette, RotateCcw, FileText, Bookmark, ExternalLink, Target, Filter, ArrowUpDown, Settings, Loader2, X, Pen
 } from "lucide-react";
 import { cn, safeFormatDate, normalizeDate, safeSplit } from "@/lib/utils";
 import {
@@ -28,6 +28,7 @@ import {
 import { toast } from "sonner";
 import { QuestionDrawer } from "../../../_components/question-drawer";
 import { RevisionPicker } from "../../../_components/revision-picker";
+import { AdminQuestionEditModal } from "../../../_components/admin-question-edit-modal";
 
 
 export function PopularSheetClient({
@@ -52,6 +53,7 @@ export function PopularSheetClient({
   initialNotes?: { questionId: string, content: string }[]
 }) {
   const router = useRouter();
+  const [localSheet, setLocalSheet] = useState(sheet || { questions: [] });
   const [following, setFollowing] = useState(isFollowing);
   const [completed, setCompleted] = useState<Set<string>>(new Set(initialCompletedIds));
   const [starred, setStarred] = useState<Set<string>>(new Set(initialStarredIds));
@@ -96,8 +98,9 @@ export function PopularSheetClient({
 
   // Admin Editing State
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editName, setEditName] = useState(sheet.name);
-  const [editDescription, setEditDescription] = useState(sheet.description || "");
+  const [adminQuestionEditModalOpen, setAdminQuestionEditModalOpen] = useState<{ id: string, data: any } | null>(null);
+  const [editName, setEditName] = useState(localSheet.name);
+  const [editDescription, setEditDescription] = useState(localSheet.description || "");
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
@@ -139,7 +142,7 @@ export function PopularSheetClient({
     const next = !following;
     setFollowing(next);
     toast.success(next ? "Added to My Sheets" : "Removed from My Sheets");
-    await togglePopularSheetFollow(sheet.id);
+    await togglePopularSheetFollow(localSheet.id);
   };
 
   const onToggleCompletion = async (qId: string) => {
@@ -152,11 +155,11 @@ export function PopularSheetClient({
     if (isDone) next.delete(qId);
     else next.add(qId);
     setCompleted(next);
-    await toggleQuestionCompletion(qId, sheet.slug, !isDone);
+    await toggleQuestionCompletion(qId, localSheet.slug, !isDone);
 
     // Auto-open revision modal if completing for the first time and preference is enabled
     if (!isDone && showRevisionModalPref && following) {
-      const sq = (sheet.questions || []).find((s: any) => s.question && String(s.question.id || s.question._id || s.question.questionId) === qId);
+      const sq = (localSheet.questions || []).find((s: any) => s.question && String(s.question.id || s.question._id || s.question.questionId) === qId);
       if (sq?.question) openRevisionModal(qId, sq.question.name);
     }
   };
@@ -171,13 +174,13 @@ export function PopularSheetClient({
     if (isStarred) next.delete(qId);
     else next.add(qId);
     setStarred(next);
-    await toggleQuestionStar(qId, sheet.slug, !isStarred);
+    await toggleQuestionStar(qId, localSheet.slug, !isStarred);
   };
 
   const onSetHighlight = async (qId: string, theme: string) => {
     setHighlights(prev => ({ ...prev, [qId]: theme }));
     setPaletteOpen(null);
-    await updateQuestionHighlight(qId, sheet.slug, theme);
+    await updateQuestionHighlight(qId, localSheet.slug, theme);
   };
 
   const handleRevisionChange = (qId: string, field: 'lastRevised' | 'nextRevision', val: string) => {
@@ -206,7 +209,7 @@ export function PopularSheetClient({
       // Corrected arguments: Convert strings to Date objects and add mandatory "Scheduled" status
       await updateQuestionRevision(
         qId,
-        sheet.id,
+        localSheet.id,
         rev.lastRevised ? new Date(rev.lastRevised) : null,
         rev.nextRevision ? new Date(rev.nextRevision) : null,
         "Scheduled"
@@ -221,7 +224,7 @@ export function PopularSheetClient({
   const handleUpdateSheet = async () => {
     setIsUpdating(true);
     try {
-      await updatePopularSheet(sheet.id, editName, editDescription);
+      await updatePopularSheet(localSheet.id, editName, editDescription);
       toast.success("Sheet updated successfully!");
       setIsEditModalOpen(false);
       router.refresh();
@@ -233,7 +236,7 @@ export function PopularSheetClient({
   };
 
   // Grouping logic (Topic -> Subtopic -> Questions)
-  const groupedData = (sheet.questions || []).reduce((acc: any, sq: any) => {
+  const groupedData = (localSheet.questions || []).reduce((acc: any, sq: any) => {
     if (!sq.question) return acc;
     const topic = sq.topic || "Uncategorized";
     const subtopic = sq.subTopic || "General";
@@ -247,10 +250,10 @@ export function PopularSheetClient({
     return acc;
   }, {});
 
-  const totalQuestions = sheet.questions.length;
+  const totalQuestions = localSheet.questions.length;
   const solvedCount = completed.size; // This matches global, but for this sheet it might be different if we filter
   // Actually, we should filter solvedCount to only questions in THIS sheet
-  const sheetQuestionIds = new Set((sheet.questions || []).filter((sq: any) => sq.question).map((sq: any) => String(sq.question.id || sq.question._id || sq.question.questionId)));
+  const sheetQuestionIds = new Set((localSheet.questions || []).filter((sq: any) => sq.question).map((sq: any) => String(sq.question.id || sq.question._id || sq.question.questionId)));
   const sheetSolvedCount = Array.from(completed).filter(id => sheetQuestionIds.has(String(id))).length;
   const progressPercent = totalQuestions > 0 ? (sheetSolvedCount / totalQuestions) * 100 : 0;
 
@@ -266,7 +269,7 @@ export function PopularSheetClient({
           Back to Sheets
         </button>
         <span className="text-slate-200">/</span>
-    <span className="text-[#1b254b] dark:text-slate-200">{sheet.name}</span>
+    <span className="text-[#1b254b] dark:text-slate-200">{localSheet.name}</span>
       </nav>
 
       {/* Header Section */}
@@ -275,7 +278,7 @@ export function PopularSheetClient({
           <div className="space-y-4">
             <div className="flex items-center gap-4">
               <h1 className="text-3xl md:text-4xl font-black text-[#1b254b] dark:text-white tracking-tight leading-tight">
-                {sheet.name}
+                {localSheet.name}
               </h1>
               {isAdmin && (
                 <button 
@@ -288,7 +291,7 @@ export function PopularSheetClient({
               )}
             </div>
             <p className="text-[13px] text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-3xl whitespace-pre-line">
-              {sheet.description}
+              {localSheet.description}
             </p>
           </div>
 
@@ -473,7 +476,7 @@ export function PopularSheetClient({
                                     onClick={(e) => e.stopPropagation()}
                                     className={cn(
                                       "text-sm font-bold ml-1 transition-colors leading-tight",
-                                      isDone ? "text-slate-400 dark:text-slate-500 opacity-70 dark:opacity-100" : "text-slate-700 dark:text-white"
+                                      "text-slate-700 dark:text-white"
                                     )}
                                   >
                                     {q.name}
@@ -513,6 +516,14 @@ export function PopularSheetClient({
                                 </div>
 
                                 <div className="col-span-11 md:col-span-2 flex items-center justify-end gap-1.5 transition-opacity" onClick={(e) => e.stopPropagation()}>
+                                  {isAdmin && (
+                                    <button
+                                      onClick={() => setAdminQuestionEditModalOpen({ id: qId, data: q })}
+                                      className="p-1.5 hover:bg-white dark:hover:bg-slate-600 rounded-lg transition-all border border-transparent hover:border-slate-100 dark:hover:border-slate-500 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400"
+                                    >
+                                      <Pen className="w-4 h-4" />
+                                    </button>
+                                  )}
                                   <button onClick={() => onToggleStar(qId)} className={cn("p-1.5 hover:bg-white dark:hover:bg-slate-600 rounded-lg transition-all border border-transparent hover:border-slate-100 dark:hover:border-slate-500", isStarred ? "text-amber-400" : "text-slate-400 hover:text-amber-400")}>
                                     <Star className={cn("w-4 h-4", isStarred && "fill-amber-400")} />
                                   </button>
@@ -652,7 +663,7 @@ export function PopularSheetClient({
           const qId = selectedQuestion.id;
           const topic = selectedQuestion.data.topic || "General";
           const subtopic = selectedQuestion.data.subtopic || "General";
-          const allQs = sheet?.questions || [];
+          const allQs = localSheet?.questions || [];
           return allQs
             .filter((q: any) => {
               const curQId = String(q.id || q._id || q.questionId);
@@ -728,6 +739,27 @@ export function PopularSheetClient({
             </div>
           </div>
         </div>
+      )}
+
+      {adminQuestionEditModalOpen && (
+        <AdminQuestionEditModal
+          isOpen={!!adminQuestionEditModalOpen}
+          onClose={() => setAdminQuestionEditModalOpen(null)}
+          question={adminQuestionEditModalOpen.data}
+          type="Popular"
+          onSaveSuccess={(updated) => {
+            setLocalSheet((prev: any) => {
+              const newQuestions = prev.questions.map((sq: any) => {
+                const qId = String(sq.question?.id || sq.question?._id || sq.question?.questionId);
+                if (qId === updated.id) {
+                  return { ...sq, question: { ...sq.question, ...updated } };
+                }
+                return sq;
+              });
+              return { ...prev, questions: newQuestions };
+            });
+          }}
+        />
       )}
     </div>
   );

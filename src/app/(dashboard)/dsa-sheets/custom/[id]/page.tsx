@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { CustomSheetClient } from "./_components/custom-sheet-client";
 import { notFound, redirect } from "next/navigation";
 
@@ -24,6 +24,9 @@ export default async function CustomSheetPage({ params }: Props) {
   const resolvedParams = await params;
   const { id } = resolvedParams;
   const { userId } = await auth();
+  const user = await currentUser();
+  const userEmail = user?.emailAddresses[0]?.emailAddress;
+  const isAdmin = userEmail === "gauravkatara53@gmail.com";
 
   if (!userId) redirect("/sign-in");
 
@@ -78,12 +81,12 @@ export default async function CustomSheetPage({ params }: Props) {
   return (
     <CustomSheetClient 
       sheet={filteredSheet as any}
-      userId={userId}
       initialCompletedIds={userCompletedIds}
       initialStarredIds={userStarredIds}
       initialHighlights={userHighlights}
       initialRevisions={revisions}
       initialNotes={userNotes}
+      isAdmin={isAdmin}
     />
   );
 }

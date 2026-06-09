@@ -110,9 +110,9 @@ export default async function DSASheetsPage() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const completedToday = completedQuestions.filter((q: any) => new Date(q.createdAt) >= today).length;
-  const completedRevisionsCount = await (prisma as any).revisionHistory.count({
+  const completedRevisionsCount = userId ? await (prisma as any).revisionHistory.count({
     where: { userId, status: 'Completed' }
-  });
+  }) : 0;
 
   const statsData = {
     totalCompleted: completedQuestions.length,

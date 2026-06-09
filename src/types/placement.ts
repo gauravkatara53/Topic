@@ -11,6 +11,7 @@ export const PLACEMENT_STATUSES = [
   "HR Round",
   "Offer Received",
   "Rejected",
+  "Not Shortlisted",
   "Ghosted",
   "Selected",
 ] as const;
@@ -153,6 +154,7 @@ export const STATUS_COLORS: Record<string, { bg: string; text: string; dot: stri
   "HR Round":           { bg: "bg-orange-100 dark:bg-orange-900/30",text: "text-orange-700 dark:text-orange-300",dot: "bg-orange-500" },
   "Offer Received":     { bg: "bg-emerald-100 dark:bg-emerald-900/30",text: "text-emerald-700 dark:text-emerald-300",dot: "bg-emerald-500" },
   Rejected:             { bg: "bg-red-100 dark:bg-red-900/30",     text: "text-red-700 dark:text-red-300",     dot: "bg-red-500" },
+  "Not Shortlisted":    { bg: "bg-rose-100 dark:bg-rose-900/30",   text: "text-rose-700 dark:text-rose-300",   dot: "bg-rose-500" },
   Ghosted:              { bg: "bg-slate-100 dark:bg-slate-700/50", text: "text-slate-600 dark:text-slate-400", dot: "bg-slate-400" },
   Selected:             { bg: "bg-teal-100 dark:bg-teal-900/30",   text: "text-teal-700 dark:text-teal-300",  dot: "bg-teal-500" },
 };

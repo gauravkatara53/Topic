@@ -49,7 +49,7 @@ export function ApplicationsGrid({
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center gap-1 transition-opacity" onClick={(e) => e.stopPropagation()}>
               {app.jobLink && (
                 <a href={app.jobLink} target="_blank" rel="noopener noreferrer" className="p-1 rounded-lg text-slate-400 hover:text-[#2dd4bf] hover:bg-[#2dd4bf]/10 transition-all">
                   <ExternalLink className="w-3.5 h-3.5" />

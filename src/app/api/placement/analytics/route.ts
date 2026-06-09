@@ -74,14 +74,19 @@ export async function GET() {
   const monthlyTrend = Object.entries(monthlyMap).map(([month, count]) => ({ month, count }));
 
   // Top roles
-  const roleMap: Record<string, number> = {};
+  const roleMap: Record<string, { count: number; label: string }> = {};
   apps.forEach((a) => {
-    roleMap[a.role] = (roleMap[a.role] || 0) + 1;
+    const rawRole = a.role || "Unknown";
+    const normalized = rawRole.trim().toUpperCase();
+    if (!roleMap[normalized]) {
+      roleMap[normalized] = { count: 0, label: rawRole.trim() };
+    }
+    roleMap[normalized].count++;
   });
-  const topRoles = Object.entries(roleMap)
-    .sort((a, b) => b[1] - a[1])
+  const topRoles = Object.values(roleMap)
+    .sort((a, b) => b.count - a.count)
     .slice(0, 6)
-    .map(([role, count]) => ({ role, count }));
+    .map((item) => ({ role: item.label, count: item.count }));
 
   return NextResponse.json({
     totalApplications: total,

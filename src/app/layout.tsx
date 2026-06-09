@@ -34,6 +34,9 @@ export const metadata: Metadata = {
     creator: "@topic",
   },
   manifest: "/manifest.json",
+  other: {
+    "darkreader-lock": "true",
+  },
 };
 
 export default function RootLayout({

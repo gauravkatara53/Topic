@@ -1,13 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import {
   ChevronLeft, ChevronDown, CheckCircle2, Circle,
   Star, Share2, Search, Clock, Save, Palette, RotateCcw,
-  Plus, FileSpreadsheet, Trash2, LayoutGrid, Bookmark, Edit3, X
+  Plus, FileSpreadsheet, Trash2, LayoutGrid, Bookmark, Edit3, X, Pen
 } from "lucide-react";
-import { cn, safeFormatDate, normalizeDate, safeSplit } from "@/lib/utils";
+import { cn, safeFormatDate } from "@/lib/utils";
 import {
   DIFFICULTY_COLOR,
   HIGHLIGHT_THEMES,
@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { BulkImportModal } from "../../../_components/bulk-import-modal";
 import { QuestionDrawer } from "../../../_components/question-drawer";
 import { RevisionPicker } from "../../../_components/revision-picker";
+import { AdminQuestionEditModal } from "../../../_components/admin-question-edit-modal";
 import { deleteCustomSheet, removeQuestionFromCustomSheet, updateCustomSheet } from "@/actions/custom-sheets";
 import {
   toggleQuestionCompletion,
@@ -32,20 +33,20 @@ import {
 
 export function CustomSheetClient({
   sheet,
-  userId,
   initialCompletedIds = [],
   initialStarredIds = [],
   initialHighlights = [],
   initialRevisions = [],
-  initialNotes = []
+  initialNotes = [],
+  isAdmin = false
 }: {
   sheet: any,
-  userId: string,
   initialCompletedIds?: string[],
   initialStarredIds?: string[],
   initialHighlights?: any[],
   initialRevisions?: any[],
-  initialNotes?: { questionId: string, content: string }[]
+  initialNotes?: { questionId: string, content: string }[],
+  isAdmin?: boolean
 }) {
   const router = useRouter();
   const [completed, setCompleted] = useState<Set<string>>(new Set(initialCompletedIds));
@@ -91,13 +92,14 @@ export function CustomSheetClient({
         if (!cancelled) setIsLoadingHistory(false);
       });
     return () => { cancelled = true; };
-  }, [selectedQuestion?.id]);
+  }, [selectedQuestion]);
   const [expandedTopics, setExpandedTopics] = useState<Record<string, boolean>>({});
   const [paletteOpen, setPaletteOpen] = useState<string | null>(null);
   const [revisionModalOpen, setRevisionModalOpen] = useState<{ id: string, title: string } | null>(null);
   const [showRevisionModalPref, setShowRevisionModalPref] = useState(true);
   const [importModalOpen, setImportModalOpen] = useState(false);
   const [addMenuOpen, setAddMenuOpen] = useState(false);
+  const [adminEditModalOpen, setAdminEditModalOpen] = useState<{ id: string, data: any } | null>(null);
 
   // Metadata Editing State
   const [isEditing, setIsEditing] = useState(false);
@@ -107,7 +109,6 @@ export function CustomSheetClient({
 
   const totalQuestions = sheet.questions.length;
   const solvedCount = sheet.questions.filter((q: any) => q.question && completed.has(q.question.id)).length;
-  const progressPercent = totalQuestions > 0 ? (solvedCount / totalQuestions) * 100 : 0;
 
   const difficultyCounts = sheet.questions.reduce((acc: any, qLink: any) => {
     const q = qLink.question;
@@ -140,7 +141,7 @@ export function CustomSheetClient({
       setIsEditing(false);
       toast.success("Sheet updated successfully");
       router.refresh();
-    } catch (e) {
+    } catch (error) {
       toast.error("Failed to update sheet");
     } finally {
       setIsSaving(false);
@@ -208,7 +209,7 @@ export function CustomSheetClient({
         "Scheduled"
       );
       toast.success("Revision dates updated");
-    } catch (e) {
+    } catch (error) {
       toast.error("Failed to save revision");
     }
   };
@@ -452,7 +453,7 @@ export function CustomSheetClient({
                                   <div className="col-span-11 md:col-span-4 flex items-center gap-3 min-w-0">
                                     <span className={cn(
                                       "text-sm font-bold ml-1 transition-colors leading-tight",
-                                      isDone ? "text-slate-400 dark:text-slate-500 opacity-70 dark:opacity-100" : "text-slate-700 dark:text-white"
+                                      "text-slate-700 dark:text-white"
                                     )}>
                                       {q.name}
                                     </span>
@@ -473,7 +474,18 @@ export function CustomSheetClient({
                                     {q.topics?.length > 3 && <span className="px-1.5 py-0.5 bg-slate-50 dark:bg-slate-700 text-slate-400 border border-slate-200 dark:border-slate-600 rounded-md text-[9px] font-black tracking-tighter shrink-0">+{q.topics.length - 3}</span>}
                                   </div>
 
-                                  <div className="col-span-11 md:col-span-2 flex items-center justify-end gap-1.5 transition-opacity" onClick={(e) => e.stopPropagation()}>
+                                    <div className="col-span-11 md:col-span-2 flex items-center justify-end gap-1.5 transition-opacity" onClick={(e) => e.stopPropagation()}>
+                                      {isAdmin && (
+                                        <button
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            setAdminEditModalOpen({ id: q.id, data: q });
+                                          }}
+                                          className="p-1.5 hover:bg-white dark:hover:bg-slate-600 rounded-lg transition-all border border-transparent hover:border-slate-100 dark:hover:border-slate-500 text-slate-300 dark:text-slate-500 hover:text-indigo-500"
+                                        >
+                                          <Pen className="w-3.5 h-3.5" />
+                                        </button>
+                                      )}
                                     <button onClick={() => onToggleStar(qId)} className={cn("p-1.5 hover:bg-white dark:hover:bg-slate-600 rounded-lg transition-all border border-transparent hover:border-slate-100 dark:hover:border-slate-500", isStarred ? "text-amber-400" : "text-slate-400 hover:text-amber-400")}>
                                       <Star className={cn("w-4 h-4", isStarred && "fill-amber-400")} />
                                     </button>
@@ -601,7 +613,7 @@ export function CustomSheetClient({
                   className="w-4 h-4 rounded border-2 border-slate-200 dark:border-slate-600 checked:bg-[#1b254b] dark:checked:bg-[#2dd4bf] dark:bg-slate-700 transition-all"
                 />
                 <span className="text-[10px] font-bold text-slate-400 group-hover:text-slate-500 transition-colors uppercase tracking-widest">
-                  Don't show again
+                  Don&apos;t show again
                 </span>
               </label>
 
@@ -625,6 +637,19 @@ export function CustomSheetClient({
             </div>
           </div>
         </div>
+      )}
+
+      {adminEditModalOpen && (
+        <AdminQuestionEditModal
+          isOpen={!!adminEditModalOpen}
+          onClose={() => setAdminEditModalOpen(null)}
+          question={sheet.questions.find((sq: any) => sq.question?.id === adminEditModalOpen.id)?.question || adminEditModalOpen.data}
+          type="Popular"
+          onSaveSuccess={() => {
+            router.refresh();
+            setAdminEditModalOpen(null);
+          }}
+        />
       )}
     </div>
   );

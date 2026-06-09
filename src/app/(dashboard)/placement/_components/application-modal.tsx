@@ -197,7 +197,21 @@ export function ApplicationModal({ open, onClose, editingApp, onSaved }: Applica
                   </div>
                   <div>
                     <Label>Role *</Label>
-                    <input className={InputCls} placeholder="SDE Intern, Full Stack…" value={form.role} onChange={(e) => set("role", e.target.value)} />
+                    <input list="role-suggestions" className={InputCls} placeholder="SDE Intern, Full Stack…" value={form.role} onChange={(e) => set("role", e.target.value)} />
+                    <datalist id="role-suggestions">
+                      <option value="SDE" />
+                      <option value="SDE Intern" />
+                      <option value="SWE" />
+                      <option value="SWE Intern" />
+                      <option value="Full Stack Developer" />
+                      <option value="Frontend Developer" />
+                      <option value="Backend Developer" />
+                      <option value="Data Analyst" />
+                      <option value="Data Scientist" />
+                      <option value="Product Manager" />
+                      <option value="Business Analyst" />
+                      <option value="DevOps Engineer" />
+                    </datalist>
                   </div>
                 </div>
 
@@ -279,7 +293,16 @@ export function ApplicationModal({ open, onClose, editingApp, onSaved }: Applica
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <Label>Eligibility Criteria</Label>
-                        <input className={InputCls} placeholder="No backlogs, etc." value={form.eligibilityCriteria ?? ""} onChange={(e) => set("eligibilityCriteria", e.target.value)} />
+                        <input list="eligibility-suggestions" className={InputCls} placeholder="No backlogs, etc." value={form.eligibilityCriteria ?? ""} onChange={(e) => set("eligibilityCriteria", e.target.value)} />
+                        <datalist id="eligibility-suggestions">
+                          <option value="B.Tech CSE/IT" />
+                          <option value="All Branches" />
+                          <option value="No active backlogs" />
+                          <option value="No current/past backlogs" />
+                          <option value=">= 7.0 CGPA" />
+                          <option value=">= 8.0 CGPA" />
+                          <option value="Female Candidates Only" />
+                        </datalist>
                       </div>
                       <div>
                         <Label>Min CGPA</Label>
