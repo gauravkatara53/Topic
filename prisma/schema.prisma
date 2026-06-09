@@ -408,3 +408,22 @@ model PlacementReminder {
   @@index([userId, completed])
   @@map("placement_reminders")
 }
+
+model PlacementOutreach {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String
+  personName      String
+  companyName     String
+  role            String
+  linkedinUrl     String?
+  email           String?
+  status          String   @default("To Contact")
+  dateReachedOut  DateTime?
+  repliedAt       DateTime?
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+  @@map("placement_outreach")
+}

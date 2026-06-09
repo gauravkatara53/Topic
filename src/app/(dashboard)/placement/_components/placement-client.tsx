@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { PlusCircle, LayoutGrid, Table2, GitBranch, BarChart3, Bell, Loader2 } from "lucide-react";
+import { PlusCircle, LayoutGrid, Table2, GitBranch, BarChart3, Bell, Loader2, Users } from "lucide-react";
 import { PlacementApplication, PlacementAnalytics, PlacementReminder, PlacementFilters } from "@/types/placement";
 import { StatsCards } from "./stats-cards";
 import { StatsCardsSkeleton, ApplicationsTableSkeleton } from "./skeleton-cards";
@@ -10,6 +10,7 @@ import { ApplicationsGrid } from "./applications-grid";
 import { TimelineView } from "./timeline-view";
 import { AnalyticsSection } from "./analytics-section";
 import { RemindersSection } from "./reminders-section";
+import { OutreachSection } from "./outreach-section";
 import { ApplicationModal } from "./application-modal";
 import { ApplicationDetail } from "./application-detail";
 import { FiltersBar } from "./filters-bar";
@@ -19,7 +20,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 type ViewMode = "table" | "grid" | "timeline";
-type TabMode = "applications" | "analytics" | "reminders";
+type TabMode = "applications" | "analytics" | "reminders" | "outreach";
 
 const EMPTY_ANALYTICS: PlacementAnalytics = {
   totalApplications: 0,
@@ -164,6 +165,7 @@ export function PlacementClient() {
 
   const TABS: { id: TabMode; label: string; icon: React.ReactNode }[] = [
     { id: "applications", label: "Applications", icon: <Table2 className="w-4 h-4" /> },
+    { id: "outreach",     label: "Outreach",     icon: <Users className="w-4 h-4" /> },
     { id: "analytics",    label: "Analytics",    icon: <BarChart3 className="w-4 h-4" /> },
     { id: "reminders",    label: "Reminders",    icon: <Bell className="w-4 h-4" /> },
   ];
@@ -302,6 +304,8 @@ export function PlacementClient() {
             />
           )
       )}
+
+      {tab === "outreach" && <OutreachSection />}
 
       {/* ── Add/Edit modal ────────────────────────────────────────────────── */}
       <ApplicationModal

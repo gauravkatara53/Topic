@@ -163,3 +163,54 @@ export const PENDING_STATUSES = [
   "Applied", "OA Received", "OA Completed", "Shortlisted",
   "Interview Scheduled", "Round 1", "Round 2", "HR Round",
 ];
+
+// ─── Outreach / Networking ────────────────────────────────────────────────────
+export const OUTREACH_STATUSES = [
+  "To Contact",
+  "Reached Out",
+  "Replied",
+  "Connected",
+  "Referral Given",
+  "Not Interested",
+  "Ghosted",
+] as const;
+
+export type OutreachStatus = (typeof OUTREACH_STATUSES)[number];
+
+export interface PlacementOutreach {
+  id: string;
+  userId: string;
+  personName: string;
+  companyName: string;
+  role: string;
+  linkedinUrl?: string | null;
+  email?: string | null;
+  status: string;
+  dateReachedOut?: string | null;
+  repliedAt?: string | null;
+  notes?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type PlacementOutreachFormData = {
+  personName: string;
+  companyName: string;
+  role: string;
+  linkedinUrl?: string;
+  email?: string;
+  status: string;
+  dateReachedOut?: string;
+  repliedAt?: string;
+  notes?: string;
+};
+
+export const OUTREACH_STATUS_COLORS: Record<string, { bg: string; text: string; dot: string }> = {
+  "To Contact":      { bg: "bg-slate-100 dark:bg-slate-700/50", text: "text-slate-600 dark:text-slate-400", dot: "bg-slate-400" },
+  "Reached Out":     { bg: "bg-blue-100 dark:bg-blue-900/30",   text: "text-blue-700 dark:text-blue-300",   dot: "bg-blue-500" },
+  Replied:           { bg: "bg-purple-100 dark:bg-purple-900/30", text: "text-purple-700 dark:text-purple-300", dot: "bg-purple-500" },
+  Connected:         { bg: "bg-sky-100 dark:bg-sky-900/30",     text: "text-sky-700 dark:text-sky-300",     dot: "bg-sky-500" },
+  "Referral Given":  { bg: "bg-emerald-100 dark:bg-emerald-900/30",text: "text-emerald-700 dark:text-emerald-300",dot: "bg-emerald-500" },
+  "Not Interested":  { bg: "bg-rose-100 dark:bg-rose-900/30",   text: "text-rose-700 dark:text-rose-300",   dot: "bg-rose-500" },
+  Ghosted:           { bg: "bg-slate-100 dark:bg-slate-700/50", text: "text-slate-600 dark:text-slate-400", dot: "bg-slate-400" },
+};
